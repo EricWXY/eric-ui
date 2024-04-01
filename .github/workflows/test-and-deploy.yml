@@ -39,7 +39,7 @@ jobs:
         uses: actions/setup-node@v3
 
       - name: Install pnpm
-        run: npm ci
+        run: npm install -g pnpm
 
       - name: Install dependencies
         run: pnpm install
