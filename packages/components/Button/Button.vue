@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import type { ButtonProps } from './types'
-// import ErIcon from '../Icon/index.vue'
+import ErIcon from '../Icon/Icon.vue'
 defineOptions({
   name: 'ErButton'
 })
@@ -12,6 +12,9 @@ withDefaults(defineProps<ButtonProps>(), {
 const slots = defineSlots()
 
 const _ref = ref<HTMLButtonElement>()
+const iconStyle = computed(() => ({
+  marginRight: slots.default ? '6px' : '0px'
+}))
 
 defineExpose({
   ref: _ref
@@ -37,9 +40,15 @@ defineExpose({
     :autofocus="autofocus"
   >
     <slot name="loading">
-      <!-- <er-icon :icon="loadingIcon ?? 'spinner'" size="1x" :style="iconStyle" spin v-if="loading" /> -->
+      <er-icon
+        :icon="loadingIcon ?? 'spinner'"
+        size="1x"
+        :style="iconStyle"
+        spin
+        v-if="loading"
+      />
     </slot>
-    <!-- <er-icon :icon="icon" size="1x" :style="iconStyle" v-if="icon" /> -->
+    <er-icon :icon="icon" size="1x" :style="iconStyle" v-if="icon" />
     <slot></slot>
   </component>
 </template>

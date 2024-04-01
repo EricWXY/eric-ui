@@ -1,13 +1,13 @@
 ---
 search: false
 ---
-# 最新 Vue3.3 + TS4 高仿 ElementPlus 打造自己的组件库
+# 最新 Vue3 + TS 高仿 ElementPlus 打造自己的组件库
 
 ## 安装
 
 
 ```bash
-npm i @er-element --save
+npm i @eric-ui --save
 ```
 
 ## 开始使用
@@ -17,9 +17,9 @@ npm i @er-element --save
 
 ```js
 // 引入所有组件
-import ErElement from 'er-element'
+import EricUI from 'eric-ui'
 // 引入样式
-import 'er-element/dist/style.css'
+import 'eric-ui/dist/style.css'
 
 import App from './App.vue'
 // 全局使用
@@ -34,7 +34,7 @@ createApp(App).use(ErElement).mount('#app')
 
 **单个导入**
 
-ErElement 提供了基于 ES Module 的开箱即用的 Tree Shaking 功能。
+Eric-UI 提供了基于 ES Module 的开箱即用的 Tree Shaking 功能。
 
 
 ```vue

@@ -3,9 +3,9 @@
 layout: home
 
 hero:
-  name: Er Element 组件库
+  name: Eric-UI 组件库
   text: 高仿 ElementPlus
-  tagline: 基于 Vue3 + TS4 开发的组件库
+  tagline: 基于 Vue3 + TS 开发的组件库
   actions:
     - theme: brand
       text: 开始使用

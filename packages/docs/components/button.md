@@ -1,5 +1,5 @@
 ---
-title: Button | Er-Element
+title: Button
 description: Button 组件文档
 ---
 

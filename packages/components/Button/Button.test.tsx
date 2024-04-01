@@ -1,7 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 
-// import Icon from '../Icon/index.vue'
+import Icon from '../Icon/Icon.vue'
 import Button from './Button.vue'
 
 describe('Button.vue', () => {
@@ -68,26 +68,26 @@ describe('Button.vue', () => {
     expect(wrapper.emitted()).not.toHaveProperty('click')
 
     // icon
-    // const iconElement = wrapper.findComponent(Icon)
-    // expect(iconElement.exists()).toBeTruthy()
-    // expect(iconElement.attributes('icon')).toBe('spinner')
+    const iconElement = wrapper.findComponent(Icon)
+    expect(iconElement.exists()).toBeTruthy()
+    expect(iconElement.attributes('icon')).toBe('spinner')
   })
 
-  test.todo('icon button', () => {
-    // const wrapper = mount(Button, {
-    //   props: {
-    //     icon: 'arrow-up'
-    //   },
-    //   slots: {
-    //     default: 'icon button'
-    //   },
-    //   global: {
-    //     stubs: ['ErIcon']
-    //   }
-    // })
+  test('icon button', () => {
+    const wrapper = mount(Button, {
+      props: {
+        icon: 'arrow-up'
+      },
+      slots: {
+        default: 'icon button'
+      },
+      global: {
+        stubs: ['ErIcon']
+      }
+    })
 
-    // const iconElement = wrapper.findComponent(Icon)
-    // expect(iconElement.exists()).toBeTruthy()
-    // expect(iconElement.attributes('icon')).toBe('arrow-up')
+    const iconElement = wrapper.findComponent(Icon)
+    expect(iconElement.exists()).toBeTruthy()
+    expect(iconElement.attributes('icon')).toBe('arrow-up')
   })
 })
