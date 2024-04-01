@@ -22,3 +22,5 @@ export const RenderVnode = defineComponent({
     return () => props.vNode;
   },
 });
+
+export * from "./install";

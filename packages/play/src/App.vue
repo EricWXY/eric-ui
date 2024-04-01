@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { createMessage } from 'eric-ui'
+import { ErMessage } from 'eric-ui'
 
 const openVal = ref(['a'])
 const dropdownOptions = ref([
@@ -17,24 +17,17 @@ const dropdownOptions = ref([
     name: 'c'
   }
 ])
+
+function handleBtnClick () {
+  ErMessage.info('Button Click')
+}
 </script>
 
 <template>
   <div>
     <p>
-      <er-button>Default</er-button>
-      <er-button
-        type="primary"
-        @click="
-          () =>
-            createMessage({
-              type: 'info',
-              message: 'click Primary',
-              showClose: true
-            })
-        "
-        >Primary</er-button
-      >
+      <er-button @click="handleBtnClick">Default</er-button>
+      <er-button type="primary">Primary</er-button>
       <er-button type="success">Success</er-button>
       <er-button type="info">Info</er-button>
       <er-button type="warning">Warning</er-button>

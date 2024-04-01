@@ -1,4 +1,4 @@
-<script setup lang="tsx">
+<script setup lang="ts">
 import { ref, computed, provide } from 'vue'
 import { omit } from 'lodash-es'
 import type {
@@ -7,7 +7,7 @@ import type {
   DropdownInstance,
   MenuOption
 } from './types'
-import { dropdownCtxKey } from './types'
+import { DROPDOWN_CTX_KEY } from './constants'
 import type { TooltipInstance } from '../Tooltip/types'
 
 import DropdownItem from './DropdownItem.vue'
@@ -39,7 +39,7 @@ defineExpose<DropdownInstance>({
   hide: () => tooltipRef.value?.hide()
 })
 
-provide(dropdownCtxKey, {
+provide(DROPDOWN_CTX_KEY, {
   handleItemClick
 })
 </script>

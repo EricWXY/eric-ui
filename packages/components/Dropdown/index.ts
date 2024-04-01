@@ -1,13 +1,8 @@
-import ErDropdown from "./Dropdown.vue";
-import ErDropdownItem from "./DropdownItem.vue";
-import type { App } from "vue";
+import Dropdown from "./Dropdown.vue";
+import DropdownItem from "./DropdownItem.vue";
+import { withInstall } from "@eric-ui/utils";
 
-ErDropdown.install = function (app: App) {
-  app.component(ErDropdown.name, ErDropdown);
-};
-ErDropdownItem.install = function (app: App) {
-  app.component(ErDropdownItem.name, ErDropdownItem);
-};
+export const ErDropdown = withInstall(Dropdown);
+export const ErDropdownItem = withInstall(DropdownItem);
 
-export { ErDropdown, ErDropdownItem };
 export * from "./types";

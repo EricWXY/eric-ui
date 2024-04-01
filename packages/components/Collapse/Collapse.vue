@@ -2,7 +2,7 @@
 import { ref, provide, watch } from 'vue'
 import { each } from 'lodash-es'
 import type { NameType, CollapseProps, CollapseEmits } from './types'
-import { collapseCtxKey } from './types'
+import { COLLAPSE_CTX_KEY } from './constants'
 defineOptions({
   name: 'ErCollapse'
 })
@@ -48,7 +48,7 @@ function updateActiveNames(val: NameType[]) {
   )
 }
 
-provide(collapseCtxKey, {
+provide(COLLAPSE_CTX_KEY, {
   activeNames,
   handleItemClick
 })

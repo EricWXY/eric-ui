@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { type CollapseItemProps } from './types'
 import { inject, computed } from 'vue'
+import { COLLAPSE_CTX_KEY } from './constants'
 import transitionEvents from './transitionEvents'
-import { type CollapseItemProps, collapseCtxKey } from './types'
 import ErIcon from '../Icon/Icon.vue'
 
 defineOptions({
@@ -10,7 +11,7 @@ defineOptions({
 
 const props = defineProps<CollapseItemProps>()
 
-const ctx = inject(collapseCtxKey)
+const ctx = inject(COLLAPSE_CTX_KEY)
 
 const isActive = computed(() => ctx?.activeNames.value.includes(props.name))
 

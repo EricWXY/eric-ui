@@ -1,10 +1,6 @@
-import ErIcon from "./Icon.vue";
-import type { App } from "vue";
+import Icon from "./Icon.vue";
+import { withInstall } from "@eric-ui/utils";
 
-ErIcon.install = function (app: App) {
-  app.component(ErIcon.name, ErIcon);
-};
-
-export { ErIcon };
+export const ErIcon = withInstall(Icon);
 
 export * from "./types";

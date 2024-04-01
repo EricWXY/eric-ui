@@ -1,4 +1,4 @@
-import type { InjectionKey, Ref } from "vue";
+import type { Ref } from "vue";
 export type NameType = string | number;
 
 export interface CollapseProps {
@@ -12,7 +12,7 @@ export interface CollapseItemProps {
   disabled?: boolean;
 }
 
-interface CollapseContext {
+export interface CollapseContext {
   activeNames: Ref<NameType[]>;
   handleItemClick: (name: NameType) => void;
 }
@@ -21,6 +21,3 @@ export interface CollapseEmits {
   (e: "update:modelValue", value: NameType[]): void;
   (e: "change", value: NameType[]): void;
 }
-
-export const collapseCtxKey: InjectionKey<CollapseContext> =
-  Symbol("collapseContext");

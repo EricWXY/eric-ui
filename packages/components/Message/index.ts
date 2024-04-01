@@ -1,4 +1,6 @@
-import { createMessage, closeAll } from "./methods";
+import Message from "./methods";
+import { withInstallFunction } from "@eric-ui/utils";
 
-export { createMessage, closeAll as closeAllMessage };
+export const ErMessage = withInstallFunction(Message, "$message");
+
 export * from "./types";

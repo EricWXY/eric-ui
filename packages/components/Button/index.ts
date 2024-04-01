@@ -1,10 +1,6 @@
-import ErButton from "./Button.vue";
-import type { App } from "vue";
+import Button from "./Button.vue";
+import { withInstall } from "@eric-ui/utils";
 
-ErButton.install = function (app: App) {
-  app.component(ErButton.name, ErButton);
-};
-
-export { ErButton };
+export const ErButton = withInstall(Button);
 
 export * from "./types";

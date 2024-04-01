@@ -1,4 +1,4 @@
-import type { InjectionKey, VNode } from "vue";
+import type { VNode } from "vue";
 import type { TooltipProps } from "../Tooltip/types";
 
 export interface MenuOption {
@@ -26,6 +26,3 @@ export interface DropdownInstance {
 export interface DropdownContext {
   handleItemClick: (item: MenuOption) => void;
 }
-
-export const dropdownCtxKey: InjectionKey<DropdownContext> =
-  Symbol("dropdownContext");

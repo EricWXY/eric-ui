@@ -6,7 +6,7 @@ import { containerPreview, componentPreview } from '@vitepress-demo-preview/plug
 export default defineConfig({
   title: 'Eric-UI',
   description: '基于Vue3 高仿 element-ui 组件库',
-  appearance: false, // 关闭 darkMode @todo 后续组件适配深色模式完成后打开
+  appearance: false, // 关闭 darkMode @todo 深色模式完成后打开
   base: '/eric-ui/',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config

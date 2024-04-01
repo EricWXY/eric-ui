@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import { type MenuOption, dropdownCtxKey } from './types'
+import { type MenuOption } from './types'
+import { DROPDOWN_CTX_KEY } from './constants'
 import { inject } from 'vue'
 
 defineOptions({
   name: 'ErDropdownItem'
 })
-defineProps<MenuOption>()
+const props = defineProps<MenuOption>()
 
-const ctx = inject(dropdownCtxKey)
+const ctx = inject(DROPDOWN_CTX_KEY)
+
+function handleClick() {
+  ctx?.handleItemClick(props)
+}
 </script>
 
 <template>
@@ -19,7 +24,7 @@ const ctx = inject(dropdownCtxKey)
       'is-disabled': disabled,
       'is-divided': divided
     }"
-    @click="ctx?.handleItemClick($props)"
+    @click="handleClick"
   >
     <slot>
       {{ label }}

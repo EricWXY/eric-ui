@@ -1,15 +1,8 @@
-import ErCollapse from "./Collapse.vue";
-import ErCollapseItem from "./CollapseItem.vue";
-import type { App } from "vue";
+import Collapse from "./Collapse.vue";
+import CollapseItem from "./CollapseItem.vue";
+import { withInstall } from "@eric-ui/utils";
 
-ErCollapse.install = function (app: App) {
-  app.component(ErCollapse.name, ErCollapse);
-};
-
-ErCollapseItem.install = function (app: App) {
-  app.component(ErCollapseItem.name, ErCollapseItem);
-};
-
-export { ErCollapse, ErCollapseItem };
+export const ErCollapse = withInstall(Collapse);
+export const ErCollapseItem = withInstall(CollapseItem);
 
 export * from "./types";
