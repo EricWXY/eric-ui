@@ -7,7 +7,7 @@ export default defineConfig({
   title: 'Er-Element',
   description: '基于Vue3 高仿 element-ui 组件库',
   appearance: false, // 关闭 darkMode @todo 后续组件适配深色模式完成后打开
-  // base: '/v-element/',
+  base: '/eric-ui/',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
