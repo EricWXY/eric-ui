@@ -17,8 +17,11 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
 
+      - name: Install pnpm 
+        run: npm install -g pnpm
+
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install
 
       - name: Run tests
         run: npm run test
@@ -35,8 +38,11 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
 
-      - name: Install dependencies
+      - name: Install pnpm
         run: npm ci
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Build docs
         run: npm run docs:build
