@@ -1,0 +1,12 @@
+{
+  "name": "eric-ui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "build": "todo"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

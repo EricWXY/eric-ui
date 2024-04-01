@@ -1,0 +1,17 @@
+{
+  "name": "@eric-ui/components",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest --coverage"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^1.4.0",
+    "@vue/test-utils": "^2.4.5",
+    "jsdom": "^24.0.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@eric-ui/docs",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.md",
+  "scripts": {
+    "dev": "vitepress dev ./",
+    "build": "vitepress build ./"
+  },
+  "devDependencies": {
+    "@vitepress-demo-preview/component": "^2.3.2",
+    "@vitepress-demo-preview/plugin": "^1.2.2",
+    "vitepress": "1.0.0-rc.44"
+  }
+}
