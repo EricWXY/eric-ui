@@ -1,4 +1,4 @@
-import type { VNode } from "vue";
+import type { VNode, ComputedRef } from "vue";
 
 export type RenderLabelFunc = (option: SelectOptionProps) => VNode | string;
 export type CustomFilterFunc = (value: string) => SelectOptionProps[];
@@ -30,6 +30,7 @@ export interface SelectStates {
   selectedOption: SelectOptionProps | undefined | null;
   mouseHover: boolean;
   loading: boolean;
+  highlightedIndex: number;
 }
 
 export interface SelectEmits {
@@ -44,4 +45,5 @@ export interface SleectContext {
   handleSelect: (item: SelectOptionProps) => void;
   selectStates: SelectStates;
   renderLabel?: RenderLabelFunc;
+  highlightedLine?: ComputedRef<SelectOptionProps | undefined>;
 }

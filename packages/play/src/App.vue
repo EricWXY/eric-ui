@@ -20,21 +20,21 @@ const dropdownOptions = ref([
 const switchValue = ref(true)
 const inputValue = ref('')
 const selectValue = ref('')
-// const selectOptions = ref([
-//   {
-//     label: 'Option A',
-//     value: 'a'
-//   },
-//   {
-//     label: 'Option B',
-//     value: 'b'
-//   },
-//   {
-//     label: 'Option C',
-//     value: 'c',
-//     disabled: true
-//   }
-// ])
+const selectOptions = ref([
+  {
+    label: 'Option A',
+    value: 'a'
+  },
+  {
+    label: 'Option B',
+    value: 'b'
+  },
+  {
+    label: 'Option C',
+    value: 'c',
+    disabled: true
+  }
+])
 const customOptionRender: RenderLabelFunc = opt => {
   return h('div', null, [
     h('b', { style: { color: 'red' } }, opt.label),
@@ -118,6 +118,7 @@ function handleBtnClick() {
     v-model="selectValue"
     placeholder="请选择"
     :render-label="customOptionRender"
+    :options="selectOptions"
     clearable
     filterable
   >

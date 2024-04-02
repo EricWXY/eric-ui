@@ -1,25 +1,4 @@
 <script setup lang="ts">
-import type {
-  SelectProps,
-  SelectEmits,
-  SelectOptionProps,
-  SelectStates,
-  RenderLabelFunc
-} from './types'
-import type { TooltipInstance } from '../Tooltip/types'
-import type { InputInstance } from '../Input/types'
-import {
-  ref,
-  reactive,
-  computed,
-  onMounted,
-  provide,
-  useSlots,
-  watch,
-  h,
-  type Ref,
-  type VNode
-} from 'vue'
 import {
   find,
   get,
@@ -33,8 +12,30 @@ import {
   eq,
   debounce
 } from 'lodash-es'
+import {
+  ref,
+  reactive,
+  computed,
+  onMounted,
+  provide,
+  useSlots,
+  watch,
+  h,
+  type Ref,
+  type VNode
+} from 'vue'
+import type {
+  SelectProps,
+  SelectEmits,
+  SelectOptionProps,
+  SelectStates,
+  RenderLabelFunc
+} from './types'
+import type { TooltipInstance } from '../Tooltip/types'
+import type { InputInstance } from '../Input/types'
 import { RenderVnode } from '@eric-ui/utils'
 import { SELECT_CTX_KEY } from './constants'
+
 import ErTooltip from '../Tooltip/Tooltip.vue'
 import ErIcon from '../Icon/Icon.vue'
 import ErInput from '../Input/Input.vue'
@@ -71,18 +72,32 @@ const popperOptions: any = {
   ]
 }
 
+const keyMap: Map<string, Function> = new Map()
+
 const tooltipRef = ref<TooltipInstance | null>(null)
 const inputRef = ref<InputInstance | null>(null)
 
 const isDropdownVisible = ref(false)
 const filteredOptions = ref(props.options ?? [])
-const filteredChilds: Ref<VNode[]> = ref([])
+const filteredChilds: Ref<Map<VNode, SelectOptionProps>> = ref(new Map())
 
 const selectStates = reactive<SelectStates>({
   inputValue: initialOption?.label ?? '',
   selectedOption: initialOption,
   mouseHover: false,
-  loading: false
+  loading: false,
+  highlightedIndex: -1
+})
+
+const highlightedLine = computed(() => {
+  let result: SelectOptionProps | undefined = undefined
+  if (hasChildren.value) {
+    const node = [...filteredChilds.value][selectStates.highlightedIndex]?.[0]
+    result = filteredChilds.value.get(node)
+  } else {
+    result = filteredOptions.value[selectStates.highlightedIndex]
+  }
+  return result
 })
 
 const children = computed(() =>
@@ -105,12 +120,23 @@ const filterPlaceholder = computed(() => {
 
 const timeout = computed(() => (props.remote ? 300 : 0))
 
+const hasData = computed(
+  () =>
+    (hasChildren.value && filteredChilds.value.size > 0) ||
+    (!hasChildren.value && size(filteredOptions.value) > 0)
+)
+
 const isNoData = computed(() => {
   if (!props.filterable) return false
-  if (hasChildren.value && eq(size(filteredChilds.value), 0)) return true
-  if (!hasChildren.value && eq(size(filteredOptions.value), 0)) return true
+  if (!hasData.value) return true
   return false
 })
+
+const lastIndex = computed(() =>
+  hasChildren.value
+    ? filteredChilds.value.size - 1
+    : size(filteredOptions.value) - 1
+)
 
 const showClear = computed(
   () =>
@@ -121,7 +147,10 @@ const handleFilterDebounce = debounce(handleFilter, timeout.value)
 
 const setFilteredChilds: (opts: typeof childrenOptsions.value) => void =
   function (opts) {
-    filteredChilds.value = map(opts, 'vNode')
+    filteredChilds.value.clear()
+    each(opts, item =>
+      filteredChilds.value.set(item.vNode, item.props as SelectOptionProps)
+    )
   }
 
 const renderLabel: RenderLabelFunc = function (opt) {
@@ -137,6 +166,8 @@ function controlVisible(visible: boolean) {
   props.filterable && controlInputVal(visible)
   isDropdownVisible.value = visible
   emits('visible-change', visible)
+
+  selectStates.highlightedIndex = -1
 }
 function controlInputVal(visible: boolean) {
   if (!props.filterable) return
@@ -195,6 +226,7 @@ async function generateFilterOptions(search: string) {
     filteredOptions.value = props.filterMethod(search)
     return
   }
+
   filteredOptions.value = filter(props.options, opt =>
     includes(opt.label, search)
   )
@@ -232,10 +264,61 @@ async function generateFilterChilds(search: string) {
 }
 
 function handleFilter() {
-  hasChildren
-    ? generateFilterChilds(selectStates.inputValue)
-    : generateFilterOptions(selectStates.inputValue)
+  const searchKey = selectStates.inputValue
+  selectStates.highlightedIndex = -1
+
+  if (hasChildren.value) {
+    generateFilterChilds(searchKey)
+    return
+  }
+  generateFilterOptions(searchKey)
 }
+
+function handleKeyDown(e: KeyboardEvent) {
+  keyMap.has(e.key) && keyMap.get(e.key)?.(e)
+}
+
+keyMap.set('Enter', () => {
+  if (!isDropdownVisible.value) {
+    controlVisible(true)
+  } else {
+    if (selectStates.highlightedIndex >= 0 && highlightedLine.value) {
+      handleSelect(highlightedLine.value)
+    } else {
+      controlVisible(false)
+    }
+  }
+})
+keyMap.set(
+  'Escape',
+  () => isDropdownVisible.value && controlVisible(!isDropdownVisible.value)
+)
+keyMap.set('ArrowUp', (e: KeyboardEvent) => {
+  e.preventDefault()
+
+  if (!hasData.value) return
+  if (
+    selectStates.highlightedIndex === -1 ||
+    selectStates.highlightedIndex === 0
+  ) {
+    selectStates.highlightedIndex = lastIndex.value
+  } else {
+    selectStates.highlightedIndex--
+  }
+})
+
+keyMap.set('ArrowDown', (e: KeyboardEvent) => {
+  e.preventDefault()
+  if (!hasData.value) return
+  if (
+    selectStates.highlightedIndex === -1 ||
+    selectStates.highlightedIndex === lastIndex.value
+  ) {
+    selectStates.highlightedIndex = 0
+  } else {
+    selectStates.highlightedIndex++
+  }
+})
 
 watch(
   () => props.options,
@@ -254,7 +337,8 @@ onMounted(() => setFilteredChilds(childrenOptsions.value))
 provide(SELECT_CTX_KEY, {
   handleSelect,
   selectStates,
-  renderLabel
+  renderLabel,
+  highlightedLine
 })
 </script>
 
@@ -282,6 +366,7 @@ provide(SELECT_CTX_KEY, {
         :placeholder="filterable ? filterPlaceholder : placeholder"
         :readonly="!filterable || !isDropdownVisible"
         @input="handleFilterDebounce"
+        @keydown="handleKeyDown"
       >
         <template #suffix>
           <er-icon
@@ -315,8 +400,8 @@ provide(SELECT_CTX_KEY, {
             />
           </template>
           <template v-else>
-            <template v-for="item in filteredChilds" :key="item.key">
-              <render-vnode :vNode="item" />
+            <template v-for="[vNode, _] in filteredChilds" :key="vNode">
+              <render-vnode :vNode="vNode" />
             </template>
           </template>
         </ul>
