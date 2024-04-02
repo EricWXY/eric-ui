@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { ErMessage } from 'eric-ui'
+import { ref, h } from 'vue'
+import { ErMessage, type RenderLabelFunc } from 'eric-ui'
 
 const openVal = ref(['a'])
 const dropdownOptions = ref([
@@ -19,23 +19,30 @@ const dropdownOptions = ref([
 ])
 const switchValue = ref(true)
 const inputValue = ref('')
-const selectValue = ref('a')
-const selectOptions = ref([
-  {
-    label: 'Option A',
-    value: 'a'
-  },
-  {
-    label: 'Option B',
-    value: 'b'
-  },
-  {
-    label: 'Option C',
-    value: 'c'
-  }
-])
+const selectValue = ref('')
+// const selectOptions = ref([
+//   {
+//     label: 'Option A',
+//     value: 'a'
+//   },
+//   {
+//     label: 'Option B',
+//     value: 'b'
+//   },
+//   {
+//     label: 'Option C',
+//     value: 'c',
+//     disabled: true
+//   }
+// ])
+const customOptionRender: RenderLabelFunc = opt => {
+  return h('div', null, [
+    h('b', { style: { color: 'red' } }, opt.label),
+    h('span', null, `~${opt.value}`)
+  ])
+}
 
-function handleBtnClick () {
+function handleBtnClick() {
   ErMessage.info('Button Click')
 }
 </script>
@@ -110,6 +117,16 @@ function handleBtnClick () {
   <er-select
     v-model="selectValue"
     placeholder="请选择"
-    :options="selectOptions"
-  />
+    :render-label="customOptionRender"
+    clearable
+    filterable
+  >
+    <er-option label="opt 1" value="1" />
+    <er-option label="opt 2" value="2" />
+    <span>a</span>
+    <er-option label="opt 3" value="3" disabled />
+    <er-option label="opt 4" value="4">
+      <span style="color: green">opt 4</span>
+    </er-option>
+  </er-select>
 </template>

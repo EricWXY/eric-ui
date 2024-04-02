@@ -67,7 +67,8 @@ watch(
 )
 
 defineExpose({
-  ref: inputRef
+  ref: inputRef,
+  clear
 })
 </script>
 

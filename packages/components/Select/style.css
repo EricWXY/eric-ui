@@ -14,10 +14,8 @@
   :deep(.er-tooltip__popper) {
     padding: 0;
   }
-  .er-input.is-focus .er-input__wrapper {
-    box-shadow: 0 0 0 1px var(--er-select-input-focus-border-color) inset!important
-  }
-  .er-input {
+
+  :deep(.er-input){
     .header-angle {
       transition: transform var(--er-transition-duration);
       &.is-active {

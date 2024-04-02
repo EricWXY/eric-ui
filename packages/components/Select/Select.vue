@@ -3,23 +3,81 @@ import type {
   SelectProps,
   SelectEmits,
   SelectOptionProps,
-  SelectStates
+  SelectStates,
+  RenderLabelFunc
 } from './types'
 import type { TooltipInstance } from '../Tooltip/types'
-import { ref, reactive, provide } from 'vue'
-import { find, get } from 'lodash-es'
+import type { InputInstance } from '../Input/types'
+import {
+  ref,
+  reactive,
+  computed,
+  onMounted,
+  provide,
+  useSlots,
+  watch,
+  h,
+  type Ref,
+  type VNode
+} from 'vue'
+import {
+  find,
+  get,
+  each,
+  noop,
+  isFunction,
+  filter,
+  includes,
+  map,
+  size
+} from 'lodash-es'
+import { RenderVnode } from '@eric-ui/utils'
 import { SELECT_CTX_KEY } from './constants'
 import ErTooltip from '../Tooltip/Tooltip.vue'
+import ErIcon from '../Icon/Icon.vue'
 import ErInput from '../Input/Input.vue'
 import ErOption from './Option.vue'
 
 defineOptions({
   name: 'ErSelect'
 })
-const props = defineProps<SelectProps>()
+const props = withDefaults(defineProps<SelectProps>(), {
+  options: () => []
+})
 const emits = defineEmits<SelectEmits>()
+const slots = useSlots()
 
 const tooltipRef = ref<TooltipInstance | null>(null)
+const inputRef = ref<InputInstance | null>(null)
+const filteredOptions = ref(props.options ?? [])
+const filteredChilds: Ref<VNode[]> = ref([])
+
+const hasChildren = computed(() =>
+  size(filter(slots?.default?.(), child => child.type === ErOption))
+)
+const childrenOptsions = computed(() => {
+  if (!hasChildren.value) return []
+  return map(
+    filter(slots?.default?.(), child => child.type === ErOption),
+    item => ({ vNode: h(item), props: item.props })
+  )
+})
+
+const filterPlaceholder = computed(() => {
+  return props.filterable &&
+    selectStates.selectedOption &&
+    isDropdownVisible.value
+    ? selectStates.selectedOption.label
+    : props.placeholder
+})
+
+const isNoData = computed(() => {
+  if (!props.filterable) return false
+  if (hasChildren.value && filteredChilds.value.length === 0) return true
+  if (!hasChildren.value && filteredOptions.value.length === 0) return true
+  return false
+})
+
 const initialOption = findOption(props.modelValue)
 
 const isDropdownVisible = ref(false)
@@ -42,39 +100,138 @@ const popperOptions: any = {
     }
   ]
 }
-const states = reactive<SelectStates>({
+const selectStates = reactive<SelectStates>({
   inputValue: initialOption?.label ?? '',
-  selectedOption: initialOption
+  selectedOption: initialOption,
+  mouseHover: false,
+  loading: false
 })
 
-function controlDropdown(visible: boolean) {
+const showClear = computed(
+  () =>
+    props.clearable && selectStates.mouseHover && selectStates.inputValue !== ''
+)
+
+const renderLabel: RenderLabelFunc = function (opt) {
+  if (isFunction(props.renderLabel)) {
+    return props.renderLabel(opt)
+  }
+  return opt.label
+}
+
+function controlVisible(visible: boolean) {
   if (!tooltipRef.value) return
   get(tooltipRef, ['value', visible ? 'show' : 'hide'])?.()
+  props.filterable && controlInputVal(visible)
   isDropdownVisible.value = visible
   emits('visible-change', visible)
 }
-function toggleDropdown() {
+function controlInputVal(visible: boolean) {
+  if (!props.filterable) return
+  if (visible) {
+    if (selectStates.selectedOption) selectStates.inputValue = ''
+    handleFilter()
+  } else {
+    selectStates.inputValue = selectStates.selectedOption?.label || ''
+  }
+}
+function toggleVisible() {
   if (props.disabled) return
-  controlDropdown(!isDropdownVisible.value)
+  controlVisible(!isDropdownVisible.value)
 }
 
 function findOption(value: string) {
   return find(props.options, option => option.value === value)
 }
 
-function handleItemSelect(o: SelectOptionProps) {
+function handleSelect(o: SelectOptionProps) {
   if (o.disabled) return
 
-  states.inputValue = o.label
-  states.selectedOption = o
-  emits('change', o.value)
-  emits('update:modelValue', o.value)
-  controlDropdown(false)
+  selectStates.inputValue = o.label
+  selectStates.selectedOption = o
+  each(['change', 'update:modelValue'], k => emits(k as any, o.value))
+  controlVisible(false)
+  inputRef.value?.ref?.focus()
 }
 
+function handleClear() {
+  inputRef.value?.clear()
+  selectStates.inputValue = ''
+  selectStates.selectedOption = null
+
+  emits('clear')
+  each(['change', 'update:modelValue'], k => emits(k as any, ''))
+}
+
+async function generateFilterOptions(search: string) {
+  if (!props.filterable) return
+
+  if (props.remote && props.remoteMethod && isFunction(props.remoteMethod)) {
+    selectStates.loading = true
+    try {
+      filteredOptions.value = await props.remoteMethod(search)
+    } catch (error) {
+      console.error(error)
+      filteredOptions.value = []
+    } finally {
+      selectStates.loading = false
+    }
+    return
+  }
+
+  if (props.filterMethod && isFunction(props.filterMethod)) {
+    filteredOptions.value = props.filterMethod(search)
+    return
+  }
+  filteredOptions.value = filter(props.options, opt =>
+    includes(opt.label, search)
+  )
+}
+
+function generateFilterChilds(search: string) {
+  if (!props.filterable) return
+  if (props.filterMethod && isFunction(props.filterMethod)) {
+    const options = map(props.filterMethod(search), 'value')
+    filteredChilds.value = map(
+      filter(childrenOptsions.value, item =>
+        includes(options, item?.props?.value)
+      ),
+      'vNode'
+    )
+  }
+
+  filteredChilds.value = map(
+    filter(childrenOptsions.value, item =>
+      includes(get(item, ['props', 'label']), search)
+    ),
+    'vNode'
+  )
+}
+
+function handleFilter() {
+  hasChildren
+    ? generateFilterChilds(selectStates.inputValue)
+    : generateFilterOptions(selectStates.inputValue)
+}
+
+watch(
+  () => props.options,
+  newOpts => {
+    filteredOptions.value = newOpts ?? []
+  }
+)
+
+watch(
+  () => childrenOptsions.value,
+  newOpts => (filteredChilds.value = map(newOpts, 'vNode'))
+)
+
+onMounted(() => (filteredChilds.value = map(childrenOptsions.value, 'vNode')))
+
 provide(SELECT_CTX_KEY, {
-  handleItemSelect,
-  selectStates: states
+  handleSelect,
+  selectStates,
+  renderLabel
 })
 </script>
 
@@ -84,29 +241,61 @@ provide(SELECT_CTX_KEY, {
     :class="{
       'is-disabled': disabled
     }"
-    @click="toggleDropdown"
+    @click="toggleVisible"
+    @mouseenter="selectStates.mouseHover = true"
+    @mouseleave="selectStates.mouseHover = false"
   >
     <er-tooltip
       ref="tooltipRef"
       placement="bottom-start"
       :popper-options="popperOptions"
+      @click-outside="controlVisible(false)"
       manual
     >
       <er-input
-        v-model="states.inputValue"
+        ref="inputRef"
+        v-model="selectStates.inputValue"
         :disabled="disabled"
-        :placeholder="placeholder"
-        readonly
-      />
+        :placeholder="filterable ? filterPlaceholder : placeholder"
+        :readonly="!filterable || !isDropdownVisible"
+        @input="handleFilter"
+      >
+        <template #suffix>
+          <er-icon
+            v-if="showClear"
+            icon="circle-xmark"
+            class="er-input__clear"
+            @click="handleClear"
+            @mousedown.prevent="noop"
+          />
+          <er-icon
+            v-else
+            class="header-angle"
+            icon="angle-down"
+            :class="{ 'is-active': isDropdownVisible }"
+          />
+        </template>
+      </er-input>
       <template #content>
-        <ul class="er-select__menu">
-          <slot>
+        <div class="er-select__loading" v-if="selectStates.loading">
+          <er-icon icon="spinner" spin />
+        </div>
+        <div class="er-select__nodata" v-else-if="filterable && isNoData">
+          No data
+        </div>
+        <ul class="er-select__menu" v-else>
+          <template v-if="!hasChildren">
             <er-option
-              v-for="item in options"
+              v-for="item in filteredOptions"
               :key="item.value"
               v-bind="item"
             />
-          </slot>
+          </template>
+          <template v-else>
+            <template v-for="item in filteredChilds" :key="item.key">
+              <render-vnode :vNode="item" />
+            </template>
+          </template>
         </ul>
       </template>
     </er-tooltip>

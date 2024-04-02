@@ -54,6 +54,9 @@
       border-bottom-right-radius: 0;
     }
   }
+  &.is-focus .er-input__wrapper {
+    box-shadow: 0 0 0 1px var(--er-input-focus-border-color) inset!important
+  }
 }
 
 .er-input--large {
