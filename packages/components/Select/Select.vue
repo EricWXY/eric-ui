@@ -29,7 +29,9 @@ import {
   filter,
   includes,
   map,
-  size
+  size,
+  eq,
+  debounce
 } from 'lodash-es'
 import { RenderVnode } from '@eric-ui/utils'
 import { SELECT_CTX_KEY } from './constants'
@@ -47,40 +49,8 @@ const props = withDefaults(defineProps<SelectProps>(), {
 const emits = defineEmits<SelectEmits>()
 const slots = useSlots()
 
-const tooltipRef = ref<TooltipInstance | null>(null)
-const inputRef = ref<InputInstance | null>(null)
-const filteredOptions = ref(props.options ?? [])
-const filteredChilds: Ref<VNode[]> = ref([])
-
-const hasChildren = computed(() =>
-  size(filter(slots?.default?.(), child => child.type === ErOption))
-)
-const childrenOptsions = computed(() => {
-  if (!hasChildren.value) return []
-  return map(
-    filter(slots?.default?.(), child => child.type === ErOption),
-    item => ({ vNode: h(item), props: item.props })
-  )
-})
-
-const filterPlaceholder = computed(() => {
-  return props.filterable &&
-    selectStates.selectedOption &&
-    isDropdownVisible.value
-    ? selectStates.selectedOption.label
-    : props.placeholder
-})
-
-const isNoData = computed(() => {
-  if (!props.filterable) return false
-  if (hasChildren.value && filteredChilds.value.length === 0) return true
-  if (!hasChildren.value && filteredOptions.value.length === 0) return true
-  return false
-})
-
 const initialOption = findOption(props.modelValue)
 
-const isDropdownVisible = ref(false)
 const popperOptions: any = {
   modifiers: [
     {
@@ -100,6 +70,14 @@ const popperOptions: any = {
     }
   ]
 }
+
+const tooltipRef = ref<TooltipInstance | null>(null)
+const inputRef = ref<InputInstance | null>(null)
+
+const isDropdownVisible = ref(false)
+const filteredOptions = ref(props.options ?? [])
+const filteredChilds: Ref<VNode[]> = ref([])
+
 const selectStates = reactive<SelectStates>({
   inputValue: initialOption?.label ?? '',
   selectedOption: initialOption,
@@ -107,10 +85,44 @@ const selectStates = reactive<SelectStates>({
   loading: false
 })
 
+const children = computed(() =>
+  filter(slots?.default?.(), child => eq(child.type, ErOption))
+)
+
+const hasChildren = computed(() => size(children.value) > 0)
+const childrenOptsions = computed(() => {
+  if (!hasChildren.value) return []
+  return map(children.value, item => ({ vNode: h(item), props: item.props }))
+})
+
+const filterPlaceholder = computed(() => {
+  return props.filterable &&
+    selectStates.selectedOption &&
+    isDropdownVisible.value
+    ? selectStates.selectedOption.label
+    : props.placeholder
+})
+
+const timeout = computed(() => (props.remote ? 300 : 0))
+
+const isNoData = computed(() => {
+  if (!props.filterable) return false
+  if (hasChildren.value && eq(size(filteredChilds.value), 0)) return true
+  if (!hasChildren.value && eq(size(filteredOptions.value), 0)) return true
+  return false
+})
+
 const showClear = computed(
   () =>
     props.clearable && selectStates.mouseHover && selectStates.inputValue !== ''
 )
+
+const handleFilterDebounce = debounce(handleFilter, timeout.value)
+
+const setFilteredChilds: (opts: typeof childrenOptsions.value) => void =
+  function (opts) {
+    filteredChilds.value = map(opts, 'vNode')
+  }
 
 const renderLabel: RenderLabelFunc = function (opt) {
   if (isFunction(props.renderLabel)) {
@@ -130,7 +142,7 @@ function controlInputVal(visible: boolean) {
   if (!props.filterable) return
   if (visible) {
     if (selectStates.selectedOption) selectStates.inputValue = ''
-    handleFilter()
+    handleFilterDebounce()
   } else {
     selectStates.inputValue = selectStates.selectedOption?.label || ''
   }
@@ -169,7 +181,7 @@ async function generateFilterOptions(search: string) {
   if (props.remote && props.remoteMethod && isFunction(props.remoteMethod)) {
     selectStates.loading = true
     try {
-      filteredOptions.value = await props.remoteMethod(search)
+      filteredOptions.value = (await props.remoteMethod(search)) ?? []
     } catch (error) {
       console.error(error)
       filteredOptions.value = []
@@ -188,23 +200,34 @@ async function generateFilterOptions(search: string) {
   )
 }
 
-function generateFilterChilds(search: string) {
+async function generateFilterChilds(search: string) {
   if (!props.filterable) return
+
+  if (props.remote && props.remoteMethod && isFunction(props.remoteMethod)) {
+    selectStates.loading = true
+    try {
+      await props.remoteMethod(search)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      selectStates.loading = false
+    }
+    setFilteredChilds(childrenOptsions.value)
+    return
+  }
   if (props.filterMethod && isFunction(props.filterMethod)) {
     const options = map(props.filterMethod(search), 'value')
-    filteredChilds.value = map(
+    setFilteredChilds(
       filter(childrenOptsions.value, item =>
         includes(options, item?.props?.value)
-      ),
-      'vNode'
+      )
     )
+    return
   }
-
-  filteredChilds.value = map(
+  setFilteredChilds(
     filter(childrenOptsions.value, item =>
       includes(get(item, ['props', 'label']), search)
-    ),
-    'vNode'
+    )
   )
 }
 
@@ -223,10 +246,10 @@ watch(
 
 watch(
   () => childrenOptsions.value,
-  newOpts => (filteredChilds.value = map(newOpts, 'vNode'))
+  newOpts => setFilteredChilds(newOpts)
 )
 
-onMounted(() => (filteredChilds.value = map(childrenOptsions.value, 'vNode')))
+onMounted(() => setFilteredChilds(childrenOptsions.value))
 
 provide(SELECT_CTX_KEY, {
   handleSelect,
@@ -258,7 +281,7 @@ provide(SELECT_CTX_KEY, {
         :disabled="disabled"
         :placeholder="filterable ? filterPlaceholder : placeholder"
         :readonly="!filterable || !isDropdownVisible"
-        @input="handleFilter"
+        @input="handleFilterDebounce"
       >
         <template #suffix>
           <er-icon
