@@ -6,6 +6,10 @@ import {
   ErDropdown,
   ErTooltip,
   ErMessage,
+  ErSwitch,
+  ErInput,
+  ErSelect,
+  ErOption,
 } from "@eric-ui/components";
 import type { Plugin } from "vue";
 
@@ -17,4 +21,8 @@ export default [
   ErDropdown,
   ErTooltip,
   ErMessage,
+  ErInput,
+  ErSwitch,
+  ErSelect,
+  ErOption,
 ] as Plugin[];

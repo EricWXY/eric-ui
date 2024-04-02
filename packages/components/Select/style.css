@@ -1,0 +1,78 @@
+.er-select {
+ --er-select-item-hover-bg-color: var(--er-fill-color-light);
+  --er-select-item-font-size: var(--er-font-size-base);
+  --er-select-item-font-color: var(--er-text-color-regular);
+  --er-select-item-selected-font-color: var(--er-color-primary);
+  --er-select-item-disabled-font-color: var(--er-text-color-placeholder);
+  --er-select-input-focus-border-color: var(--er-color-primary);
+}
+
+.er-select{
+ display: inline-block;
+  vertical-align: middle;
+  line-height: 32px;
+  :deep(.er-tooltip__popper) {
+    padding: 0;
+  }
+  .er-input.is-focus .er-input__wrapper {
+    box-shadow: 0 0 0 1px var(--er-select-input-focus-border-color) inset!important
+  }
+  .er-input {
+    .header-angle {
+      transition: transform var(--er-transition-duration);
+      &.is-active {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  .er-select__nodata, .er-select__loading {
+    padding: 10px 0;
+    margin: 0;
+    text-align: center;
+    color: var(--er-text-color-secondary);
+    font-size: var(--er-select-font-size);
+  }
+  .er-select__menu {
+    list-style: none;
+    margin: 6px 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  .er-select__menu-item { 
+    margin: 0;
+    font-size: var(--er-select-item-font-size);
+    padding: 0 32px 0 20px;
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--er-select-item-font-color);
+    height: 34px;
+    line-height: 34px;
+    box-sizing: border-box;
+    cursor: pointer;
+    &:hover {
+      background-color: var(--er-select-item-hover-bg-color);
+    }
+    &.is-selected {
+      color: var(--er-select-item-selected-font-color);
+      font-weight: 700;    
+    }
+    &.is-highlighted {
+      background-color: var(--er-select-item-hover-bg-color);
+    }
+    &.is-disabled {
+      color: var(--er-select-item-disabled-font-color);
+      cursor: not-allowed;
+      &:hover {
+        background-color: transparent;
+      }
+    }
+
+  }
+
+  :deep(.er-input__inner) {
+    cursor: pointer;
+  }
+}

@@ -4,3 +4,6 @@ export * from './Dropdown'
 export * from "./Icon";
 export * from './Message'
 export * from './Tooltip'
+export * from './Input'
+export * from './Switch'
+export * from './Select'

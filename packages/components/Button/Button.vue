@@ -42,8 +42,8 @@ defineExpose({
     <slot name="loading">
       <er-icon
         :icon="loadingIcon ?? 'spinner'"
-        size="1x"
         :style="iconStyle"
+        size="1x"
         spin
         v-if="loading"
       />

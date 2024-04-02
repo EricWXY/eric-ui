@@ -17,6 +17,23 @@ const dropdownOptions = ref([
     name: 'c'
   }
 ])
+const switchValue = ref(true)
+const inputValue = ref('')
+const selectValue = ref('a')
+const selectOptions = ref([
+  {
+    label: 'Option A',
+    value: 'a'
+  },
+  {
+    label: 'Option B',
+    value: 'b'
+  },
+  {
+    label: 'Option C',
+    value: 'c'
+  }
+])
 
 function handleBtnClick () {
   ErMessage.info('Button Click')
@@ -83,4 +100,16 @@ function handleBtnClick () {
     <er-button icon="arrow-up">tooltip</er-button>
     <template #content> 弹出部分 </template>
   </er-tooltip>
+  <er-input v-model="inputValue" placeholder="请输入内容" />
+  <er-switch
+    v-model="switchValue"
+    size="large"
+    active-text="ON"
+    inactive-text="OFF"
+  />
+  <er-select
+    v-model="selectValue"
+    placeholder="请选择"
+    :options="selectOptions"
+  />
 </template>
