@@ -6,6 +6,8 @@ import {
   noop,
   isFunction,
   filter,
+  isNil,
+  isBoolean,
   includes,
   map,
   size,
@@ -28,14 +30,14 @@ import type {
   SelectProps,
   SelectEmits,
   SelectOptionProps,
-  SelectStates,
-  RenderLabelFunc
+  SelectStates
 } from './types'
 import type { TooltipInstance } from '../Tooltip/types'
 import type { InputInstance } from '../Input/types'
 import { RenderVnode } from '@eric-ui/utils'
-import { SELECT_CTX_KEY } from './constants'
+import { SELECT_CTX_KEY, POPPER_OPTIONS } from './constants'
 
+import useKeyMap from './useKeyMap'
 import ErTooltip from '../Tooltip/Tooltip.vue'
 import ErIcon from '../Icon/Icon.vue'
 import ErInput from '../Input/Input.vue'
@@ -51,28 +53,6 @@ const emits = defineEmits<SelectEmits>()
 const slots = useSlots()
 
 const initialOption = findOption(props.modelValue)
-
-const popperOptions: any = {
-  modifiers: [
-    {
-      name: 'offset',
-      options: {
-        offset: [0, 9]
-      }
-    },
-    {
-      name: 'sameWidth',
-      enabled: true,
-      fn: ({ state }: { state: any }) => {
-        state.styles.popper.width = `${state.rects.reference.width}px`
-      },
-      phase: 'beforeWrite',
-      requires: ['computeStyles']
-    }
-  ]
-}
-
-const keyMap: Map<string, Function> = new Map()
 
 const tooltipRef = ref<TooltipInstance | null>(null)
 const inputRef = ref<InputInstance | null>(null)
@@ -145,15 +125,25 @@ const showClear = computed(
 
 const handleFilterDebounce = debounce(handleFilter, timeout.value)
 
-const setFilteredChilds: (opts: typeof childrenOptsions.value) => void =
-  function (opts) {
-    filteredChilds.value.clear()
-    each(opts, item =>
-      filteredChilds.value.set(item.vNode, item.props as SelectOptionProps)
-    )
-  }
+const keyMap = useKeyMap({
+  isDropdownVisible,
+  controlVisible,
+  selectStates,
+  highlightedLine,
+  handleSelect,
+  hasData,
+  lastIndex
+})
 
-const renderLabel: RenderLabelFunc = function (opt) {
+function setFilteredChilds(opts: typeof childrenOptsions.value) {
+  filteredChilds.value.clear()
+  each(opts, item => {
+    console.log(item)
+    filteredChilds.value.set(item.vNode, item.props as SelectOptionProps)
+  })
+}
+
+function renderLabel(opt: SelectOptionProps): VNode | string {
   if (isFunction(props.renderLabel)) {
     return props.renderLabel(opt)
   }
@@ -188,7 +178,7 @@ function findOption(value: string) {
 }
 
 function handleSelect(o: SelectOptionProps) {
-  if (o.disabled) return
+  if (o.disabled || (!isNil(o.disabled) && !isBoolean(o.disabled))) return
 
   selectStates.inputValue = o.label
   selectStates.selectedOption = o
@@ -206,19 +196,27 @@ function handleClear() {
   each(['change', 'update:modelValue'], k => emits(k as any, ''))
 }
 
-async function generateFilterOptions(search: string) {
-  if (!props.filterable) return
+async function callRemoteMethod(method: Function, search: string) {
+  if (!method || !isFunction(method)) return
+
+  selectStates.loading = true
+  let result
+  try {
+    result = await method(search)
+  } catch (error) {
+    console.error(error)
+    result = []
+  } finally {
+    selectStates.loading = false
+  }
+  return result
+}
+
+async function genFilterOptions(search: string) {
+  if (!props.filterable || !search) return
 
   if (props.remote && props.remoteMethod && isFunction(props.remoteMethod)) {
-    selectStates.loading = true
-    try {
-      filteredOptions.value = (await props.remoteMethod(search)) ?? []
-    } catch (error) {
-      console.error(error)
-      filteredOptions.value = []
-    } finally {
-      selectStates.loading = false
-    }
+    filteredOptions.value = await callRemoteMethod(props.remoteMethod, search)
     return
   }
 
@@ -232,18 +230,11 @@ async function generateFilterOptions(search: string) {
   )
 }
 
-async function generateFilterChilds(search: string) {
-  if (!props.filterable) return
+async function genFilterChilds(search: string) {
+  if (!props.filterable || !search) return
 
   if (props.remote && props.remoteMethod && isFunction(props.remoteMethod)) {
-    selectStates.loading = true
-    try {
-      await props.remoteMethod(search)
-    } catch (error) {
-      console.error(error)
-    } finally {
-      selectStates.loading = false
-    }
+    await callRemoteMethod(props.remoteMethod, search)
     setFilteredChilds(childrenOptsions.value)
     return
   }
@@ -268,57 +259,15 @@ function handleFilter() {
   selectStates.highlightedIndex = -1
 
   if (hasChildren.value) {
-    generateFilterChilds(searchKey)
+    genFilterChilds(searchKey)
     return
   }
-  generateFilterOptions(searchKey)
+  genFilterOptions(searchKey)
 }
 
 function handleKeyDown(e: KeyboardEvent) {
   keyMap.has(e.key) && keyMap.get(e.key)?.(e)
 }
-
-keyMap.set('Enter', () => {
-  if (!isDropdownVisible.value) {
-    controlVisible(true)
-  } else {
-    if (selectStates.highlightedIndex >= 0 && highlightedLine.value) {
-      handleSelect(highlightedLine.value)
-    } else {
-      controlVisible(false)
-    }
-  }
-})
-keyMap.set(
-  'Escape',
-  () => isDropdownVisible.value && controlVisible(!isDropdownVisible.value)
-)
-keyMap.set('ArrowUp', (e: KeyboardEvent) => {
-  e.preventDefault()
-
-  if (!hasData.value) return
-  if (
-    selectStates.highlightedIndex === -1 ||
-    selectStates.highlightedIndex === 0
-  ) {
-    selectStates.highlightedIndex = lastIndex.value
-  } else {
-    selectStates.highlightedIndex--
-  }
-})
-
-keyMap.set('ArrowDown', (e: KeyboardEvent) => {
-  e.preventDefault()
-  if (!hasData.value) return
-  if (
-    selectStates.highlightedIndex === -1 ||
-    selectStates.highlightedIndex === lastIndex.value
-  ) {
-    selectStates.highlightedIndex = 0
-  } else {
-    selectStates.highlightedIndex++
-  }
-})
 
 watch(
   () => props.options,
@@ -355,7 +304,7 @@ provide(SELECT_CTX_KEY, {
     <er-tooltip
       ref="tooltipRef"
       placement="bottom-start"
-      :popper-options="popperOptions"
+      :popper-options="POPPER_OPTIONS"
       @click-outside="controlVisible(false)"
       manual
     >
