@@ -46,7 +46,7 @@ function createInstance(
     text: getProp("text"),
     spinner: getProp("spinner"),
     background: getProp("background"),
-    visible: getProp("visible")?? true,
+    visible: getProp("visible") ?? true,
     target: getBindingProp("target") ?? (fullscreen ? undefined : el),
     body: getBindingProp("body") ?? binding.modifiers.body,
     lock: getBindingProp("lock") ?? binding.modifiers.lock,
@@ -72,13 +72,6 @@ function updatedOptions(
 export const vLoading: Directive = {
   mounted(el, binding) {
     if (binding.value) createInstance(el, binding);
-    // const { app, container } = createLoadingComponent();
-    // const instance = app.mount(container);
-    // el.instance = instance;
-    // el.style.position = "relative";
-    // if (binding?.value) {
-    //   appendEl(el);
-    // }
   },
   updated(el, binding) {
     const instance = el[INSTANCE_KEY];
@@ -88,21 +81,18 @@ export const vLoading: Directive = {
       createInstance(el, binding);
       return;
     }
+
     if (binding.value && binding.oldValue) {
       isObject(binding.value) &&
         updatedOptions(binding.value, instance!.options);
-
       return;
     }
 
     instance?.instance?.close();
-    // if (binding?.value !== binding.oldValue) {
-    //   binding.value ? appendEl(el) : removeEl(el);
-    // }
   },
 
   unmounted(el) {
     el[INSTANCE_KEY]?.instance.close();
-    el[INSTANCE_KEY] = null;
+    el[INSTANCE_KEY] = void 0;
   },
 };

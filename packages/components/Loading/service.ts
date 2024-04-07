@@ -1,7 +1,9 @@
 import type { LoadingOptions, LoadingOptionsResolved } from "./types";
-import { createApp, reactive, toRefs, nextTick } from "vue";
+import { createApp, reactive, nextTick, toRef } from "vue";
 import LoadingComp from "./Loading.vue";
-import { defer, isNil, isString } from "lodash-es";
+import { defer, delay, isNil, isString } from "lodash-es";
+
+const RELATIVE_CLASS = "el-loading-parent--relative" as const;
 function createLoadingComponent(options: LoadingOptionsResolved) {
   const handleAfterLeave = () => {
     destory();
@@ -16,71 +18,31 @@ function createLoadingComponent(options: LoadingOptionsResolved) {
   const setText = (text: string) => (data.text = text);
 
   const destory = () => {
-    // const target = data.parent;
-
-    removeElLoadingChild();
-    loadingInstance.unmount();
-  };
-
-  const removeElLoadingChild = () => {
     vm.$el?.parentNode?.removeChild(vm.$el);
+    app.unmount();
   };
 
   let afterLeaveTimer: number;
   const close = () => {
     clearTimeout(afterLeaveTimer);
+    afterLeaveTimer = defer(handleAfterLeave);
 
     data.visible = false;
-    afterLeaveTimer = defer(handleAfterLeave);
     options.closed?.();
   };
 
-  const loadingInstance = createApp(LoadingComp, { ...data });
-  const vm = loadingInstance.mount(document.createElement("div"));
+  const app = createApp(LoadingComp, { ...data });
+  const vm = app.mount(document.createElement("div"));
 
   return {
-    ...toRefs(data),
-    close,
-    setText,
-    handleAfterLeave,
-    removeElLoadingChild,
-    vm,
     get $el(): HTMLElement {
       return vm.$el;
     },
+    visible: toRef(data.visible),
+    vm,
+    close,
+    setText,
   };
-}
-
-export type LoadingInstance = ReturnType<typeof createLoadingComponent>;
-
-let fullscreenInstance: LoadingInstance | null = null;
-export function Loading(options: LoadingOptions = {}): LoadingInstance {
-  const resolved = resolveOptions(options);
-
-  if (resolved.fullscreen && !isNil(fullscreenInstance)) {
-    return fullscreenInstance;
-  }
-  const instance = createLoadingComponent({
-    ...resolved,
-    closed: () => {
-      resolved.closed?.();
-
-      resolved.parent?.classList.remove("el-loading-parent--relative");
-      if (resolved.fullscreen) {
-        fullscreenInstance = null;
-      }
-    },
-  });
-
-  resolved.parent?.classList.add("el-loading-parent--relative");
-  resolved.parent?.appendChild(instance.$el);
-
-  nextTick(() => (instance.visible.value = !!resolved.visible));
-
-  if (resolved.fullscreen) {
-    fullscreenInstance = instance;
-  }
-  return instance;
 }
 
 function resolveOptions(options: LoadingOptions): LoadingOptionsResolved {
@@ -100,4 +62,45 @@ function resolveOptions(options: LoadingOptions): LoadingOptionsResolved {
     visible: options.visible ?? true,
     target,
   };
+}
+
+function addRelativeClass(target: HTMLElement) {
+  target.classList.add(RELATIVE_CLASS);
+}
+
+function removeRelativeClass(target: HTMLElement) {
+  target.classList.remove(RELATIVE_CLASS);
+}
+
+let fullscreenInstance: LoadingInstance | null = null;
+
+export type LoadingInstance = ReturnType<typeof createLoadingComponent>;
+
+export function Loading(options: LoadingOptions = {}): LoadingInstance {
+  const resolved = resolveOptions(options);
+
+  if (resolved.fullscreen && !isNil(fullscreenInstance)) {
+    return fullscreenInstance;
+  }
+  const instance = createLoadingComponent({
+    ...resolved,
+    closed: () => {
+      resolved.closed?.();
+
+      if (resolved.fullscreen) {
+        fullscreenInstance = null;
+      }
+      delay(() => removeRelativeClass(resolved?.parent ?? document.body), 10);
+    },
+  });
+
+  addRelativeClass(resolved?.parent ?? document.body);
+  resolved.parent?.appendChild(instance.$el);
+
+  nextTick(() => (instance.visible.value = !!resolved.visible));
+
+  if (resolved.fullscreen) {
+    fullscreenInstance = instance;
+  }
+  return instance;
 }
