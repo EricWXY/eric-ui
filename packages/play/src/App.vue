@@ -171,9 +171,9 @@ async function submit() {
     @submit.prevent="submit"
   >
     <er-form-item label="email" prop="email">
-      <er-input v-model="formData.email" />
+      <er-input v-model="formData.email" clearable />
     </er-form-item>
-    <er-form-item label="password" prop="password">
+    <er-form-item label="password" prop="password" disabled>
       <er-input v-model="formData.password" type="password" />
     </er-form-item>
     <er-form-item label="confirm password" prop="confirmPwd">

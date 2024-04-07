@@ -14,9 +14,9 @@ const { formItem } = useFormItem()
 const innerValue = ref(props.modelValue)
 const inputRef = ref<HTMLInputElement | null>(null)
 const checked = computed(() => innerValue.value === props.activeValue)
-
+const isDisabled = computed(() => props.disabled || formItem?.disabled)
 function handleChange() {
-  if (props.disabled) return
+  if (isDisabled.value) return
 
   const newVal = checked.value ? props.inactiveValue : props.activeValue
 
@@ -41,7 +41,7 @@ watch(
     class="er-switch"
     :class="{
       [`er-switch--${size}`]: size,
-      'is-disabled': disabled,
+      'is-disabled': isDisabled,
       'is-checked': checked
     }"
     @click="handleChange"
@@ -52,7 +52,7 @@ watch(
       role="switch"
       ref="inputRef"
       :name="name"
-      :disabled="disabled"
+      :disabled="isDisabled"
       :checked="checked"
       @keydown.enter="handleChange"
       @blur="formItem?.validate('blur')"

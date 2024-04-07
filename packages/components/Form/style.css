@@ -70,4 +70,17 @@
     color: var(--er-color-danger);
     margin-right: 4px;
   }
+
+  &.is-disabled > .er-form-item__label{
+    color: var(--er-disabled-text-color);
+    cursor: not-allowed;
+    &::before,&::after{
+      cursor: not-allowed;
+    }
+  }
+
+  &.is-disabled > .er-form-item__content{
+    color: var(--er-disabled-text-color);
+    cursor: not-allowed;
+  }
 }

@@ -22,16 +22,17 @@ const isFocus = ref(false)
 const passwordVisible = ref(false)
 const inputRef = ref<HTMLInputElement>()
 
+const isDisabled = computed(() => props.disabled || formItem?.disabled)
 const showClear = computed(
   () =>
-    props.clearable && !!innerValue.value && !props.disabled && isFocus.value
+    props.clearable && !!innerValue.value && !isDisabled.value && isFocus.value
 )
 
 const showPasswordArea = computed(
   () =>
     props.type === 'password' &&
     props.showPassword &&
-    !props.disabled &&
+    !isDisabled.value &&
     !!innerValue.value
 )
 
@@ -91,7 +92,7 @@ defineExpose({
     :class="{
       [`er-input--${type}`]: type,
       [`er-input--${size}`]: size,
-      'is-disabled': disabled,
+      'is-disabled': isDisabled,
       'is-prepend': $slots.prepend,
       'is-append': $slots.append,
       'is-prefix': $slots.prefix,
@@ -114,7 +115,7 @@ defineExpose({
           class="er-input__inner"
           ref="inputRef"
           :type="showPassword ? (passwordVisible ? 'text' : 'password') : type"
-          :disabled="disabled"
+          :disabled="isDisabled"
           :readonly="readonly"
           :autocomplete="autocomplete"
           :placeholder="placeholder"
@@ -166,7 +167,7 @@ defineExpose({
       <textarea
         class="er-textarea__wrapper"
         ref="inputRef"
-        :disabled="disabled"
+        :disabled="isDisabled"
         :readonly="readonly"
         :autocomplete="autocomplete"
         :placeholder="placeholder"

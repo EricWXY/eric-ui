@@ -8,8 +8,8 @@ export const ErForm = withInstall(Form);
 export const ErFormItem = withInstall(FormItem);
 
 export function useFormItem() {
-  const form = inject(FORM_CTX_KEY);
-  const formItem = inject(FORM_ITEM_CTX_KEY);
+  const form = inject(FORM_CTX_KEY, void 0);
+  const formItem = inject(FORM_ITEM_CTX_KEY, void 0);
   return { form, formItem };
 }
 

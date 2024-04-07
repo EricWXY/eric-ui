@@ -6,7 +6,7 @@ import type {
 import type { Ref } from "vue";
 
 export interface FromItemRule extends RuleItem {
-  trigger?: string;
+  trigger?: string | string[];
 }
 export type FormRules = Record<string, FromItemRule[]>;
 

@@ -7,9 +7,10 @@ import {
   onUnmounted,
   ref,
   nextTick,
-  type Ref
+  type Ref,
+  watch
 } from 'vue'
-import Schema from 'async-validator'
+import Schema, { type RuleItem } from 'async-validator'
 import type {
   FormItemContext,
   FormItemProps,
@@ -32,13 +33,15 @@ import {
   keys,
   includes,
   map,
-  cloneDeep
+  cloneDeep,
+  isArray
 } from 'lodash-es'
 import { FORM_CTX_KEY, FORM_ITEM_CTX_KEY } from './constants'
 
 defineOptions({ name: 'ErFormItem' })
 const props = withDefaults(defineProps<FormItemProps>(), {
-  showMessage: true
+  showMessage: true,
+  required: void 0
 })
 const ctx = inject(FORM_CTX_KEY)
 
@@ -120,10 +123,13 @@ let isResetting = false
 function getTriggeredRules(trigger?: string) {
   const rules = itemRules.value
   if (rules) {
-    return filter(rules, rule => {
-      if (!rule.trigger || !trigger) return true
-      return rule.trigger && rule.trigger === trigger
-    })
+    return filter(rules, r => {
+      if (!r.trigger || !trigger) return true
+      if (isArray(r.trigger)) {
+        return r.trigger.includes(trigger)
+      }
+      return r.trigger === trigger
+    }).map(({ trigger, ...rule }) => rule as RuleItem)
   }
   return []
 }
@@ -132,7 +138,7 @@ async function doValidate(rules: any[]) {
   const modelName = propString.value
   const validator = new Schema({ [modelName]: rules })
   return validator
-    .validate({ [modelName]: initialVal.value }, { firstFields: true })
+    .validate({ [modelName]: innerVal.value }, { firstFields: true })
     .then(() => {
       validateStatus.value = 'success'
       ctx?.emit('validate', props, true, '')
@@ -147,7 +153,10 @@ async function doValidate(rules: any[]) {
     })
 }
 
-async function validate(trigger: string, callback?: FormValidateCallback) {
+const validate: FormItemInstance['validate'] = async function (
+  trigger: string,
+  callback?: FormValidateCallback
+) {
   if (isResetting || !props.prop) return false
 
   if (!validateEnabled.value) {
@@ -174,7 +183,7 @@ async function validate(trigger: string, callback?: FormValidateCallback) {
       return isFunction(callback) ? false : Promise.reject(fields)
     })
 }
-function resetField() {
+const resetField: FormItemInstance['resetField'] = function () {
   const model = ctx?.model
   if (model && propString.value && !isNil(get(model, propString.value))) {
     isResetting = true
@@ -184,7 +193,7 @@ function resetField() {
   nextTick(() => clearValidate())
 }
 
-function clearValidate() {
+const clearValidate: FormItemInstance['clearValidate'] = function () {
   validateStatus.value = 'init'
   errMsg.value = ''
   isResetting = false
@@ -210,6 +219,15 @@ onUnmounted(() => {
   }
 })
 
+watch(
+  () => props.error,
+  val => {
+    errMsg.value = val || ''
+    validateStatus.value = val ? 'error' : 'init'
+  },
+  { immediate: true }
+)
+
 provide(FORM_ITEM_CTX_KEY, formItemCtx)
 
 defineExpose<FormItemInstance>({
@@ -225,7 +243,7 @@ defineExpose<FormItemInstance>({
   <div
     class="er-form-item"
     :class="{
-      'is-error': error || validateStatus === 'error',
+      'is-error': validateStatus === 'error',
       'is-disabled': isDisabled,
       'is-required': isRequired,
       'asterisk-left': ctx?.requiredAsteriskPosition === 'left',
@@ -244,9 +262,7 @@ defineExpose<FormItemInstance>({
       <slot :validate="validate"></slot>
       <div class="er-form-item__error-msg" v-if="validateStatus === 'error'">
         <template v-if="ctx?.showMessage && showMessage">
-          <slot name="error" :error="error ?? errMsg">{{
-            error ?? errMsg
-          }}</slot>
+          <slot name="error" :error="errMsg">{{ errMsg }}</slot>
         </template>
       </div>
     </div>

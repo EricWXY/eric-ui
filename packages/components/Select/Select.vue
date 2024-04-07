@@ -71,6 +71,8 @@ const selectStates = reactive<SelectStates>({
   highlightedIndex: -1
 })
 
+const isDisabled = computed(() => props.disabled || formItem?.disabled)
+
 const highlightedLine = computed(() => {
   let result: SelectOptionProps | undefined = undefined
   if (hasChildren.value) {
@@ -170,7 +172,7 @@ function controlInputVal(visible: boolean) {
   }
 }
 function toggleVisible() {
-  if (props.disabled) return
+  if (isDisabled.value) return
   controlVisible(!isDropdownVisible.value)
 }
 
@@ -298,7 +300,7 @@ provide(SELECT_CTX_KEY, {
   <div
     class="er-select"
     :class="{
-      'is-disabled': disabled
+      'is-disabled': isDisabled
     }"
     @click="toggleVisible"
     @mouseenter="selectStates.mouseHover = true"
@@ -314,7 +316,7 @@ provide(SELECT_CTX_KEY, {
       <er-input
         ref="inputRef"
         v-model="selectStates.inputValue"
-        :disabled="disabled"
+        :disabled="isDisabled"
         :placeholder="filterable ? filterPlaceholder : placeholder"
         :readonly="!filterable || !isDropdownVisible"
         @input="handleFilterDebounce"
