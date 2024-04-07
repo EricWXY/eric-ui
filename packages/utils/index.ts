@@ -25,4 +25,11 @@ export const RenderVnode = defineComponent({
 
 export type MaybeRef<T> = T | Ref<T>;
 
+export const typeIconMap = new Map([
+  ["info", "circle-info"],
+  ["success", "check-circle"],
+  ["warning", "circle-exclamation"],
+  ["danger", "circle-xmark"],
+]);
+
 export * from "./install";

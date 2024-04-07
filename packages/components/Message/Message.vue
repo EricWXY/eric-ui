@@ -4,8 +4,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { getLastBottomOffset } from './methods'
 import { delay } from 'lodash-es'
 import { useEventListener } from '@eric-ui/hooks'
-import { RenderVnode } from '@eric-ui/utils'
-import { typeIconMap } from '../common'
+import { RenderVnode, typeIconMap } from '@eric-ui/utils'
 import ErIcon from '../Icon/Icon.vue'
 
 defineOptions({

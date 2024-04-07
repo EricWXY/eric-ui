@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import type { NotificationProps } from './types'
-import { typeIconMap } from '../common'
 import { ref, computed, onMounted } from 'vue'
 import { getLastBottomOffset } from './methods'
 import { delay, isString } from 'lodash-es'
-import { RenderVnode } from '@eric-ui/utils'
+import { RenderVnode, typeIconMap } from '@eric-ui/utils'
 
 import ErIcon from '../Icon/Icon.vue'
 

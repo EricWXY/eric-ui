@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { ref, h, reactive } from 'vue'
-import { ErMessage, ErNotification, type RenderLabelFunc } from 'eric-ui'
+import {
+  ErMessage,
+  ErNotification,
+  vLoading,
+  type RenderLabelFunc
+} from 'eric-ui'
 
 const openVal = ref(['a'])
+const loading = ref(false)
 const dropdownOptions = ref([
   {
     label: 'Option A',
@@ -76,6 +82,16 @@ function handleNotify() {
   })
 }
 
+setInterval(() => {
+  loading.value = !loading.value
+  // let loadingHandle = ErLoading.service()
+  // if (loading.value) {
+  //   loadingHandle = ErLoading.service()
+  // } else {
+  //   loadingHandle?.close()
+  // }
+}, 2000)
+
 async function submit() {
   try {
     await formRef.value.validate()
@@ -90,11 +106,7 @@ async function submit() {
   <div>
     <p>
       <er-button @click="handleBtnClick">Default</er-button>
-      <er-button
-        type="primary"
-        @click="handleNotify"
-        >Primary</er-button
-      >
+      <er-button type="primary" @click="handleNotify">Primary</er-button>
       <er-button type="success">Success</er-button>
       <er-button type="info">Info</er-button>
       <er-button type="warning">Warning</er-button>
@@ -181,6 +193,7 @@ async function submit() {
     label-position="top"
     label-suffix=":"
     @submit.prevent="submit"
+    v-loading="loading"
   >
     <er-form-item label="email" prop="email">
       <er-input v-model="formData.email" clearable />

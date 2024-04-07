@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { AlertProps, AlertEmits, AlertInstance } from './types'
 import { ref, useSlots, computed } from 'vue'
-import { typeIconMap } from '../common'
+import { typeIconMap } from '@eric-ui/utils'
 import ErIcon from '../Icon/Icon.vue'
 
 defineOptions({
