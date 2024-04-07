@@ -5,6 +5,8 @@
   --er-message-close-size: 16px;
   --er-message-close-icon-color: var(--er-text-color-placeholder);
   --er-message-close-hover-color: var(--er-text-color-secondary);
+  --er-message-icon-size: 16px;
+  --er-message-icon-margin: 8px;
 }
 
 .er-message {
@@ -25,6 +27,12 @@
   align-items: center;
   transition: top var(--er-transition-duration), opacity var(--er-transition-duration),
     transform var(--er-transition-duration);
+  .er-message__icon {
+    color: var(--er-message-text-color);
+    font-size: var(--er-message-icon-size);
+    width: var(--er-message-icon-size);
+    margin-right: var(--er-message-icon-margin);
+  }
   .er-message__content {
     color: var(--er-message-text-color);
     overflow-wrap: anywhere;

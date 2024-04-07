@@ -141,14 +141,14 @@ async function doValidate(rules: any[]) {
     .validate({ [modelName]: innerVal.value }, { firstFields: true })
     .then(() => {
       validateStatus.value = 'success'
-      ctx?.emit('validate', props, true, '')
+      ctx?.emits('validate', props, true, '')
       return true
     })
     .catch((err: FormValidateFailuer) => {
       const { errors } = err
       validateStatus.value = 'error'
       errMsg.value = errors && size(errors) > 0 ? errors[0].message ?? '' : ''
-      ctx?.emit('validate', props, false, errMsg.value)
+      ctx?.emits('validate', props, false, errMsg.value)
       return Promise.reject(err)
     })
 }

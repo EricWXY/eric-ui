@@ -2,7 +2,7 @@
 import { provide } from 'vue'
 import type {
   FormProps,
-  FormEmit,
+  FormEmits,
   FormItemContext,
   FormContext,
   FormInstance,
@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<FormProps>(), {
   requiredAsteriskPosition: 'left',
   labelPosition: 'right',
 })
-const emit = defineEmits<FormEmit>()
+const emits = defineEmits<FormEmits>()
 const fields: FormItemContext[] = []
 
 const addField: FormContext['addField'] = function (field) {
@@ -99,7 +99,7 @@ async function doValidateField(fields: FormItemContext[] = []) {
 
 provide(FORM_CTX_KEY, {
   ...props,
-  emit,
+  emits,
   addField,
   removeField
 })

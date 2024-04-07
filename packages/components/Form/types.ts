@@ -35,7 +35,7 @@ export interface FormProps {
   requiredAsteriskPosition?: "left" | "right";
 }
 
-export interface FormEmit {
+export interface FormEmits {
   (
     event: "validate",
     prop: FormItemProps,
@@ -77,7 +77,7 @@ export interface FormItemInstance {
 }
 
 export interface FormContext extends FormProps {
-  emit: FormEmit;
+  emits: FormEmits;
   addField(field: FormItemContext): void;
   removeField(field: FormItemContext): void;
 }

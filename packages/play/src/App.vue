@@ -184,4 +184,9 @@ async function submit() {
       <!-- <input type="submit"/> -->
     </div>
   </er-form>
+
+  <er-alert title="title" type="success" show-icon />
+  <er-alert title="title" description="description" type="warning" show-icon />
+  <er-alert title="title" description="description" type="danger" show-icon />
+  <er-alert title="title" description="description" type="info" show-icon />
 </template>

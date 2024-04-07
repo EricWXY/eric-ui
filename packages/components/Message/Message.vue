@@ -23,6 +23,16 @@ const messageRef = ref<HTMLDivElement>()
 
 // div 的高度
 const boxHeight = ref(0)
+
+const iconMap = new Map([
+  ['success', 'check-circle'],
+  ['warning', 'circle-exclamation'],
+  ['info', 'circle-info'],
+  ['danger', 'circle-xmark']
+])
+
+const iconName = computed(() => iconMap.get(props.type) ?? 'circle-info')
+
 // 上一个实例最下面的坐标，第一个是0
 const lastBottomOffset = computed(() => getLastBottomOffset(props.id))
 // 本元素应该的 top
@@ -90,6 +100,7 @@ defineExpose({
       @mouseenter="clearTimer"
       @mouseleave="startTimmer"
     >
+      <icon class="er-message__icon" :icon="iconName" />
       <div class="er-message__content">
         <slot>
           <render-vnode v-if="message" :vNode="message" />

@@ -13,6 +13,7 @@ import {
   ErOption,
   ErForm,
   ErFormItem,
+  ErAlert
 } from "@eric-ui/components";
 import type { Plugin } from "vue";
 
@@ -31,4 +32,5 @@ export default [
   ErOption,
   ErForm,
   ErFormItem,
+  ErAlert
 ] as Plugin[];
