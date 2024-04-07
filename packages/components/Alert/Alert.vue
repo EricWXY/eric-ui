@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { AlertProps, AlertEmits, AlertInstance } from './types'
 import { ref, useSlots, computed } from 'vue'
+import { typeIconMap } from '../common'
 import ErIcon from '../Icon/Icon.vue'
 
 defineOptions({
@@ -8,22 +9,15 @@ defineOptions({
 })
 const props = withDefaults(defineProps<AlertProps>(), {
   effect: 'light',
-  closable: true,
-  description: ''
+  type: 'info',
+  closable: true
 })
 const emits = defineEmits<AlertEmits>()
 const slots = useSlots()
 
 const visible = ref(true)
 
-const iconMap = new Map([
-  ['success', 'check-circle'],
-  ['warning', 'circle-exclamation'],
-  ['info', 'circle-info'],
-  ['danger', 'circle-xmark']
-])
-
-const iconName = computed(() => iconMap.get(props.type) ?? 'circle-info')
+const iconName = computed(() => typeIconMap.get(props.type) ?? 'circle-info')
 const withDescription = computed(() => props.description || slots.default)
 
 function close() {

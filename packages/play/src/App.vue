@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, h, reactive } from 'vue'
-import { ErMessage, type RenderLabelFunc } from 'eric-ui'
+import { ErMessage, ErNotification, type RenderLabelFunc } from 'eric-ui'
 
 const openVal = ref(['a'])
 const dropdownOptions = ref([
@@ -68,6 +68,14 @@ function handleBtnClick() {
   ErMessage.info('Button Click')
 }
 
+function handleNotify() {
+  ErNotification({
+    title: 'Title',
+    message: 'Message',
+    type: 'success'
+  })
+}
+
 async function submit() {
   try {
     await formRef.value.validate()
@@ -82,7 +90,11 @@ async function submit() {
   <div>
     <p>
       <er-button @click="handleBtnClick">Default</er-button>
-      <er-button type="primary">Primary</er-button>
+      <er-button
+        type="primary"
+        @click="handleNotify"
+        >Primary</er-button
+      >
       <er-button type="success">Success</er-button>
       <er-button type="info">Info</er-button>
       <er-button type="warning">Warning</er-button>

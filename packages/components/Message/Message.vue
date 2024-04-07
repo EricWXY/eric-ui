@@ -5,7 +5,8 @@ import { getLastBottomOffset } from './methods'
 import { delay } from 'lodash-es'
 import { useEventListener } from '@eric-ui/hooks'
 import { RenderVnode } from '@eric-ui/utils'
-import Icon from '../Icon/Icon.vue'
+import { typeIconMap } from '../common'
+import ErIcon from '../Icon/Icon.vue'
 
 defineOptions({
   name: 'ErMessage'
@@ -24,14 +25,7 @@ const messageRef = ref<HTMLDivElement>()
 // div 的高度
 const boxHeight = ref(0)
 
-const iconMap = new Map([
-  ['success', 'check-circle'],
-  ['warning', 'circle-exclamation'],
-  ['info', 'circle-info'],
-  ['danger', 'circle-xmark']
-])
-
-const iconName = computed(() => iconMap.get(props.type) ?? 'circle-info')
+const iconName = computed(() => typeIconMap.get(props.type) ?? 'circle-info')
 
 // 上一个实例最下面的坐标，第一个是0
 const lastBottomOffset = computed(() => getLastBottomOffset(props.id))
@@ -100,14 +94,14 @@ defineExpose({
       @mouseenter="clearTimer"
       @mouseleave="startTimmer"
     >
-      <icon class="er-message__icon" :icon="iconName" />
+      <er-icon class="er-message__icon" :icon="iconName" />
       <div class="er-message__content">
         <slot>
           <render-vnode v-if="message" :vNode="message" />
         </slot>
       </div>
       <div class="er-message__close" v-if="showClose">
-        <icon icon="xmark" @click.stop="visible = false" />
+        <er-icon icon="xmark" @click.stop="close" />
       </div>
     </div>
   </Transition>
