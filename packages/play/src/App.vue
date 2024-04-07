@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, h } from 'vue'
+import { ref, h, reactive } from 'vue'
 import { ErMessage, type RenderLabelFunc } from 'eric-ui'
 
 const openVal = ref(['a'])
@@ -42,8 +42,39 @@ const customOptionRender: RenderLabelFunc = opt => {
   ])
 }
 
+const formRef = ref()
+const formData = reactive({
+  email: '123',
+  password: '',
+  confirmPwd: ''
+})
+const formRules: any = {
+  email: [{ type: 'email', required: true, trigger: 'blur' }],
+  password: [
+    { type: 'string', required: true, trigger: 'blur', min: 3, max: 5 }
+  ],
+  confirmPwd: [
+    { type: 'string', required: true, trigger: 'blur' },
+    {
+      validator: (_: typeof formRules, value: string) =>
+        value === formData.password,
+      trigger: 'blur',
+      message: '两个密码必须相同'
+    }
+  ]
+}
+
 function handleBtnClick() {
   ErMessage.info('Button Click')
+}
+
+async function submit() {
+  try {
+    await formRef.value.validate()
+    console.log('passed!')
+  } catch (e) {
+    console.log('the error', e)
+  }
 }
 </script>
 
@@ -130,4 +161,27 @@ function handleBtnClick() {
       <span style="color: green">opt 4</span>
     </er-option>
   </er-select>
+
+  <er-form
+    ref="formRef"
+    :model="formData"
+    :rules="formRules"
+    label-position="top"
+    label-suffix=":"
+    @submit.prevent="submit"
+  >
+    <er-form-item label="email" prop="email">
+      <er-input v-model="formData.email" />
+    </er-form-item>
+    <er-form-item label="password" prop="password">
+      <er-input v-model="formData.password" type="password" />
+    </er-form-item>
+    <er-form-item label="confirm password" prop="confirmPwd">
+      <er-input v-model="formData.confirmPwd" type="password" />
+    </er-form-item>
+    <div style="text-align: center">
+      <er-button type="primary" native-type="submit">Submit</er-button>
+      <!-- <input type="submit"/> -->
+    </div>
+  </er-form>
 </template>

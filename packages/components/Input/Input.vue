@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch, useAttrs, nextTick } from 'vue'
 import type { InputProps, InputEmits } from './types'
+import { useFormItem } from '../Form'
 import { each, noop } from 'lodash-es'
 import Icon from '../Icon/Icon.vue'
 
@@ -8,9 +9,13 @@ defineOptions({
   name: 'ErInput',
   inheritAttrs: false
 })
-const props = withDefaults(defineProps<InputProps>(), { type: 'text', autocomplete: 'off' })
+const props = withDefaults(defineProps<InputProps>(), {
+  type: 'text',
+  autocomplete: 'off'
+})
 const emits = defineEmits<InputEmits>()
 const attrs = useAttrs()
+const { formItem } = useFormItem()
 
 const innerValue = ref(props.modelValue)
 const isFocus = ref(false)
@@ -18,11 +23,16 @@ const passwordVisible = ref(false)
 const inputRef = ref<HTMLInputElement>()
 
 const showClear = computed(
-  () => props.clearable && !!innerValue.value && !props.disabled && isFocus.value
+  () =>
+    props.clearable && !!innerValue.value && !props.disabled && isFocus.value
 )
 
 const showPasswordArea = computed(
-  () => props.type === 'password' && props.showPassword && !props.disabled && !!innerValue.value
+  () =>
+    props.type === 'password' &&
+    props.showPassword &&
+    !props.disabled &&
+    !!innerValue.value
 )
 
 function handleInput() {
@@ -32,6 +42,7 @@ function handleInput() {
 
 function handleChange() {
   emits('change', innerValue.value)
+  formItem?.validate('change')
 }
 
 function handleFocus(e: FocusEvent) {
@@ -42,12 +53,14 @@ function handleFocus(e: FocusEvent) {
 function handleBlur(e: FocusEvent) {
   isFocus.value = false
   emits('blur', e)
+  formItem?.validate('blur')
 }
 
 function clear() {
   innerValue.value = ''
   each(['update:modelValue', 'input', 'change'], e => emits(e as any, ''))
   emits('clear')
+  formItem?.clearValidate()
 }
 
 async function keepFocus() {

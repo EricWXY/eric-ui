@@ -36,6 +36,7 @@ import type { TooltipInstance } from '../Tooltip/types'
 import type { InputInstance } from '../Input/types'
 import { RenderVnode } from '@eric-ui/utils'
 import { SELECT_CTX_KEY, POPPER_OPTIONS } from './constants'
+import { useFormItem } from '../Form'
 
 import useKeyMap from './useKeyMap'
 import ErTooltip from '../Tooltip/Tooltip.vue'
@@ -51,6 +52,7 @@ const props = withDefaults(defineProps<SelectProps>(), {
 })
 const emits = defineEmits<SelectEmits>()
 const slots = useSlots()
+const { formItem } = useFormItem()
 
 const initialOption = findOption(props.modelValue)
 
@@ -138,7 +140,6 @@ const keyMap = useKeyMap({
 function setFilteredChilds(opts: typeof childrenOptsions.value) {
   filteredChilds.value.clear()
   each(opts, item => {
-    console.log(item)
     filteredChilds.value.set(item.vNode, item.props as SelectOptionProps)
   })
 }
@@ -184,6 +185,7 @@ function handleSelect(o: SelectOptionProps) {
   selectStates.selectedOption = o
   each(['change', 'update:modelValue'], k => emits(k as any, o.value))
   controlVisible(false)
+  formItem?.validate('change')
   inputRef.value?.ref?.focus()
 }
 
@@ -194,6 +196,7 @@ function handleClear() {
 
   emits('clear')
   each(['change', 'update:modelValue'], k => emits(k as any, ''))
+  formItem?.clearValidate()
 }
 
 async function callRemoteMethod(method: Function, search: string) {
@@ -315,6 +318,7 @@ provide(SELECT_CTX_KEY, {
         :placeholder="filterable ? filterPlaceholder : placeholder"
         :readonly="!filterable || !isDropdownVisible"
         @input="handleFilterDebounce"
+        @blur="formItem?.validate('blur')"
         @keydown="handleKeyDown"
       >
         <template #suffix>

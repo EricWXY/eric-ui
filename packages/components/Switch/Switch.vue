@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import type { SwitchEmits, SwitchProps } from './types'
+import { useFormItem } from '../Form'
 
 defineOptions({ name: 'ErSwitch', inheritAttrs: false })
 const props = withDefaults(defineProps<SwitchProps>(), {
@@ -8,6 +9,7 @@ const props = withDefaults(defineProps<SwitchProps>(), {
   inactiveValue: false
 })
 const emits = defineEmits<SwitchEmits>()
+const { formItem } = useFormItem()
 
 const innerValue = ref(props.modelValue)
 const inputRef = ref<HTMLInputElement | null>(null)
@@ -21,6 +23,7 @@ function handleChange() {
   innerValue.value = newVal
   emits('update:modelValue', newVal)
   emits('change', newVal)
+  formItem?.validate('change')
 }
 
 onMounted(() => {
@@ -52,6 +55,7 @@ watch(
       :disabled="disabled"
       :checked="checked"
       @keydown.enter="handleChange"
+      @blur="formItem?.validate('blur')"
     />
     <div class="er-switch__core">
       <div class="er-switch__core-inner">

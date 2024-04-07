@@ -2,17 +2,24 @@
 import { provide } from 'vue'
 import type {
   FormProps,
+  FormEmit,
   FormItemContext,
   FormContext,
-  FormValidateFailuer,
-  FormInstance
+  FormInstance,
+  FormValidateCallback
 } from './types'
 import type { ValidateFieldsError } from 'async-validator'
 import { FORM_CTX_KEY } from './constants'
-import { size } from 'lodash-es'
+import { each, filter, includes, isFunction, size } from 'lodash-es'
 
 defineOptions({ name: 'ErForm' })
-const props = defineProps<FormProps>()
+const props = withDefaults(defineProps<FormProps>(), {
+  showMessage: true,
+  hideRequiredAsterisk: false,
+  requiredAsteriskPosition: 'left',
+  labelPosition: 'right',
+})
+const emit = defineEmits<FormEmit>()
 const fields: FormItemContext[] = []
 
 const addField: FormContext['addField'] = function (field) {
@@ -25,17 +32,64 @@ const removeField: FormContext['removeField'] = function (field) {
   fields.splice(fields.indexOf(field), 1)
 }
 
-async function validate() {
+const validate: FormInstance['validate'] = async function (
+  callback?: FormValidateCallback
+) {
+  return validateField([], callback)
+}
+
+const validateField: FormInstance['validateField'] = async function (
+  keys: string[] = [],
+  callback?: FormValidateCallback
+) {
+  const filterArr = size(keys)
+    ? filter(fields, field => includes(keys, field.prop))
+    : fields
+  const hasCallback = isFunction(callback)
+
+  try {
+    const result = await doValidateField(filterArr)
+    if (result === true) {
+      callback?.(result)
+    }
+    return result
+  } catch (e) {
+    if (e instanceof Error) throw e
+    const invalidFields = e as ValidateFieldsError
+
+    callback?.(false, invalidFields)
+    return hasCallback && Promise.reject(invalidFields)
+  }
+}
+
+const resetFields: FormInstance['resetFields'] = function (
+  keys: string[] = []
+) {
+  each(filterFields(fields, keys), field => field.resetField())
+}
+
+const clearValidate: FormInstance['clearValidate'] = function (
+  keys: string[] = []
+) {
+  each(filterFields(fields, keys), field => field.clearValidate())
+}
+
+function filterFields(fields: FormItemContext[], props: string[]) {
+  return size(props)
+    ? filter(fields, field => includes(props, field.prop))
+    : fields
+}
+
+async function doValidateField(fields: FormItemContext[] = []) {
   let validationErrors: ValidateFieldsError = {}
 
   for (const field of fields) {
     try {
       await field.validate('')
     } catch (e) {
-      const err = e as FormValidateFailuer
       validationErrors = {
         ...validationErrors,
-        ...err.fields
+        ...(e as ValidateFieldsError)
       }
     }
   }
@@ -43,10 +97,18 @@ async function validate() {
   return Promise.reject(validationErrors)
 }
 
-provide(FORM_CTX_KEY, { ...props, addField, removeField })
+provide(FORM_CTX_KEY, {
+  ...props,
+  emit,
+  addField,
+  removeField
+})
 
 defineExpose<FormInstance>({
-  validate
+  validate,
+  validateField,
+  resetFields,
+  clearValidate
 })
 </script>
 

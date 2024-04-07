@@ -1,0 +1,73 @@
+.er-form {
+  --er-form-label-font-size: var(--er-font-size-base);
+  --er-form-content-font-size: var(--er-font-size-base);
+}
+
+.er-form-item {
+  display: flex;
+  margin-bottom: 18px;
+  &:has(> .position-top){
+    flex-direction: column;
+  }
+
+  .er-form-item__label {
+    height: 32px;
+    line-height: 32px;
+    padding: 0;
+    box-sizing: border-box;
+    display: inline-flex;
+    font-size: var(--er-form-label-font-size);    
+    color: var(--er-text-color-regular);
+    &.position-right {
+      padding-left: 12px;
+      justify-content: flex-end;
+    }
+    &.position-left {
+      padding-right: 12px;
+      justify-content: flex-start;
+    }
+    &.position-top {
+      padding-bottom: 12px;
+      justify-content: flex-start;
+    }
+  }
+
+  .er-form-item__content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    flex: 1;
+    line-height: 32px;
+    font-size: var(--er-form-content-font-size);
+    min-width: 0;
+    position: relative;
+  }
+
+  .er-form-item__error-msg {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    padding-top: 2px;
+    color: var(--er-color-danger);
+    font-size: 12px;
+    line-height: 1;
+  }
+
+  &.is-error {
+    :deep(.er-input__wrapper){
+      box-shadow: 0 0 0 1px var(--er-color-danger) inset;
+    }
+  }
+
+  &.is-required.asterisk-right > .er-form-item__label::after{
+    content: '*';
+    color: var(--er-color-danger);
+    margin-left: 4px;
+  }
+
+  &.is-required.asterisk-left > .er-form-item__label::before{
+    content: '*';
+    color: var(--er-color-danger);
+    margin-right: 4px;
+  }
+}
