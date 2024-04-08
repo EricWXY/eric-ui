@@ -1,9 +1,6 @@
-import ErTooltip from "./Tooltip.vue";
-import type { App } from "vue";
+import Tooltip from "./Tooltip.vue";
+import { withInstall } from "@eric-ui/utils";
 
-ErTooltip.install = function (app: App) {
-  app.component(ErTooltip.name, ErTooltip);
-};
+export const ErTooltip = withInstall(Tooltip);
 
-export { ErTooltip };
 export * from "./types";
