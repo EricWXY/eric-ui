@@ -1,29 +1,49 @@
 import type { LoadingOptions, LoadingOptionsResolved } from "./types";
-import { createApp, reactive, nextTick, toRef } from "vue";
+import { ref, createApp, reactive, nextTick } from "vue";
+import { useZIndex } from "@eric-ui/hooks";
 import LoadingComp from "./Loading.vue";
 import { defer, delay, isNil, isString } from "lodash-es";
 
-const RELATIVE_CLASS = "el-loading-parent--relative" as const;
+const RELATIVE_CLASS = "er-loading-parent--relative" as const;
+const HIDDEN_CLASS = "er-loading-parent--hiden" as const;
+const LOADING_NUMB_KEY = "er-loading-numb" as const;
+
+const instanceMap: Map<HTMLElement, LoadingInstance> = new Map();
+const { nextZIndex } = useZIndex(30000);
+
 function createLoadingComponent(options: LoadingOptionsResolved) {
+  const visible = ref(options.visible);
+  const afterLeaveFlag = ref(false);
   const handleAfterLeave = () => {
+    if (!afterLeaveFlag.value) return;
     destory();
   };
 
   const data = reactive({
     ...options,
-    visible: true,
     onAfterLeave: handleAfterLeave,
   });
 
   const setText = (text: string) => (data.text = text);
 
   const destory = () => {
+    const target = data.parent;
+    subtLoadingNumb(target);
+    if (getLoadingNumb(target)) return;
+    delay(() => {
+      removeRelativeClass(target);
+      removeHiddenClass(target);
+    }, 1);
+    instanceMap.delete(target ?? document.body);
     vm.$el?.parentNode?.removeChild(vm.$el);
     app.unmount();
   };
 
   let afterLeaveTimer: number;
   const close = () => {
+    if (options.beforeClose && !options.beforeClose()) return;
+
+    afterLeaveFlag.value = true;
     clearTimeout(afterLeaveTimer);
     afterLeaveTimer = defer(handleAfterLeave);
 
@@ -31,14 +51,18 @@ function createLoadingComponent(options: LoadingOptionsResolved) {
     options.closed?.();
   };
 
-  const app = createApp(LoadingComp, { ...data });
+  const app = createApp(LoadingComp, {
+    ...data,
+    zIndex: nextZIndex(),
+    visible,
+  });
   const vm = app.mount(document.createElement("div"));
 
   return {
     get $el(): HTMLElement {
       return vm.$el;
     },
-    visible: toRef(data.visible),
+    visible,
     vm,
     close,
     setText,
@@ -55,8 +79,8 @@ function resolveOptions(options: LoadingOptions): LoadingOptionsResolved {
   return {
     parent: target === document.body || options.body ? document.body : target,
     background: options.background ?? "rgba(0, 0, 0, 0.5)",
-    spinner: options.spinner || false,
-    text: options.text || "",
+    spinner: options.spinner,
+    text: options.text,
     fullscreen: target === document.body && (options.fullscreen ?? true),
     lock: options.lock ?? false,
     visible: options.visible ?? true,
@@ -64,12 +88,58 @@ function resolveOptions(options: LoadingOptions): LoadingOptionsResolved {
   };
 }
 
-function addRelativeClass(target: HTMLElement) {
+function addRelativeClass(target: HTMLElement = document.body) {
   target.classList.add(RELATIVE_CLASS);
 }
 
-function removeRelativeClass(target: HTMLElement) {
+function removeRelativeClass(target: HTMLElement = document.body) {
   target.classList.remove(RELATIVE_CLASS);
+}
+
+function addHiddenClass(target: HTMLElement = document.body) {
+  target.classList.add(HIDDEN_CLASS);
+}
+
+function removeHiddenClass(target: HTMLElement = document.body) {
+  target.classList.remove(HIDDEN_CLASS);
+}
+
+function getLoadingNumb(target: HTMLElement = document.body) {
+  return target.getAttribute(LOADING_NUMB_KEY);
+}
+
+function removeLoadingNumb(target: HTMLElement = document.body) {
+  target.removeAttribute(LOADING_NUMB_KEY);
+}
+
+function addLoadingNumb(target: HTMLElement = document.body) {
+  const numb = getLoadingNumb(target) ?? "0";
+  target.setAttribute(LOADING_NUMB_KEY, `${Number.parseInt(numb) + 1}`);
+}
+
+function subtLoadingNumb(target: HTMLElement = document.body) {
+  const numb = getLoadingNumb(target);
+  if (numb) {
+    const newNumb = Number.parseInt(numb) - 1;
+    if (newNumb === 0) {
+      removeLoadingNumb(target);
+    } else {
+      target.setAttribute(LOADING_NUMB_KEY, `${newNumb}`);
+    }
+  }
+}
+
+function addClass(
+  options: LoadingOptions,
+  parent: HTMLElement = document.body
+) {
+  if (options.lock) {
+    addHiddenClass(parent);
+  } else {
+    removeHiddenClass(parent);
+  }
+
+  addRelativeClass(parent);
 }
 
 let fullscreenInstance: LoadingInstance | null = null;
@@ -78,10 +148,17 @@ export type LoadingInstance = ReturnType<typeof createLoadingComponent>;
 
 export function Loading(options: LoadingOptions = {}): LoadingInstance {
   const resolved = resolveOptions(options);
+  const target = resolved.parent ?? document.body;
 
   if (resolved.fullscreen && !isNil(fullscreenInstance)) {
     return fullscreenInstance;
   }
+
+  addLoadingNumb(resolved?.parent);
+  if (instanceMap.has(target)) {
+    return instanceMap.get(target)!;
+  }
+
   const instance = createLoadingComponent({
     ...resolved,
     closed: () => {
@@ -90,11 +167,11 @@ export function Loading(options: LoadingOptions = {}): LoadingInstance {
       if (resolved.fullscreen) {
         fullscreenInstance = null;
       }
-      delay(() => removeRelativeClass(resolved?.parent ?? document.body), 10);
     },
   });
 
-  addRelativeClass(resolved?.parent ?? document.body);
+  addClass(options, resolved?.parent);
+
   resolved.parent?.appendChild(instance.$el);
 
   nextTick(() => (instance.visible.value = !!resolved.visible));
@@ -102,5 +179,6 @@ export function Loading(options: LoadingOptions = {}): LoadingInstance {
   if (resolved.fullscreen) {
     fullscreenInstance = instance;
   }
+  instanceMap.set(target, instance);
   return instance;
 }

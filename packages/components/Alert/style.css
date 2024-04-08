@@ -52,7 +52,7 @@
     }
 
     .er-alert__close {
-      font-size: var(--el-alert-close-font-size);
+      font-size: var(--er-alert-close-font-size);
       opacity: 1;
       position: absolute;
       top: 12px;

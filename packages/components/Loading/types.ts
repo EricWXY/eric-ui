@@ -1,14 +1,15 @@
-import type { MaybeRef } from "@eric-ui/utils";
+import type { MaybeRef } from "vue";
 
 export interface LoadingOptionsResolved {
   parent?: HTMLElement;
   target?: HTMLElement;
-  visible?: boolean;
+  visible?: MaybeRef<boolean>;
   background?: MaybeRef<string>;
   spinner?: MaybeRef<boolean | string>;
   text?: MaybeRef<string>;
-  fullscreen?: boolean;
-  lock?: boolean;
+  fullscreen?: MaybeRef<boolean>;
+  lock?: MaybeRef<boolean>;
+  beforeClose?: () => boolean;
   closed?: () => void;
 }
 
@@ -16,6 +17,7 @@ export type LoadingOptions = Partial<
   Omit<LoadingOptionsResolved, "parent" | "target"> & {
     target: HTMLElement | string;
     body: boolean;
+    zIndex?: number;
     onAfterLeave: () => void;
   }
 >;

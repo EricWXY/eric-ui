@@ -1,4 +1,4 @@
-import type { App, Plugin, Ref } from "vue";
+import type { App, Plugin } from "vue";
 import { defineComponent } from "vue";
 import { each } from "lodash-es";
 
@@ -22,8 +22,6 @@ export const RenderVnode = defineComponent({
     return () => props.vNode;
   },
 });
-
-export type MaybeRef<T> = T | Ref<T>;
 
 export const typeIconMap = new Map([
   ["info", "circle-info"],

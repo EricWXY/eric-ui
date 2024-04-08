@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+  type Ref,
   computed,
   provide,
   inject,
@@ -7,8 +8,10 @@ import {
   onUnmounted,
   ref,
   nextTick,
-  type Ref,
-  watch
+  watch,
+  reactive,
+  watchEffect,
+  toRefs
 } from 'vue'
 import Schema, { type RuleItem } from 'async-validator'
 import type {
@@ -26,7 +29,6 @@ import {
   size,
   filter,
   some,
-  isFunction,
   isString,
   isNumber,
   endsWith,
@@ -157,7 +159,7 @@ const validate: FormItemInstance['validate'] = async function (
   trigger: string,
   callback?: FormValidateCallback
 ) {
-  if (isResetting || !props.prop) return false
+  if (isResetting || !props.prop || isDisabled.value) return false
 
   if (!validateEnabled.value) {
     callback?.(false)
@@ -180,7 +182,7 @@ const validate: FormItemInstance['validate'] = async function (
     .catch((err: FormValidateFailuer) => {
       const { fields } = err
       callback?.(false, fields)
-      return isFunction(callback) ? false : Promise.reject(fields)
+      return Promise.reject(fields)
     })
 }
 const resetField: FormItemInstance['resetField'] = function () {
@@ -198,13 +200,13 @@ const clearValidate: FormItemInstance['clearValidate'] = function () {
   errMsg.value = ''
   isResetting = false
 }
-const formItemCtx: FormItemContext = {
-  ...props,
+const formItemCtx: FormItemContext = reactive({
+  ...toRefs(props),
   disabled: isDisabled.value,
   validate,
   resetField,
   clearValidate
-}
+})
 
 onMounted(() => {
   if (props.prop) {
@@ -218,6 +220,8 @@ onUnmounted(() => {
     ctx?.removeField(formItemCtx)
   }
 })
+
+watchEffect(() => (formItemCtx.disabled = isDisabled.value))
 
 watch(
   () => props.error,
@@ -259,7 +263,7 @@ defineExpose<FormItemInstance>({
       </slot>
     </label>
     <div class="er-form-item__content">
-      <slot :validate="validate"></slot>
+      <slot></slot>
       <div class="er-form-item__error-msg" v-if="validateStatus === 'error'">
         <template v-if="ctx?.showMessage && showMessage">
           <slot name="error" :error="errMsg">{{ errMsg }}</slot>

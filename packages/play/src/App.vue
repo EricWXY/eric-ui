@@ -3,6 +3,7 @@ import { ref, h, reactive } from 'vue'
 import {
   ErMessage,
   ErNotification,
+  // ErLoading,
   vLoading,
   type RenderLabelFunc
 } from 'eric-ui'
@@ -105,9 +106,13 @@ async function submit() {
 <template>
   <div>
     <p>
-      <er-button @click="handleBtnClick">Default</er-button>
+      <er-button @click="handleBtnClick" :use-throttle="false"
+        >Default</er-button
+      >
       <er-button type="primary" @click="handleNotify">Primary</er-button>
-      <er-button type="success">Success</er-button>
+      <er-button type="success" @click="console.log('click')"
+        >Success</er-button
+      >
       <er-button type="info">Info</er-button>
       <er-button type="warning">Warning</er-button>
       <er-button type="danger">Danger</er-button>
@@ -125,7 +130,7 @@ async function submit() {
       <er-button type="primary" round>Primary</er-button>
       <er-button type="success" round>Success</er-button>
       <er-button type="info" round>Info</er-button>
-      <er-button type="warning" round>Warning</er-button>
+      <er-button type="warning" round loading>Warning</er-button>
       <er-button type="danger" round>Danger</er-button>
     </p>
     <p>
@@ -192,13 +197,16 @@ async function submit() {
     :rules="formRules"
     label-position="top"
     label-suffix=":"
+    v-loading.lock="loading"
+    er-loading-text="loading..."
+    er-loading-spinner="circle-notch"
     @submit.prevent="submit"
-    v-loading="loading"
+    disabled
   >
     <er-form-item label="email" prop="email">
       <er-input v-model="formData.email" clearable />
     </er-form-item>
-    <er-form-item label="password" prop="password" disabled>
+    <er-form-item label="password" prop="password">
       <er-input v-model="formData.password" type="password" />
     </er-form-item>
     <er-form-item label="confirm password" prop="confirmPwd">
@@ -206,7 +214,6 @@ async function submit() {
     </er-form-item>
     <div style="text-align: center">
       <er-button type="primary" native-type="submit">Submit</er-button>
-      <!-- <input type="submit"/> -->
     </div>
   </er-form>
 

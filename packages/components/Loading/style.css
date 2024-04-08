@@ -1,0 +1,51 @@
+.er-loading {
+  --er-loading-icon-color: var(--er-color-primary);
+  --er-loading-mask-margin: 0;
+  --er-loading-mask-size: 100%;
+  --er-loading-icon-size: 42px;
+  --er-loading-font-size: 14px;
+  --er-loading-z-index: 20000;
+}
+.er-loading {
+  transition: opacity var(--er-transition-duration);
+  &.er-loading__mask {
+    position: absolute;
+    margin: var(--er-loading-mask-margin);
+    top: var(--er-loading-mask-margin);
+    right: var(--er-loading-mask-margin);
+    bottom: var(--er-loading-mask-margin);
+    left: var(--er-loading-mask-margin);
+    height: var(--er-loading-mask-size);
+    width: var(--er-loading-mask-size);
+    z-index: var(--er-loading-z-index);
+    background: var(--er-loading-bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &.is-fullscreen {
+      position: fixed;
+    }
+  }
+  .er-loading__spinner {
+    color: var(--er-loading-icon-color);
+    text-align: center;
+    .er-loading-text {
+      margin: 3px 0;
+      font-size: var(--er-loading-font-size);
+    }
+    i {
+      font-size: var(--er-loading-icon-size);
+    }
+  }
+}
+.er-loading-fade-enter-from,
+.er-loading-fade-leave-to {
+  opacity: 0;
+}
+
+.er-loading-parent--relative {
+  position: relative !important;
+}
+.er-loading-parent--hiden {
+  overflow: hidden !important;
+}

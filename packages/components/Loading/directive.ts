@@ -1,17 +1,9 @@
-import {
-  type Directive,
-  type UnwrapRef,
-  type DirectiveBinding,
-  ref,
-  isRef,
-} from "vue";
+import { type Directive, type DirectiveBinding, type MaybeRef } from "vue";
 import type { LoadingOptions } from "./types";
 import { type LoadingInstance, Loading } from "./service";
-import { get, isObject, isString, keys, set } from "lodash-es";
 
 const INSTANCE_KEY = Symbol("loading");
 
-export type LoadingBinding = boolean | UnwrapRef<LoadingOptions>;
 export interface ElementLoading extends HTMLElement {
   [INSTANCE_KEY]?: {
     instance: LoadingInstance;
@@ -21,35 +13,25 @@ export interface ElementLoading extends HTMLElement {
 
 function createInstance(
   el: ElementLoading,
-  binding: DirectiveBinding<LoadingBinding>
+  binding: DirectiveBinding<boolean>
 ) {
-  const vm = binding.instance;
-
-  const getBindingProp = <K extends keyof LoadingOptions>(
-    key: K
-  ): LoadingOptions[K] =>
-    isObject(binding.value) ? binding.value[key] : void 0;
-
-  const resolvedExpression = (key: any) => {
-    const data = (isString(key) && get(vm, key)) || key;
-    if (data) return ref(data);
-    return data;
+  const getProp = <K extends keyof LoadingOptions>(name: K) => {
+    return el.getAttribute(`er-loading-${name}`) as MaybeRef<string>;
   };
 
-  const getProp = <K extends keyof LoadingOptions>(name: K) =>
-    resolvedExpression(getBindingProp(name));
+  const getModifier = <K extends keyof LoadingOptions>(name: K) => {
+    return binding.modifiers[name];
+  };
 
-  const fullscreen =
-    getBindingProp("fullscreen") ?? binding.modifiers.fullscreen;
+  const fullscreen = getModifier("fullscreen");
 
   const options: LoadingOptions = {
     text: getProp("text"),
     spinner: getProp("spinner"),
     background: getProp("background"),
-    visible: getProp("visible") ?? true,
-    target: getBindingProp("target") ?? (fullscreen ? undefined : el),
-    body: getBindingProp("body") ?? binding.modifiers.body,
-    lock: getBindingProp("lock") ?? binding.modifiers.lock,
+    target: fullscreen ? undefined : el,
+    body: getModifier("body"),
+    lock: getModifier("lock"),
     fullscreen,
   };
   el[INSTANCE_KEY] = {
@@ -58,23 +40,11 @@ function createInstance(
   };
 }
 
-function updatedOptions(
-  newOptions: UnwrapRef<LoadingOptions>,
-  originOptions: LoadingOptions
-) {
-  for (const key of keys(originOptions)) {
-    if (isRef(get(originOptions, key))) {
-      set(originOptions, [key, "value"], get(newOptions, key));
-    }
-  }
-}
-
-export const vLoading: Directive = {
+export const vLoading: Directive<ElementLoading, boolean> = {
   mounted(el, binding) {
     if (binding.value) createInstance(el, binding);
   },
   updated(el, binding) {
-    const instance = el[INSTANCE_KEY];
     if (binding.oldValue === binding.value) return;
 
     if (binding.value && !binding.oldValue) {
@@ -82,13 +52,7 @@ export const vLoading: Directive = {
       return;
     }
 
-    if (binding.value && binding.oldValue) {
-      isObject(binding.value) &&
-        updatedOptions(binding.value, instance!.options);
-      return;
-    }
-
-    instance?.instance?.close();
+    el[INSTANCE_KEY]?.instance?.close();
   },
 
   unmounted(el) {

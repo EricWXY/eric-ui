@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { provide } from 'vue'
+import { provide, reactive, toRefs } from 'vue'
 import type {
   FormProps,
   FormEmits,
@@ -10,14 +10,14 @@ import type {
 } from './types'
 import type { ValidateFieldsError } from 'async-validator'
 import { FORM_CTX_KEY } from './constants'
-import { each, filter, includes, isFunction, size } from 'lodash-es'
+import { each, filter, includes, size } from 'lodash-es'
 
 defineOptions({ name: 'ErForm' })
 const props = withDefaults(defineProps<FormProps>(), {
   showMessage: true,
   hideRequiredAsterisk: false,
   requiredAsteriskPosition: 'left',
-  labelPosition: 'right',
+  labelPosition: 'right'
 })
 const emits = defineEmits<FormEmits>()
 const fields: FormItemContext[] = []
@@ -45,7 +45,6 @@ const validateField: FormInstance['validateField'] = async function (
   const filterArr = size(keys)
     ? filter(fields, field => includes(keys, field.prop))
     : fields
-  const hasCallback = isFunction(callback)
 
   try {
     const result = await doValidateField(filterArr)
@@ -58,7 +57,7 @@ const validateField: FormInstance['validateField'] = async function (
     const invalidFields = e as ValidateFieldsError
 
     callback?.(false, invalidFields)
-    return hasCallback && Promise.reject(invalidFields)
+    return Promise.reject(invalidFields)
   }
 }
 
@@ -97,12 +96,16 @@ async function doValidateField(fields: FormItemContext[] = []) {
   return Promise.reject(validationErrors)
 }
 
-provide(FORM_CTX_KEY, {
-  ...props,
+const formCtx: FormContext = reactive({
+  ...toRefs(props),
   emits,
   addField,
   removeField
 })
+
+// watchEffect(() => each(keys(props), key => set(formCtx, key, get(props, key))))
+
+provide(FORM_CTX_KEY, formCtx)
 
 defineExpose<FormInstance>({
   validate,
