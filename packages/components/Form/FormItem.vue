@@ -50,10 +50,11 @@ const props = withDefaults(defineProps<FormItemProps>(), {
 const slots = useSlots()
 const ctx = inject(FORM_CTX_KEY)
 
+const labelId = useId().value
+
 const validateStatus: Ref<ValidateStatus> = ref('init')
 const errMsg = ref('')
 
-const labelId = useId().value
 const inputIds = ref<string[]>([])
 
 const getValByProp = (target: Record<string, any> | undefined) => {
@@ -66,6 +67,10 @@ const getValByProp = (target: Record<string, any> | undefined) => {
 const hasLabel = computed(() => !!(props.label || slots.label))
 const labelFor = computed(
   () => props.for || (inputIds.value.length ? inputIds.value[0] : '')
+)
+
+const currentLabel = computed(
+  () => `${props.label ?? ''}${ctx?.labelSuffix ?? ''}`
 )
 
 const innerVal = computed(() => {
@@ -256,7 +261,7 @@ watch(
   { immediate: true }
 )
 
-provide(FORM_ITEM_CTX_KEY, formItemCtx)
+provide<FormItemContext>(FORM_ITEM_CTX_KEY, formItemCtx)
 
 defineExpose<FormItemInstance>({
   validateMessage: errMsg,
@@ -286,8 +291,8 @@ defineExpose<FormItemInstance>({
       :id="labelId"
       :for="labelFor"
     >
-      <slot name="label" :label="label">
-        {{ label }}{{ ctx?.labelSuffix }}
+      <slot name="label" :label="currentLabel">
+        {{ currentLabel }}
       </slot>
     </component>
     <div class="er-form-item__content">

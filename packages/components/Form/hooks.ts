@@ -47,7 +47,7 @@ export function useFormItemInputId(
 
   onMounted(() => {
     unwatch = watch(
-      toRef(props, "id"),
+      toRef(() => props.id),
       (id) => {
         const newId = id ?? useId().value;
         if (newId !== inputId.value) {

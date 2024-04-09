@@ -5,7 +5,8 @@ import type {
   DropdownProps,
   DropdownEmits,
   DropdownInstance,
-  MenuOption
+  MenuOption,
+  DropdownContext
 } from './types'
 import { DROPDOWN_CTX_KEY } from './constants'
 import type { TooltipInstance } from '../Tooltip/types'
@@ -39,7 +40,7 @@ defineExpose<DropdownInstance>({
   hide: () => tooltipRef.value?.hide()
 })
 
-provide(DROPDOWN_CTX_KEY, {
+provide<DropdownContext>(DROPDOWN_CTX_KEY, {
   handleItemClick
 })
 </script>

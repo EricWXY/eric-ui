@@ -4,7 +4,6 @@ import {
   ErMessage,
   ErNotification,
   // ErLoading,
-  vLoading,
   type RenderLabelFunc
 } from 'eric-ui'
 

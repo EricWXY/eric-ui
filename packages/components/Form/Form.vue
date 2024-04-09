@@ -103,9 +103,8 @@ const formCtx: FormContext = reactive({
   removeField
 })
 
-// watchEffect(() => each(keys(props), key => set(formCtx, key, get(props, key))))
 
-provide(FORM_CTX_KEY, formCtx)
+provide<FormContext>(FORM_CTX_KEY, formCtx)
 
 defineExpose<FormInstance>({
   validate,

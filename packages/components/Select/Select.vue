@@ -30,6 +30,7 @@ import type {
   SelectProps,
   SelectEmits,
   SelectOptionProps,
+  SleectContext,
   SelectStates
 } from './types'
 import type { TooltipInstance } from '../Tooltip/types'
@@ -74,7 +75,7 @@ const selectStates = reactive<SelectStates>({
 })
 
 const highlightedLine = computed(() => {
-  let result: SelectOptionProps | undefined = undefined
+  let result: SelectOptionProps | undefined
   if (hasChildren.value) {
     const node = [...filteredChilds.value][selectStates.highlightedIndex]?.[0]
     result = filteredChilds.value.get(node)
@@ -288,7 +289,7 @@ watch(
 
 onMounted(() => setFilteredChilds(childrenOptsions.value))
 
-provide(SELECT_CTX_KEY, {
+provide<SleectContext>(SELECT_CTX_KEY, {
   handleSelect,
   selectStates,
   renderLabel,

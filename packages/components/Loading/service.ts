@@ -53,7 +53,7 @@ function createLoadingComponent(options: LoadingOptionsResolved) {
 
   const app = createApp(LoadingComp, {
     ...data,
-    zIndex: nextZIndex(),
+    zIndex: data.fullscreen ? nextZIndex() : void 0,
     visible,
   });
   const vm = app.mount(document.createElement("div"));
