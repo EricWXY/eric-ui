@@ -197,13 +197,11 @@ async function submit() {
     :rules="formRules"
     label-position="top"
     label-suffix=":"
-    v-loading.lock="loading"
     er-loading-text="loading..."
     er-loading-spinner="circle-notch"
     @submit.prevent="submit"
-    disabled
   >
-    <er-form-item label="email" prop="email">
+    <er-form-item label="email" prop="email" disabled>
       <er-input v-model="formData.email" clearable />
     </er-form-item>
     <er-form-item label="password" prop="password">

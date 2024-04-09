@@ -1,5 +1,6 @@
 import type { Ref } from "vue";
 export interface InputProps {
+  id?: string;
   modelValue: string;
   type?: string;
   size?: "large" | "small";

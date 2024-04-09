@@ -14,6 +14,7 @@ export interface SelectOptionProps {
 
 export interface SelectProps {
   modelValue: string;
+  id?: string;
   options?: SelectOptionProps[];
   placeholder?: string;
   disabled?: boolean;

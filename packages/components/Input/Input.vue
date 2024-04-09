@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch, useAttrs, nextTick } from 'vue'
 import type { InputProps, InputEmits } from './types'
-import { useFormItem } from '../Form'
+import { useFormItem, useFormDisabled, useFormItemInputId } from '../Form'
 import { each, noop } from 'lodash-es'
 import Icon from '../Icon/Icon.vue'
 
@@ -15,14 +15,15 @@ const props = withDefaults(defineProps<InputProps>(), {
 })
 const emits = defineEmits<InputEmits>()
 const attrs = useAttrs()
+const isDisabled = useFormDisabled()
 const { formItem } = useFormItem()
+const { inputId } = useFormItemInputId(props, formItem)
 
 const innerValue = ref(props.modelValue)
 const isFocus = ref(false)
 const passwordVisible = ref(false)
 const inputRef = ref<HTMLInputElement>()
 
-const isDisabled = computed(() => props.disabled || formItem?.disabled)
 const showClear = computed(
   () =>
     props.clearable && !!innerValue.value && !isDisabled.value && isFocus.value
@@ -114,6 +115,7 @@ defineExpose({
         <input
           class="er-input__inner"
           ref="inputRef"
+          :id="inputId"
           :type="showPassword ? (passwordVisible ? 'text' : 'password') : type"
           :disabled="isDisabled"
           :readonly="readonly"
@@ -167,6 +169,7 @@ defineExpose({
       <textarea
         class="er-textarea__wrapper"
         ref="inputRef"
+        :id="inputId"
         :disabled="isDisabled"
         :readonly="readonly"
         :autocomplete="autocomplete"

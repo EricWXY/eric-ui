@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import type { SwitchEmits, SwitchProps } from './types'
-import { useFormItem } from '../Form'
+import { useFormItem, useFormDisabled, useFormItemInputId } from '../Form'
 
 defineOptions({ name: 'ErSwitch', inheritAttrs: false })
 const props = withDefaults(defineProps<SwitchProps>(), {
@@ -9,12 +9,14 @@ const props = withDefaults(defineProps<SwitchProps>(), {
   inactiveValue: false
 })
 const emits = defineEmits<SwitchEmits>()
+const isDisabled = useFormDisabled()
 const { formItem } = useFormItem()
+const { inputId } = useFormItemInputId(props, formItem)
 
 const innerValue = ref(props.modelValue)
 const inputRef = ref<HTMLInputElement | null>(null)
 const checked = computed(() => innerValue.value === props.activeValue)
-const isDisabled = computed(() => props.disabled || formItem?.disabled)
+
 function handleChange() {
   if (isDisabled.value) return
 
@@ -51,6 +53,7 @@ watch(
       type="checkbox"
       role="switch"
       ref="inputRef"
+      :id="inputId"
       :name="name"
       :disabled="isDisabled"
       :checked="checked"

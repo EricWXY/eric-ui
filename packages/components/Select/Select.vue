@@ -36,7 +36,7 @@ import type { TooltipInstance } from '../Tooltip/types'
 import type { InputInstance } from '../Input/types'
 import { RenderVnode } from '@eric-ui/utils'
 import { SELECT_CTX_KEY, POPPER_OPTIONS } from './constants'
-import { useFormItem } from '../Form'
+import { useFormItem, useFormDisabled, useFormItemInputId } from '../Form'
 
 import useKeyMap from './useKeyMap'
 import ErTooltip from '../Tooltip/Tooltip.vue'
@@ -52,7 +52,9 @@ const props = withDefaults(defineProps<SelectProps>(), {
 })
 const emits = defineEmits<SelectEmits>()
 const slots = useSlots()
+const isDisabled = useFormDisabled()
 const { formItem } = useFormItem()
+const { inputId } = useFormItemInputId(props, formItem)
 
 const initialOption = findOption(props.modelValue)
 
@@ -70,8 +72,6 @@ const selectStates = reactive<SelectStates>({
   loading: false,
   highlightedIndex: -1
 })
-
-const isDisabled = computed(() => props.disabled || formItem?.disabled)
 
 const highlightedLine = computed(() => {
   let result: SelectOptionProps | undefined = undefined
@@ -316,6 +316,7 @@ provide(SELECT_CTX_KEY, {
       <er-input
         ref="inputRef"
         v-model="selectStates.inputValue"
+        :id="inputId"
         :disabled="isDisabled"
         :placeholder="filterable ? filterPlaceholder : placeholder"
         :readonly="!filterable || !isDropdownVisible"

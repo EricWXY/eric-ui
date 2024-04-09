@@ -47,6 +47,7 @@ export interface FormEmits {
 export interface FormItemProps {
   prop?: string | string[];
   label?: string;
+  for?: string;
   labelWidth?: number | string;
   disabled?: boolean;
   required?: boolean;
@@ -89,4 +90,6 @@ export interface FormItemContext extends FormItemProps {
   ): FormValidateResult;
   resetField(): void;
   clearValidate(): void;
+  addInputId(id: string): void;
+  removeInputId(id: string): void;
 }

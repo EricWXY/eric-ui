@@ -11,7 +11,8 @@ import {
   watch,
   reactive,
   watchEffect,
-  toRefs
+  toRefs,
+  useSlots
 } from 'vue'
 import Schema, { type RuleItem } from 'async-validator'
 import type {
@@ -38,6 +39,7 @@ import {
   cloneDeep,
   isArray
 } from 'lodash-es'
+import { useId } from '@eric-ui/hooks'
 import { FORM_CTX_KEY, FORM_ITEM_CTX_KEY } from './constants'
 
 defineOptions({ name: 'ErFormItem' })
@@ -45,16 +47,27 @@ const props = withDefaults(defineProps<FormItemProps>(), {
   showMessage: true,
   required: void 0
 })
+const slots = useSlots()
 const ctx = inject(FORM_CTX_KEY)
 
 const validateStatus: Ref<ValidateStatus> = ref('init')
 const errMsg = ref('')
+
+const labelId = useId().value
+const inputIds = ref<string[]>([])
+
 const getValByProp = (target: Record<string, any> | undefined) => {
   if (target && props.prop && !isNil(get(target, props.prop))) {
     return get(target, props.prop)
   }
   return null
 }
+
+const hasLabel = computed(() => !!(props.label || slots.label))
+const labelFor = computed(
+  () => props.for || (inputIds.value.length ? inputIds.value[0] : '')
+)
+
 const innerVal = computed(() => {
   const model = ctx?.model
   return getValByProp(model)
@@ -200,12 +213,23 @@ const clearValidate: FormItemInstance['clearValidate'] = function () {
   errMsg.value = ''
   isResetting = false
 }
+
+const addInputId: FormItemContext['addInputId'] = function (id) {
+  if (!includes(inputIds.value, id)) inputIds.value.push(id)
+}
+
+const removeInputId: FormItemContext['removeInputId'] = function (id) {
+  inputIds.value = filter(inputIds.value, i => i != id)
+}
+
 const formItemCtx: FormItemContext = reactive({
   ...toRefs(props),
   disabled: isDisabled.value,
   validate,
   resetField,
-  clearValidate
+  clearValidate,
+  addInputId,
+  removeInputId
 })
 
 onMounted(() => {
@@ -254,14 +278,18 @@ defineExpose<FormItemInstance>({
       'asterisk-right': ctx?.requiredAsteriskPosition === 'right'
     }"
   >
-    <label
+    <component
+      v-if="hasLabel"
       class="er-form-item__label"
       :class="`position-${ctx?.labelPosition ?? 'right'}`"
+      :is="labelFor ? 'label' : 'div'"
+      :id="labelId"
+      :for="labelFor"
     >
       <slot name="label" :label="label">
         {{ label }}{{ ctx?.labelSuffix }}
       </slot>
-    </label>
+    </component>
     <div class="er-form-item__content">
       <slot></slot>
       <div class="er-form-item__error-msg" v-if="validateStatus === 'error'">
