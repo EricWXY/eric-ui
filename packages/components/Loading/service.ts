@@ -47,7 +47,7 @@ function createLoadingComponent(options: LoadingOptionsResolved) {
     clearTimeout(afterLeaveTimer);
     afterLeaveTimer = defer(handleAfterLeave);
 
-    data.visible = false;
+    visible.value = false;
     options.closed?.();
   };
 
@@ -62,9 +62,9 @@ function createLoadingComponent(options: LoadingOptionsResolved) {
     get $el(): HTMLElement {
       return vm.$el;
     },
-    visible,
     vm,
     close,
+    visible,
     setText,
   };
 }
