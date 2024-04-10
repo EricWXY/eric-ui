@@ -28,7 +28,7 @@ export interface InputEmits {
 }
 
 export interface InputInstance {
-  ref: Ref<HTMLInputElement | HTMLTextAreaElement | undefined>;
+  ref: Ref<HTMLInputElement | HTMLTextAreaElement | void>;
   focus(): Promise<void>;
   blur(): void;
   select(): void;

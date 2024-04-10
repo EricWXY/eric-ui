@@ -15,5 +15,5 @@ export interface AlertEmits {
 }
 
 export interface AlertInstance {
-  close: () => void;
+  close(): void;
 }

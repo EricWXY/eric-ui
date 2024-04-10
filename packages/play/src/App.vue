@@ -233,4 +233,10 @@ async function submit() {
   <er-alert title="title" description="description" type="warning" show-icon />
   <er-alert title="title" description="description" type="danger" show-icon />
   <er-alert title="title" description="description" type="info" show-icon />
+
+  <er-upload
+    action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+  >
+    <er-button type="success" round icon="upload"> 上传文件 </er-button>
+  </er-upload>
 </template>

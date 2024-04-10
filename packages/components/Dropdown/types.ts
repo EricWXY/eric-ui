@@ -19,10 +19,10 @@ export interface DropdownEmits {
 }
 
 export interface DropdownInstance {
-  show: () => void;
-  hide: () => void;
+  show(): void;
+  hide(): void;
 }
 
 export interface DropdownContext {
-  handleItemClick: (item: MenuOption) => void;
+  handleItemClick(item: MenuOption): void;
 }

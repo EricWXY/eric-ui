@@ -57,7 +57,7 @@ const errMsg = ref('')
 
 const inputIds = ref<string[]>([])
 
-const getValByProp = (target: Record<string, any> | undefined) => {
+const getValByProp = (target: Record<string, any> | void) => {
   if (target && props.prop && !isNil(get(target, props.prop))) {
     return get(target, props.prop)
   }

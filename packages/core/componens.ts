@@ -16,6 +16,7 @@ import {
   ErAlert,
   ErNotification,
   ErLoading,
+  ErUpload,
 } from "@eric-ui/components";
 import type { Plugin } from "vue";
 
@@ -37,4 +38,5 @@ export default [
   ErAlert,
   ErNotification,
   ErLoading,
+  ErUpload,
 ] as Plugin[];

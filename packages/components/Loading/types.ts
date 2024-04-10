@@ -9,8 +9,8 @@ export interface LoadingOptionsResolved {
   text?: MaybeRef<string>;
   fullscreen?: MaybeRef<boolean>;
   lock?: MaybeRef<boolean>;
-  beforeClose?: () => boolean;
-  closed?: () => void;
+  beforeClose?(): boolean;
+  closed?(): void;
 }
 
 export type LoadingOptions = Partial<
@@ -18,6 +18,6 @@ export type LoadingOptions = Partial<
     target: HTMLElement | string;
     body: boolean;
     zIndex?: number;
-    onAfterLeave: () => void;
+    onAfterLeave(): void;
   }
 >;

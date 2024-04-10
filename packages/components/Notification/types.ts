@@ -19,7 +19,7 @@ export interface NotificationProps {
   offset?: number;
   transitionName?: string;
   icon?: string;
-  onDestory: () => void;
+  onDestory(): void;
 }
 export interface NotificationInstance {
   id: string;
@@ -34,16 +34,16 @@ export type CreateNotificationProps = Omit<
 >;
 
 export interface NotificationHandler {
-  close: () => void;
+  close(): void;
 }
 
 export type NotificationOptions = Partial<Omit<NotificationProps, "id">>;
 export type NotificationParams = string | VNode | NotificationOptions;
 
 export type NotificationFn = {
-  (props:NotificationParams):NotificationHandler;
-  closeAll:(type?:notificationType)=>void
-}
+  (props: NotificationParams): NotificationHandler;
+  closeAll(type?: notificationType): void;
+};
 
 export type NotificationTypeFn = (
   props: NotificationParams
@@ -55,5 +55,3 @@ export interface Notification extends NotificationFn {
   info: NotificationTypeFn;
   danger: NotificationTypeFn;
 }
-
-

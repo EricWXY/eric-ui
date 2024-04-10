@@ -24,10 +24,9 @@ import {
   useSlots,
   watch,
   h,
+  nextTick,
   type Ref,
-  type VNode,
-  shallowRef,
-  nextTick
+  type VNode
 } from 'vue'
 import type {
   SelectProps,
@@ -63,7 +62,7 @@ const initialOption = findOption(props.modelValue)
 
 const selectRef = ref<HTMLElement>()
 const tooltipRef = ref<TooltipInstance>()
-const inputRef = shallowRef<InputInstance>()
+const inputRef = ref<InputInstance>()
 
 const isDropdownVisible = ref(false)
 const filteredOptions = ref(props.options ?? [])
@@ -91,7 +90,7 @@ const {
 useClickOutside(selectRef, e => handleClickOutsie(e))
 
 const highlightedLine = computed(() => {
-  let result: SelectOptionProps | undefined
+  let result: SelectOptionProps | void
   if (hasChildren.value) {
     const node = [...filteredChilds.value][selectStates.highlightedIndex]?.[0]
     result = filteredChilds.value.get(node)

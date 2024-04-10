@@ -1,26 +1,20 @@
 import { isFunction } from "lodash-es";
-import {
-  getCurrentInstance,
-  shallowRef,
-  ref,
-  watch,
-  type ShallowRef,
-} from "vue";
+import { getCurrentInstance, ref, type Ref } from "vue";
 import useEventListener from "./useEventListener";
 
 interface UseFocusControllerOptions {
-  afterFocus?: () => void;
-  beforeBlur?: (event: FocusEvent) => boolean | void;
-  afterBlur?: () => void;
+  afterFocus?(): void;
+  beforeBlur?(event: FocusEvent): boolean | void;
+  afterBlur?(): void;
 }
 
-export function useFocusController<T extends HTMLElement>(
-  target: ShallowRef<T | any | void>,
+export function useFocusController<T extends HTMLElement | { focus(): void }>(
+  target: Ref<T | void>,
   { afterFocus, beforeBlur, afterBlur }: UseFocusControllerOptions = {}
 ) {
   const instance = getCurrentInstance()!;
   const { emit } = instance;
-  const wrapperRef = shallowRef<HTMLElement>();
+  const wrapperRef = ref<HTMLElement>();
   const isFocused = ref(false);
 
   const handleFocus = (event: FocusEvent) => {
@@ -47,12 +41,6 @@ export function useFocusController<T extends HTMLElement>(
   const handleClick = () => {
     target.value?.focus();
   };
-
-  watch(wrapperRef, (el) => {
-    if (el) {
-      el.setAttribute("tabindex", "-1");
-    }
-  });
 
   useEventListener(wrapperRef, "click", handleClick);
 

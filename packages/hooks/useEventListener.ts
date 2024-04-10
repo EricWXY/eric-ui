@@ -5,11 +5,10 @@ import {
   isRef,
   unref,
   type MaybeRef,
-  type ShallowRef,
 } from "vue";
 
 export default function useEventListener(
-  target: MaybeRef<EventTarget | null> | ShallowRef,
+  target: MaybeRef<EventTarget | HTMLElement | void>,
   event: string,
   handler: (e: Event) => any
 ) {

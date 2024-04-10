@@ -4,12 +4,12 @@ export const messageTypes = ["info", "success", "warning", "danger"] as const;
 export type messageType = (typeof messageTypes)[number];
 
 export interface MessageHandler {
-  close: () => void;
+  close(): void;
 }
 
 export type MessageFn = {
   (props: MessageParams): MessageHandler;
-  closeAll: (type?: messageType) => void;
+  closeAll(type?: messageType): void;
 };
 
 export type MessageTypeFn = (props: MessageParams) => MessageHandler;
@@ -27,10 +27,10 @@ export interface MessageProps {
   duration?: number;
   showClose?: boolean;
   type?: "success" | "info" | "warning" | "danger";
-  onDestory: () => void;
   offset?: number;
   zIndex: number;
   transitionName?: string;
+  onDestory(): void;
 }
 
 export type MessageOptions = Partial<Omit<MessageProps, "id">>;

@@ -29,7 +29,7 @@ function createInstance(
     text: getProp("text"),
     spinner: getProp("spinner"),
     background: getProp("background"),
-    target: fullscreen ? undefined : el,
+    target: fullscreen ? void 0 : el,
     body: getModifier("body"),
     lock: getModifier("lock"),
     fullscreen,

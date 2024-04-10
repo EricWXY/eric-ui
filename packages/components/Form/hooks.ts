@@ -20,7 +20,7 @@ export function useFormItem() {
   return { form, formItem };
 }
 
-export function useFormDisabled(fallback?: MaybeRef<boolean | undefined>) {
+export function useFormDisabled(fallback?: MaybeRef<boolean | void>) {
   const disabled = useProp<boolean>("disabled");
   const form = inject(FORM_CTX_KEY, void 0);
   const formItem = inject(FORM_ITEM_CTX_KEY, void 0);
@@ -43,7 +43,7 @@ export function useFormItemInputId(
   formItemContext?: FormItemContext
 ) {
   const inputId = ref<string>("");
-  let unwatch: WatchStopHandle | undefined;
+  let unwatch: WatchStopHandle | void;
 
   onMounted(() => {
     unwatch = watch(

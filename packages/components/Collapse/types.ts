@@ -14,7 +14,7 @@ export interface CollapseItemProps {
 
 export interface CollapseContext {
   activeNames: Ref<NameType[]>;
-  handleItemClick: (name: NameType) => void;
+  handleItemClick(name: NameType): void;
 }
 
 export interface CollapseEmits {
