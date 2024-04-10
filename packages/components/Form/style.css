@@ -1,4 +1,5 @@
-.er-form {
+.er-form-item {
+  --er-form-label-width: 150px;
   --er-form-label-font-size: var(--er-font-size-base);
   --er-form-content-font-size: var(--er-font-size-base);
 }
@@ -13,6 +14,7 @@
   .er-form-item__label {
     height: 32px;
     line-height: 32px;
+    width: var(--er-form-label-width);
     padding: 0;
     box-sizing: border-box;
     display: inline-flex;

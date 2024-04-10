@@ -1,3 +1,5 @@
+import type { ComputedRef } from "vue";
+
 export type SwitchValueType = boolean | string | number;
 
 export interface SwitchProps {
@@ -15,4 +17,9 @@ export interface SwitchProps {
 export interface SwitchEmits {
   (e: "update:modelValue", value: SwitchValueType): void;
   (e: "change", value: SwitchValueType): void;
+}
+
+export interface SwitchInstance {
+  focus(): void;
+  checked: ComputedRef<boolean>;
 }

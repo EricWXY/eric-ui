@@ -296,7 +296,7 @@ defineExpose<FormItemInstance>({
       </slot>
     </component>
     <div class="er-form-item__content">
-      <slot></slot>
+      <slot :validate="validate"></slot>
       <div class="er-form-item__error-msg" v-if="validateStatus === 'error'">
         <template v-if="ctx?.showMessage && showMessage">
           <slot name="error" :error="errMsg">{{ errMsg }}</slot>
@@ -309,7 +309,7 @@ defineExpose<FormItemInstance>({
 <style scoped>
 @import './style.css';
 
-.er-form-item__label {
-  width: v-bind(normalizeLabelWidth);
+.er-form-item {
+  --er-form-label-width: v-bind(normalizeLabelWidth) !important;
 }
 </style>

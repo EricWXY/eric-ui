@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
-import type { SwitchEmits, SwitchProps } from './types'
+import type { SwitchEmits, SwitchProps, SwitchInstance } from './types'
+import { debugWarn } from '@eric-ui/utils'
 import { useFormItem, useFormDisabled, useFormItemInputId } from '../Form'
 
 defineOptions({ name: 'ErSwitch', inheritAttrs: false })
@@ -17,6 +18,10 @@ const innerValue = ref(props.modelValue)
 const inputRef = ref<HTMLInputElement | null>(null)
 const checked = computed(() => innerValue.value === props.activeValue)
 
+const focus: SwitchInstance['focus'] = function () {
+  inputRef.value?.focus()
+}
+
 function handleChange() {
   if (isDisabled.value) return
 
@@ -25,17 +30,24 @@ function handleChange() {
   innerValue.value = newVal
   emits('update:modelValue', newVal)
   emits('change', newVal)
-  formItem?.validate('change')
 }
 
 onMounted(() => {
   inputRef.value!.checked = checked.value
 })
-watch(checked, val => (inputRef.value!.checked = val))
+watch(checked, val => {
+  inputRef.value!.checked = val
+  formItem?.validate('change').catch(err => debugWarn(err))
+})
 watch(
   () => props.modelValue,
   val => (innerValue.value = val)
 )
+
+defineExpose<SwitchInstance>({
+  focus,
+  checked
+})
 </script>
 
 <template>

@@ -197,11 +197,10 @@ async function submit() {
     ref="formRef"
     :model="formData"
     :rules="formRules"
-    label-position="top"
     label-suffix=":"
     er-loading-text="loading..."
     er-loading-spinner="circle-notch"
-    @submit.prevent="submit"
+    @submit="submit"
   >
     <er-form-item label="email" prop="email" disabled>
       <er-input v-model="formData.email" clearable />
@@ -209,8 +208,21 @@ async function submit() {
     <er-form-item label="password" prop="password">
       <er-input v-model="formData.password" type="password" />
     </er-form-item>
-    <er-form-item label="confirm password" prop="confirmPwd">
-      <er-input v-model="formData.confirmPwd" type="password" />
+    <er-form-item
+      label="confirm password"
+      prop="confirmPwd"
+      :rules="[
+        {
+          validator: () => false,
+          trigger: 'test',
+          message: '测试自定义触发'
+        }
+      ]"
+    >
+      <template #default="{ validate: _validate }">
+        <er-input v-model="formData.confirmPwd" type="password" />
+        <button @click.prevent="_validate('test')">vli</button>
+      </template>
     </er-form-item>
     <div style="text-align: center">
       <er-button type="primary" native-type="submit">Submit</er-button>

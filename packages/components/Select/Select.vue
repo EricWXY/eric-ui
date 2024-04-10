@@ -264,7 +264,7 @@ async function callRemoteMethod(method: Function, search: string) {
 }
 
 async function genFilterOptions(search: string) {
-  if (!props.filterable || !search) return
+  if (!props.filterable) return
 
   if (props.remote && props.remoteMethod && isFunction(props.remoteMethod)) {
     filteredOptions.value = await callRemoteMethod(props.remoteMethod, search)
@@ -282,7 +282,7 @@ async function genFilterOptions(search: string) {
 }
 
 async function genFilterChilds(search: string) {
-  if (!props.filterable || !search) return
+  if (!props.filterable) return
 
   if (props.remote && props.remoteMethod && isFunction(props.remoteMethod)) {
     await callRemoteMethod(props.remoteMethod, search)
@@ -397,7 +397,7 @@ defineExpose<SelectInstance>({
                 v-if="showClear"
                 icon="circle-xmark"
                 class="er-input__clear"
-                @click="handleClear"
+                @click.stop="handleClear"
                 @mousedown.prevent="noop"
               />
               <er-icon
