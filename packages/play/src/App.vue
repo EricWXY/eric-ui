@@ -166,7 +166,10 @@ async function submit() {
     <er-button icon="arrow-up">tooltip</er-button>
     <template #content> 弹出部分 </template>
   </er-tooltip>
-  <er-input v-model="inputValue" placeholder="请输入内容" />
+  <er-input v-model="inputValue" placeholder="请输入内容">
+    <template #suffix> <button>test</button> </template>
+    <template #append> test1</template>
+  </er-input>
   <er-switch
     v-model="switchValue"
     size="large"

@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { computed, ref, watch, useAttrs, nextTick } from 'vue'
-import type { InputProps, InputEmits } from './types'
+import { computed, ref, watch, useAttrs, shallowRef, nextTick } from 'vue'
+import type { InputProps, InputEmits, InputInstance } from './types'
 import { useFormItem, useFormDisabled, useFormItemInputId } from '../Form'
+import { debugWarn } from '@eric-ui/utils'
+import { useFocusController } from '@eric-ui/hooks'
 import { each, noop } from 'lodash-es'
 import Icon from '../Icon/Icon.vue'
 
@@ -14,19 +16,19 @@ const props = withDefaults(defineProps<InputProps>(), {
   autocomplete: 'off'
 })
 const emits = defineEmits<InputEmits>()
-const attrs = useAttrs()
-const isDisabled = useFormDisabled()
-const { formItem } = useFormItem()
-const { inputId } = useFormItemInputId(props, formItem)
 
 const innerValue = ref(props.modelValue)
-const isFocus = ref(false)
 const passwordVisible = ref(false)
-const inputRef = ref<HTMLInputElement>()
+
+const inputRef = shallowRef<HTMLInputElement>()
+const textareaRef = shallowRef<HTMLTextAreaElement>()
 
 const showClear = computed(
   () =>
-    props.clearable && !!innerValue.value && !isDisabled.value && isFocus.value
+    props.clearable &&
+    !!innerValue.value &&
+    !isDisabled.value &&
+    isFocused.value
 )
 
 const showPasswordArea = computed(
@@ -37,6 +39,41 @@ const showPasswordArea = computed(
     !!innerValue.value
 )
 
+const _ref = computed(() => inputRef.value || textareaRef.value)
+
+const attrs = useAttrs()
+const isDisabled = useFormDisabled()
+const { formItem } = useFormItem()
+const { inputId } = useFormItemInputId(props, formItem)
+const { wrapperRef, isFocused, handleFocus, handleBlur } = useFocusController(
+  _ref,
+  {
+    afterBlur() {
+      formItem?.validate('blur').catch(err => debugWarn(err))
+    }
+  }
+)
+
+const clear: InputInstance['clear'] = function () {
+  innerValue.value = ''
+  each(['update:modelValue', 'input', 'change'], e => emits(e as any, ''))
+  emits('clear')
+  formItem?.clearValidate()
+}
+
+const focus: InputInstance['focus'] = async function () {
+  await nextTick()
+  _ref.value?.focus()
+}
+
+const blur: InputInstance['blur'] = function () {
+  _ref.value?.blur()
+}
+
+const select: InputInstance['select'] = function () {
+  _ref.value?.select()
+}
+
 function handleInput() {
   emits('update:modelValue', innerValue.value)
   emits('input', innerValue.value)
@@ -44,30 +81,6 @@ function handleInput() {
 
 function handleChange() {
   emits('change', innerValue.value)
-  formItem?.validate('change')
-}
-
-function handleFocus(e: FocusEvent) {
-  isFocus.value = true
-  emits('focus', e)
-}
-
-function handleBlur(e: FocusEvent) {
-  isFocus.value = false
-  emits('blur', e)
-  formItem?.validate('blur')
-}
-
-function clear() {
-  innerValue.value = ''
-  each(['update:modelValue', 'input', 'change'], e => emits(e as any, ''))
-  emits('clear')
-  formItem?.clearValidate()
-}
-
-async function keepFocus() {
-  await nextTick()
-  inputRef.value?.focus()
 }
 
 function togglePasswordVisible() {
@@ -78,11 +91,15 @@ watch(
   () => props.modelValue,
   newValue => {
     innerValue.value = newValue
+    formItem?.validate('change').catch(err => debugWarn(err))
   }
 )
 
-defineExpose({
-  ref: inputRef,
+defineExpose<InputInstance>({
+  ref: _ref,
+  focus,
+  blur,
+  select,
   clear
 })
 </script>
@@ -98,7 +115,7 @@ defineExpose({
       'is-append': $slots.append,
       'is-prefix': $slots.prefix,
       'is-suffix': $slots.suffix,
-      'is-focus': isFocus
+      'is-focus': isFocused
     }"
   >
     <!-- input -->
@@ -107,7 +124,7 @@ defineExpose({
       <div v-if="$slots.prepend" class="er-input__prepend">
         <slot name="prepend"></slot>
       </div>
-      <div class="er-input__wrapper">
+      <div class="er-input__wrapper" ref="wrapperRef">
         <!-- prefix slot -->
         <span v-if="$slots.prefix" class="er-input__prefix">
           <slot name="prefix"></slot>
@@ -134,7 +151,6 @@ defineExpose({
         <span
           v-if="$slots.suffix || showClear || showPasswordArea"
           class="er-input__suffix"
-          @click="keepFocus"
         >
           <slot name="suffix"></slot>
           <Icon
@@ -168,7 +184,7 @@ defineExpose({
     <template v-else>
       <textarea
         class="er-textarea__wrapper"
-        ref="inputRef"
+        ref="textareaRef"
         :id="inputId"
         :disabled="isDisabled"
         :readonly="readonly"

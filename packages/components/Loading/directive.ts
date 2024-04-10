@@ -4,7 +4,7 @@ import { type LoadingInstance, Loading } from "./service";
 
 const INSTANCE_KEY = Symbol("loading");
 
-export interface ElementLoading extends HTMLElement {
+interface ElementLoading extends HTMLElement {
   [INSTANCE_KEY]?: {
     instance: LoadingInstance;
     options: LoadingOptions;

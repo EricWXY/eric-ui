@@ -8,7 +8,9 @@ import { RenderVnode } from '@eric-ui/utils'
 defineOptions({
   name: 'ErOption'
 })
-const props = defineProps<SelectOptionProps>()
+const props = withDefaults(defineProps<SelectOptionProps>(), {
+  disabled: false
+})
 const ctx = inject(SELECT_CTX_KEY)
 const selected = computed(
   () => ctx?.selectStates?.selectedOption?.value === props.value

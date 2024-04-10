@@ -7,9 +7,13 @@ import type {
   CollapseEmits,
   CollapseContext
 } from './types'
+import { debugWarn } from '@eric-ui/utils'
 import { COLLAPSE_CTX_KEY } from './constants'
+
+const COMPONENT_NAME = 'ErCollapse' as const
+
 defineOptions({
-  name: 'ErCollapse'
+  name: COMPONENT_NAME
 })
 
 const props = defineProps<CollapseProps>()
@@ -23,7 +27,7 @@ watch(
 )
 
 if (props.accordion && activeNames.value.length > 1) {
-  console.warn('accordion mode should only have one active item')
+  debugWarn(COMPONENT_NAME, 'accordion mode should only have one active item')
 }
 
 function handleItemClick(item: NameType) {

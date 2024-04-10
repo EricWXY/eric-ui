@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+  assign,
   find,
   get,
   each,
@@ -24,18 +25,22 @@ import {
   watch,
   h,
   type Ref,
-  type VNode
+  type VNode,
+  shallowRef,
+  nextTick
 } from 'vue'
 import type {
   SelectProps,
   SelectEmits,
   SelectOptionProps,
-  SleectContext,
+  SelectContext,
+  SelectInstance,
   SelectStates
 } from './types'
 import type { TooltipInstance } from '../Tooltip/types'
 import type { InputInstance } from '../Input/types'
-import { RenderVnode } from '@eric-ui/utils'
+import { RenderVnode, debugWarn } from '@eric-ui/utils'
+import { useFocusController, useClickOutside } from '@eric-ui/hooks'
 import { SELECT_CTX_KEY, POPPER_OPTIONS } from './constants'
 import { useFormItem, useFormDisabled, useFormItemInputId } from '../Form'
 
@@ -45,22 +50,20 @@ import ErIcon from '../Icon/Icon.vue'
 import ErInput from '../Input/Input.vue'
 import ErOption from './Option.vue'
 
+const COMPONENT_NAME = 'ErSelect' as const
 defineOptions({
-  name: 'ErSelect'
+  name: COMPONENT_NAME
 })
 const props = withDefaults(defineProps<SelectProps>(), {
   options: () => []
 })
 const emits = defineEmits<SelectEmits>()
-const slots = useSlots()
-const isDisabled = useFormDisabled()
-const { formItem } = useFormItem()
-const { inputId } = useFormItemInputId(props, formItem)
 
 const initialOption = findOption(props.modelValue)
 
-const tooltipRef = ref<TooltipInstance | null>(null)
-const inputRef = ref<InputInstance | null>(null)
+const selectRef = ref<HTMLElement>()
+const tooltipRef = ref<TooltipInstance>()
+const inputRef = shallowRef<InputInstance>()
 
 const isDropdownVisible = ref(false)
 const filteredOptions = ref(props.options ?? [])
@@ -73,6 +76,19 @@ const selectStates = reactive<SelectStates>({
   loading: false,
   highlightedIndex: -1
 })
+
+const slots = useSlots()
+const isDisabled = useFormDisabled()
+const { formItem } = useFormItem()
+const { inputId } = useFormItemInputId(props, formItem)
+const {
+  wrapperRef: inputWrapperRef,
+  isFocused,
+  handleBlur,
+  handleFocus
+} = useFocusController(inputRef)
+
+useClickOutside(selectRef, e => handleClickOutsie(e))
 
 const highlightedLine = computed(() => {
   let result: SelectOptionProps | undefined
@@ -92,7 +108,14 @@ const children = computed(() =>
 const hasChildren = computed(() => size(children.value) > 0)
 const childrenOptsions = computed(() => {
   if (!hasChildren.value) return []
-  return map(children.value, item => ({ vNode: h(item), props: item.props }))
+  return map(children.value, item => ({
+    vNode: h(item),
+    props: assign(item.props, {
+      disabled:
+        item.props?.disabled === true ||
+        (!isNil(item.props?.disabled) && !isBoolean(item.props?.disabled))
+    })
+  }))
 })
 
 const filterPlaceholder = computed(() => {
@@ -140,6 +163,14 @@ const keyMap = useKeyMap({
   lastIndex
 })
 
+const focus: SelectInstance['focus'] = function () {
+  inputRef.value?.focus()
+}
+
+const blur: SelectInstance['blur'] = function () {
+  handleClickOutsie()
+}
+
 function setFilteredChilds(opts: typeof childrenOptsions.value) {
   filteredChilds.value.clear()
   each(opts, item => {
@@ -181,15 +212,27 @@ function findOption(value: string) {
   return find(props.options, option => option.value === value)
 }
 
+function handleClickOutsie(e?: Event) {
+  if (isFocused.value) {
+    nextTick(() => handleBlur(new FocusEvent('focus', e)))
+  }
+}
+
 function handleSelect(o: SelectOptionProps) {
-  if (o.disabled || (!isNil(o.disabled) && !isBoolean(o.disabled))) return
+  if (o.disabled) return
 
   selectStates.inputValue = o.label
   selectStates.selectedOption = o
   each(['change', 'update:modelValue'], k => emits(k as any, o.value))
   controlVisible(false)
-  formItem?.validate('change')
-  inputRef.value?.ref?.focus()
+  inputRef.value?.focus()
+}
+
+function setSelected() {
+  const option = findOption(props.modelValue)
+  if (!option) return
+  selectStates.inputValue = option.label
+  selectStates.selectedOption = option
 }
 
 function handleClear() {
@@ -210,8 +253,10 @@ async function callRemoteMethod(method: Function, search: string) {
   try {
     result = await method(search)
   } catch (error) {
-    console.error(error)
+    debugWarn(error as Error)
+    debugWarn(COMPONENT_NAME, 'callRemoteMethod error')
     result = []
+    return Promise.reject(error)
   } finally {
     selectStates.loading = false
   }
@@ -248,7 +293,7 @@ async function genFilterChilds(search: string) {
     const options = map(props.filterMethod(search), 'value')
     setFilteredChilds(
       filter(childrenOptsions.value, item =>
-        includes(options, item?.props?.value)
+        includes(options, get(item, ['props', 'value']))
       )
     )
     return
@@ -284,26 +329,45 @@ watch(
 
 watch(
   () => childrenOptsions.value,
-  newOpts => setFilteredChilds(newOpts)
+  newOpts => setFilteredChilds(newOpts),
+  { immediate: true }
 )
 
-onMounted(() => setFilteredChilds(childrenOptsions.value))
+watch(
+  () => props.modelValue,
+  (newVal, oldVal) => {
+    if (newVal !== oldVal) {
+      formItem?.validate('change').catch(err => debugWarn(err))
+    }
+    setSelected()
+  }
+)
 
-provide<SleectContext>(SELECT_CTX_KEY, {
+onMounted(() => {
+  setSelected()
+})
+
+provide<SelectContext>(SELECT_CTX_KEY, {
   handleSelect,
   selectStates,
   renderLabel,
   highlightedLine
 })
+
+defineExpose<SelectInstance>({
+  focus,
+  blur
+})
 </script>
 
 <template>
   <div
+    ref="selectRef"
     class="er-select"
     :class="{
       'is-disabled': isDisabled
     }"
-    @click="toggleVisible"
+    @click.stop="toggleVisible"
     @mouseenter="selectStates.mouseHover = true"
     @mouseleave="selectStates.mouseHover = false"
   >
@@ -314,33 +378,38 @@ provide<SleectContext>(SELECT_CTX_KEY, {
       @click-outside="controlVisible(false)"
       manual
     >
-      <er-input
-        ref="inputRef"
-        v-model="selectStates.inputValue"
-        :id="inputId"
-        :disabled="isDisabled"
-        :placeholder="filterable ? filterPlaceholder : placeholder"
-        :readonly="!filterable || !isDropdownVisible"
-        @input="handleFilterDebounce"
-        @blur="formItem?.validate('blur')"
-        @keydown="handleKeyDown"
-      >
-        <template #suffix>
-          <er-icon
-            v-if="showClear"
-            icon="circle-xmark"
-            class="er-input__clear"
-            @click="handleClear"
-            @mousedown.prevent="noop"
-          />
-          <er-icon
-            v-else
-            class="header-angle"
-            icon="angle-down"
-            :class="{ 'is-active': isDropdownVisible }"
-          />
-        </template>
-      </er-input>
+      <template #default>
+        <div ref="inputWrapperRef">
+          <er-input
+            ref="inputRef"
+            v-model="selectStates.inputValue"
+            :id="inputId"
+            :disabled="isDisabled"
+            :placeholder="filterable ? filterPlaceholder : placeholder"
+            :readonly="!filterable || !isDropdownVisible"
+            @focus="handleFocus"
+            @blur="handleBlur"
+            @input="handleFilterDebounce"
+            @keydown="handleKeyDown"
+          >
+            <template #suffix>
+              <er-icon
+                v-if="showClear"
+                icon="circle-xmark"
+                class="er-input__clear"
+                @click="handleClear"
+                @mousedown.prevent="noop"
+              />
+              <er-icon
+                v-else
+                class="header-angle"
+                icon="angle-down"
+                :class="{ 'is-active': isDropdownVisible }"
+              />
+            </template>
+          </er-input>
+        </div>
+      </template>
       <template #content>
         <div class="er-select__loading" v-if="selectStates.loading">
           <er-icon icon="spinner" spin />

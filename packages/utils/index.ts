@@ -31,3 +31,4 @@ export const typeIconMap = new Map([
 ]);
 
 export * from "./install";
+export * from './error'

@@ -1,18 +1,26 @@
-import { onMounted, onBeforeUnmount, watch, isRef, unref, type MaybeRef } from 'vue'
+import {
+  onMounted,
+  onBeforeUnmount,
+  watch,
+  isRef,
+  unref,
+  type MaybeRef,
+  type ShallowRef,
+} from "vue";
 
-export default function useEventListener (
-  target: MaybeRef<EventTarget | null>,
+export default function useEventListener(
+  target: MaybeRef<EventTarget | null> | ShallowRef,
   event: string,
   handler: (e: Event) => any
 ) {
   if (isRef(target)) {
     watch(target, (val, oldVal) => {
-      oldVal?.removeEventListener(event, handler)
-      val?.addEventListener(event, handler)
-    })
+      oldVal?.removeEventListener(event, handler);
+      val?.addEventListener(event, handler);
+    });
   } else {
-    onMounted(() => target!.addEventListener(event, handler))
+    onMounted(() => target?.addEventListener(event, handler));
   }
 
-  onBeforeUnmount(() => unref(target)?.removeEventListener(event, handler))
+  onBeforeUnmount(() => unref(target)?.removeEventListener(event, handler));
 }

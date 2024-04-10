@@ -40,11 +40,18 @@ export interface SelectEmits {
   (e: "visible-change", vlaue: boolean): void;
 
   (e: "clear"): void;
+  (e: "focus"): void;
+  (e: "blur"): void;
 }
 
-export interface SleectContext {
+export interface SelectContext {
   handleSelect: (item: SelectOptionProps) => void;
   selectStates: SelectStates;
   renderLabel?: RenderLabelFunc;
   highlightedLine?: ComputedRef<SelectOptionProps | undefined>;
+}
+
+export interface SelectInstance {
+  focus(): void;
+  blur(): void;
 }
