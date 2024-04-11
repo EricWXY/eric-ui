@@ -30,6 +30,7 @@ export default defineConfig({
           { text: "Button", link: "components/button" },
           { text: "Alert", link: "components/alert" },
           { text: "Collapse", link: "components/collapse" },
+          { text: "Dropdown", link: "components/dropdown" },
         ],
       },
     ],

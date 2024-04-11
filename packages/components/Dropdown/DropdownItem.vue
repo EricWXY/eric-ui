@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import { type MenuOption } from './types'
+import { type DropdownItemProps } from './types'
 import { DROPDOWN_CTX_KEY } from './constants'
+import { useId } from '@eric-ui/hooks'
 import { inject } from 'vue'
 
 defineOptions({
   name: 'ErDropdownItem'
 })
-const props = defineProps<MenuOption>()
+const props = defineProps<DropdownItemProps>()
 
 const ctx = inject(DROPDOWN_CTX_KEY)
 
 function handleClick() {
+  if (props.disabled) return
   ctx?.handleItemClick(props)
 }
 </script>
@@ -18,7 +20,7 @@ function handleClick() {
 <template>
   <li v-if="divided" role="separator" class="divided-placeholder"></li>
   <li
-    :id="`dropdown-item-${name}`"
+    :id="`dropdown-item-${command ?? useId().value}`"
     :class="{
       'er-dropdown__item': true,
       'is-disabled': disabled,
@@ -32,6 +34,6 @@ function handleClick() {
   </li>
 </template>
 
-<style>
+<style scoped>
 @import './style.css';
 </style>

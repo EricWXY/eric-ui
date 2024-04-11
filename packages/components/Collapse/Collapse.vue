@@ -2,7 +2,7 @@
 import { ref, provide, watch } from 'vue'
 import { each } from 'lodash-es'
 import type {
-  NameType,
+  CollapseItemName,
   CollapseProps,
   CollapseEmits,
   CollapseContext
@@ -18,7 +18,7 @@ defineOptions({
 
 const props = defineProps<CollapseProps>()
 const emits = defineEmits<CollapseEmits>()
-const activeNames = ref<NameType[]>(props.modelValue)
+const activeNames = ref<CollapseItemName[]>(props.modelValue)
 watch(
   () => props.modelValue,
   val => {
@@ -30,7 +30,7 @@ if (props.accordion && activeNames.value.length > 1) {
   debugWarn(COMPONENT_NAME, 'accordion mode should only have one active item')
 }
 
-function handleItemClick(item: NameType) {
+function handleItemClick(item: CollapseItemName) {
   let _activeNames = [...activeNames.value]
   // 手风琴模式
   if (props.accordion) {
@@ -50,7 +50,7 @@ function handleItemClick(item: NameType) {
   updateActiveNames(_activeNames)
 }
 
-function updateActiveNames(val: NameType[]) {
+function updateActiveNames(val: CollapseItemName[]) {
   activeNames.value = val
   each(['update:modelValue', 'change'], e =>
     emits(e as 'update:modelValue' & 'change', val)

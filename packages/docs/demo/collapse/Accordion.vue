@@ -1,16 +1,12 @@
 <script setup lang="ts">
-import { ErCollapse, ErCollapseItem, type CollapseItemName } from 'eric-ui'
+import { ErCollapse, ErCollapseItem } from 'eric-ui'
 import { ref } from 'vue'
 
 const activeNames = ref(['1'])
-
-function handleChange(val: CollapseItemName[]) {
-  console.log(val)
-}
 </script>
 
 <template>
-  <er-collapse v-model="activeNames" @change="handleChange">
+  <er-collapse v-model="activeNames" accordion>
     <er-collapse-item title="Consistency" name="1">
       <div>
         Consistent with real life: in line with the process and logic of real

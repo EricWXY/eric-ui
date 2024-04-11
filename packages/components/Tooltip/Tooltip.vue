@@ -2,7 +2,7 @@
 import type { TooltipProps, TooltipEmits, TooltipInstance } from './types'
 import { createPopper, type Instance } from '@popperjs/core'
 import { ref, reactive, watch, onUnmounted, computed } from 'vue'
-import { debounce, bind } from 'lodash-es'
+import { bind, debounce } from 'lodash-es'
 import { useClickOutside } from '@eric-ui/hooks'
 
 defineOptions({
@@ -26,6 +26,7 @@ const triggerNode = ref<HTMLElement>()
 let popperInstance: null | Instance
 let events: Record<string, any> = reactive({})
 let outerEvents: Record<string, any> = reactive({})
+let dropdownEvents: Record<string, any> = reactive({})
 
 const popperOptions = computed(() => ({
   placement: props.placement,
@@ -40,8 +41,12 @@ const popperOptions = computed(() => ({
   ...props.popperOptions
 }))
 
+const closeDelay = computed(() =>
+  props.trigger === 'hover' && props.closeDelay < 150 ? 150 : props.closeDelay
+)
+
 const openDebounce = debounce(bind(setVisible, null, true), props.openDelay)
-const closeDebounce = debounce(bind(setVisible, null, false), props.closeDelay)
+const closeDebounce = debounce(bind(setVisible, null, false), closeDelay.value)
 
 function openFinal() {
   closeDebounce.cancel()
@@ -66,6 +71,7 @@ function attachEvents() {
   if (props.trigger === 'hover') {
     events['mouseenter'] = openFinal
     outerEvents['mouseleave'] = closeFinal
+    dropdownEvents['mouseenter'] = openFinal
     return
   }
   if (props.trigger === 'click') {
@@ -131,7 +137,10 @@ onUnmounted(() => {
 
 defineExpose<TooltipInstance>({
   show: openFinal,
-  hide: closeFinal
+  hide: () => {
+    openDebounce.cancel()
+    setVisible(false)
+  }
 })
 </script>
 
@@ -140,17 +149,22 @@ defineExpose<TooltipInstance>({
     <div class="er-tooltip__trigger" ref="triggerNode" v-on="events">
       <slot></slot>
     </div>
-    <Transition :name="transition" @after-leave="destroyPopperInstance">
-      <div class="er-tooltip__popper" ref="popperNode" v-if="isOpen">
+    <transition :name="transition" @after-leave="destroyPopperInstance">
+      <div
+        class="er-tooltip__popper"
+        ref="popperNode"
+        v-on="dropdownEvents"
+        v-if="isOpen"
+      >
         <slot name="content">
           {{ content }}
         </slot>
         <div id="arrow" data-popper-arrow></div>
       </div>
-    </Transition>
+    </transition>
   </div>
 </template>
 
-<style>
+<style scoped>
 @import './style.css';
 </style>

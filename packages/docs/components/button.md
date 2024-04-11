@@ -17,7 +17,7 @@ demo-preview=../demo/button/Basic.vue
 
 ## 禁用状态
 
-你可以使用 disabled 属性来定义按钮是否被禁用。
+你可以使用 `disabled` 属性来定义按钮是否被禁用。
 
 ::: preview
 demo-preview=../demo/button/Disabled.vue
@@ -36,9 +36,9 @@ demo-preview=../demo/button/Icon.vue
 使用 `loading`属性来定义按钮的加载状态。
 
 ::: tip
-您可以使用 loading 插槽或 loadingIcon 属性自定义您的 loading 图标
+您可以使用 `loading` 插槽或 `loadingIcon` 属性自定义您的 loading 图标
 
-ps: loading 插槽优先级高于 loadingIcon 属性
+ps: `loading` 插槽优先级高于 `loadingIcon` 属性
 :::
 
 ::: preview

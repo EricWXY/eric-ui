@@ -1,23 +1,23 @@
 import type { Ref } from "vue";
-export type NameType = string | number;
+export type CollapseItemName = string | number;
 
 export interface CollapseProps {
-  modelValue: NameType[];
+  modelValue: CollapseItemName[];
   accordion?: boolean;
 }
 
 export interface CollapseItemProps {
-  name: NameType;
+  name: CollapseItemName;
   title?: string;
   disabled?: boolean;
 }
 
 export interface CollapseContext {
-  activeNames: Ref<NameType[]>;
-  handleItemClick(name: NameType): void;
+  activeNames: Ref<CollapseItemName[]>;
+  handleItemClick(name: CollapseItemName): void;
 }
 
 export interface CollapseEmits {
-  (e: "update:modelValue", value: NameType[]): void;
-  (e: "change", value: NameType[]): void;
+  (e: "update:modelValue", value: CollapseItemName[]): void;
+  (e: "change", value: CollapseItemName[]): void;
 }

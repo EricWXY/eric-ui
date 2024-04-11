@@ -37,9 +37,11 @@ function handleClick() {
       }"
       @click="handleClick"
     >
-      <slot name="title">
-        {{ title }}
-      </slot>
+      <span class="er-collapse-item__title">
+        <slot name="title">
+          {{ title }}
+        </slot>
+      </span>
       <er-icon icon="angle-right" class="header-angle" />
     </div>
     <transition name="slide" v-on="transitionEvents">

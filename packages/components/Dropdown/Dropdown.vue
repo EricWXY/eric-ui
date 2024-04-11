@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, provide } from 'vue'
-import { omit } from 'lodash-es'
+import { omit, isNil } from 'lodash-es'
 import type {
   DropdownProps,
   DropdownEmits,
@@ -10,6 +10,7 @@ import type {
 } from './types'
 import { DROPDOWN_CTX_KEY } from './constants'
 import type { TooltipInstance } from '../Tooltip/types'
+import { useId } from '@eric-ui/hooks'
 
 import DropdownItem from './DropdownItem.vue'
 import Tooltip from '../Tooltip/Tooltip.vue'
@@ -19,7 +20,7 @@ defineOptions({
   inheritAttrs: false
 })
 const props = withDefaults(defineProps<DropdownProps>(), {
-  hideAfterClick: true,
+  hideOnClick: true,
   menuOptions: () => [] as MenuOption[]
 })
 const emits = defineEmits<DropdownEmits>()
@@ -29,15 +30,15 @@ const tooltipProps = computed(() =>
   omit(props, ['menuOptions', 'hideAfterClick'])
 )
 
-function handleItemClick(e: unknown) {
+function handleItemClick(e: MenuOption) {
   if ((e as MenuOption).disabled) return
-  emits('select', e as MenuOption)
-  props.hideAfterClick && tooltipRef.value?.hide()
+  props.hideOnClick && tooltipRef.value?.hide()
+  !isNil(e.command) && emits('command', e.command)
 }
 
 defineExpose<DropdownInstance>({
-  show: () => tooltipRef.value?.show(),
-  hide: () => tooltipRef.value?.hide()
+  handleOpen: () => tooltipRef.value?.show(),
+  handleClose: () => tooltipRef.value?.hide()
 })
 
 provide<DropdownContext>(DROPDOWN_CTX_KEY, {
@@ -56,7 +57,10 @@ provide<DropdownContext>(DROPDOWN_CTX_KEY, {
       <template #content>
         <ul class="er-dropdown__menu">
           <slot name="dropdown">
-            <template v-for="item in menuOptions" :key="item.name">
+            <template
+              v-for="item in items"
+              :key="item.command ?? useId().value"
+            >
               <dropdown-item v-bind="item" />
             </template>
           </slot>
@@ -66,6 +70,6 @@ provide<DropdownContext>(DROPDOWN_CTX_KEY, {
   </div>
 </template>
 
-<style>
+<style scoped>
 @import './style.css';
 </style>

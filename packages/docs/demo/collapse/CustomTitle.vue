@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { ErCollapse, ErCollapseItem, type CollapseItemName } from 'eric-ui'
+import { ErCollapse, ErCollapseItem, ErIcon } from 'eric-ui'
 import { ref } from 'vue'
 
 const activeNames = ref(['1'])
-
-function handleChange(val: CollapseItemName[]) {
-  console.log(val)
-}
 </script>
 
 <template>
-  <er-collapse v-model="activeNames" @change="handleChange">
-    <er-collapse-item title="Consistency" name="1">
+  <er-collapse v-model="activeNames" accordion>
+    <er-collapse-item name="1">
+      <template #title>
+        <span style="color: var(--er-color-danger)"> Consistency </span>
+        <er-icon icon="question-circle" />
+      </template>
       <div>
         Consistent with real life: in line with the process and logic of real
         life, and comply with languages and habits that the users are used to;

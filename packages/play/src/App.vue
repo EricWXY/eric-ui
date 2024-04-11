@@ -20,7 +20,8 @@ const dropdownOptions = ref([
   },
   {
     label: 'Option C',
-    name: 'c'
+    name: 'c',
+    divided: true
   }
 ])
 const switchValue = ref(true)
@@ -154,12 +155,9 @@ async function submit() {
     </er-collapse>
   </div>
 
-  <er-dropdown :menu-options="dropdownOptions" trigger="click"
-    >dropdown</er-dropdown
-  >
+  <er-dropdown :menu-options="dropdownOptions">dropdown</er-dropdown>
   <er-tooltip
     ref="tooltipRef"
-    trigger="click"
     placement="right-end"
     :popper-options="{ placement: 'right-end', strategy: 'fixed' }"
   >

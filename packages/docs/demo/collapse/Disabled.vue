@@ -1,16 +1,12 @@
 <script setup lang="ts">
-import { ErCollapse, ErCollapseItem, type CollapseItemName } from 'eric-ui'
+import { ErCollapse, ErCollapseItem } from 'eric-ui'
 import { ref } from 'vue'
 
 const activeNames = ref(['1'])
-
-function handleChange(val: CollapseItemName[]) {
-  console.log(val)
-}
 </script>
 
 <template>
-  <er-collapse v-model="activeNames" @change="handleChange">
+  <er-collapse v-model="activeNames">
     <er-collapse-item title="Consistency" name="1">
       <div>
         Consistent with real life: in line with the process and logic of real
@@ -21,7 +17,7 @@ function handleChange(val: CollapseItemName[]) {
         design style, icons and texts, position of elements, etc.
       </div>
     </er-collapse-item>
-    <er-collapse-item title="Feedback" name="2">
+    <er-collapse-item title="Feedback" name="2" disabled>
       <div>
         Operation feedback: enable the users to clearly perceive their
         operations by style updates and interactive effects;
@@ -31,7 +27,7 @@ function handleChange(val: CollapseItemName[]) {
         elements of the page.
       </div>
     </er-collapse-item>
-    <er-collapse-item title="Efficiency" name="3">
+    <er-collapse-item title="Efficiency" name="3" disabled>
       <div>
         Simplify the process: keep operating process simple and intuitive;
       </div>

@@ -1,28 +1,28 @@
 import type { VNode } from "vue";
 import type { TooltipProps } from "../Tooltip/types";
 
-export interface MenuOption {
-  label: string | VNode;
-  name: string | number;
+export interface DropdownItemProps {
+  command?: string | number;
+  label?: string | VNode;
   disabled?: boolean;
   divided?: boolean;
 }
 
 export interface DropdownProps extends TooltipProps {
-  menuOptions?: MenuOption[];
-  hideAfterClick?: boolean;
+  items?: DropdownItemProps[];
+  hideOnClick?: boolean;
 }
 
 export interface DropdownEmits {
   (e: "visible-change", value: boolean): void;
-  (e: "select", value: MenuOption): void;
+  (e: "command", value: DropdownItemProps["command"]): void;
 }
 
 export interface DropdownInstance {
-  show(): void;
-  hide(): void;
+  handleOpen(): void;
+  handleClose(): void;
 }
 
 export interface DropdownContext {
-  handleItemClick(item: MenuOption): void;
+  handleItemClick(item: DropdownItemProps): void;
 }
