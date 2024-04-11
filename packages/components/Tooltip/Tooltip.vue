@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { TooltipProps, TooltipEmits, TooltipInstance } from "./types";
 import { createPopper, type Instance } from "@popperjs/core";
-import { ref, reactive, watch, onUnmounted, computed } from "vue";
+import { ref, reactive, watch, watchEffect, onUnmounted, computed } from "vue";
 import { bind, debounce } from "lodash-es";
 import { useClickOutside } from "@eric-ui/hooks";
 
@@ -13,8 +13,8 @@ const props = withDefaults(defineProps<TooltipProps>(), {
   placement: "bottom",
   trigger: "hover",
   transition: "fade",
-  openDelay: 0,
-  closeDelay: 0,
+  showTimeout: 150,
+  hideTimeout: 150,
 });
 const emits = defineEmits<TooltipEmits>();
 const isOpen = ref(false);
@@ -41,21 +41,25 @@ const popperOptions = computed(() => ({
   ...props.popperOptions,
 }));
 
-const closeDelay = computed(() =>
-  props.trigger === "hover" && props.closeDelay < 150 ? 150 : props.closeDelay
+const openDelay = computed(() =>
+  props.trigger === "hover" ? props.showTimeout : 0
 );
 
-const openDebounce = debounce(bind(setVisible, null, true), props.openDelay);
-const closeDebounce = debounce(bind(setVisible, null, false), closeDelay.value);
+const closeDelay = computed(() =>
+  props.trigger === "hover" ? props.hideTimeout : 0
+);
+
+let openDebounce;
+let closeDebounce;
 
 function openFinal() {
-  closeDebounce.cancel();
-  openDebounce();
+  closeDebounce?.cancel();
+  openDebounce?.();
 }
 
 function closeFinal() {
-  openDebounce.cancel();
-  closeDebounce();
+  openDebounce?.cancel();
+  closeDebounce?.();
 }
 
 function togglePopper() {
@@ -63,6 +67,7 @@ function togglePopper() {
 }
 
 function setVisible(val: boolean) {
+  if (props.disabled) return;
   isOpen.value = val;
   emits("visible-change", val);
 }
@@ -145,6 +150,11 @@ watch(
   }
 );
 
+watchEffect(() => {
+  openDebounce = debounce(bind(setVisible, null, true), openDelay.value);
+  closeDebounce = debounce(bind(setVisible, null, false), closeDelay.value);
+});
+
 onUnmounted(() => {
   popperInstance?.destroy();
 });
@@ -152,7 +162,7 @@ onUnmounted(() => {
 defineExpose<TooltipInstance>({
   show: openFinal,
   hide: () => {
-    openDebounce.cancel();
+    openDebounce?.cancel();
     setVisible(false);
   },
 });

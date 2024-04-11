@@ -64,12 +64,18 @@ demo-preview=../demo/dropdown/Disabled.vue
 
 ### Props
 
-| Name        | Description                  | Type                                                                                    | Default  |
-| ----------- | ---------------------------- | --------------------------------------------------------------------------------------- | -------- |
-| disabled    | 是否禁用                     | `boolean`                                                                               | `false`  |
-| trigger     | 触发方式                     | `'hover' \| 'click'`                                                                    | `hover`  |
-| placement   | 弹出位置                     | `'top' \| 'top-start' \| 'top-end' \| 'bottom' \| 'bottom-start' \| 'bottom-end' \|...` | `bottom` |
-| hideOnClick | 点击菜单项时是否隐藏下拉菜单 | `boolean`                                                                               | `true`   |
+| Name         | Description                                     | Type                                                                                    | Default  |
+| ------------ | ----------------------------------------------- | --------------------------------------------------------------------------------------- | -------- |
+| disabled     | 是否禁用                                        | `boolean`                                                                               | `false`  |
+| trigger      | 触发方式                                        | `'hover' \| 'click'`                                                                    | `hover`  |
+| placement    | 弹出位置                                        | `'top' \| 'top-start' \| 'top-end' \| 'bottom' \| 'bottom-start' \| 'bottom-end' \|...` | `bottom` |
+| hideOnClick  | 点击菜单项时是否隐藏下拉菜单                    | `boolean`                                                                               | `true`   |
+| show-timeout | 展开下拉菜单的延时,仅在 trigger 为 hover 时有效 | `number`                                                                                | `150`    |
+| hide-timeout | 收起下拉菜单的延时,仅在 trigger 为 hover 时有效 | `number`                                                                                | `150`    |
+
+:::tip
+ps: 触发方式为 hover 时，如果出现弹出层不稳定的情况，可能是 hide-timeout 值过小，请增大该值。(默认值 150 经过验证较为稳定)
+:::
 
 ### Events
 

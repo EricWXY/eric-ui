@@ -68,9 +68,9 @@ provide<DropdownContext>(DROPDOWN_CTX_KEY, {
 <template>
   <div class="er-dropdown" :class="{ 'is-disabled': props.disabled }">
     <tooltip
+      ref="tooltipRef"
       v-bind="tooltipProps"
       @visible-change="$emit('visible-change', $event)"
-      ref="tooltipRef"
     >
       <slot></slot>
       <template #content>
