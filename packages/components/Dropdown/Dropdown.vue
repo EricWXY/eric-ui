@@ -1,53 +1,72 @@
 <script setup lang="ts">
-import { ref, computed, provide } from 'vue'
-import { omit, isNil } from 'lodash-es'
+import { ref, computed, provide, useSlots, watchEffect, type VNode } from "vue";
+import { omit, each, isNil, assign, isFunction } from "lodash-es";
 import type {
   DropdownProps,
   DropdownEmits,
   DropdownInstance,
   MenuOption,
-  DropdownContext
-} from './types'
-import { DROPDOWN_CTX_KEY } from './constants'
-import type { TooltipInstance } from '../Tooltip/types'
-import { useId } from '@eric-ui/hooks'
+  DropdownContext,
+} from "./types";
+import { DROPDOWN_CTX_KEY } from "./constants";
+import type { TooltipInstance } from "../Tooltip/types";
+import { useId } from "@eric-ui/hooks";
 
-import DropdownItem from './DropdownItem.vue'
-import Tooltip from '../Tooltip/Tooltip.vue'
+import DropdownItem from "./DropdownItem.vue";
+import Tooltip from "../Tooltip/Tooltip.vue";
 
 defineOptions({
-  name: 'ErDropdown',
-  inheritAttrs: false
-})
+  name: "ErDropdown",
+  inheritAttrs: false,
+});
 const props = withDefaults(defineProps<DropdownProps>(), {
   hideOnClick: true,
-  menuOptions: () => [] as MenuOption[]
-})
-const emits = defineEmits<DropdownEmits>()
-const tooltipRef = ref<TooltipInstance | null>(null)
+  menuOptions: () => [] as MenuOption[],
+});
+const emits = defineEmits<DropdownEmits>();
+const slots = useSlots();
+const tooltipRef = ref<TooltipInstance | null>(null);
 
 const tooltipProps = computed(() =>
-  omit(props, ['menuOptions', 'hideAfterClick'])
-)
+  omit(props, ["menuOptions", "hideAfterClick"])
+);
 
 function handleItemClick(e: MenuOption) {
-  if ((e as MenuOption).disabled) return
-  props.hideOnClick && tooltipRef.value?.hide()
-  !isNil(e.command) && emits('command', e.command)
+  if ((e as MenuOption).disabled) return;
+  props.hideOnClick && tooltipRef.value?.hide();
+  !isNil(e.command) && emits("command", e.command);
 }
 
+const _dfs = (nodes: VNode[], cb: (node: VNode) => void) =>
+  each(nodes, (node) => {
+    isFunction(cb) && cb(node);
+    node.children && _dfs(node.children as VNode[]);
+  });
+
+watchEffect(() => {
+  props.disabled &&
+    _dfs(slots?.default?.() ?? [], (node) => {
+      node.props = assign(node.props, {
+        style: {
+          cursor: "not-allowed",
+          color: "var(--er-text-color-placeholder)",
+        },
+      });
+    });
+});
+
 defineExpose<DropdownInstance>({
-  handleOpen: () => tooltipRef.value?.show(),
-  handleClose: () => tooltipRef.value?.hide()
-})
+  open: () => tooltipRef.value?.show(),
+  close: () => tooltipRef.value?.hide(),
+});
 
 provide<DropdownContext>(DROPDOWN_CTX_KEY, {
-  handleItemClick
-})
+  handleItemClick,
+});
 </script>
 
 <template>
-  <div class="er-dropdown">
+  <div class="er-dropdown" :class="{ 'is-disabled': props.disabled }">
     <tooltip
       v-bind="tooltipProps"
       @visible-change="$emit('visible-change', $event)"
@@ -71,5 +90,5 @@ provide<DropdownContext>(DROPDOWN_CTX_KEY, {
 </template>
 
 <style scoped>
-@import './style.css';
+@import "./style.css";
 </style>

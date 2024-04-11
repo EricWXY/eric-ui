@@ -1,53 +1,53 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
-import type { SwitchEmits, SwitchProps, SwitchInstance } from './types'
-import { debugWarn } from '@eric-ui/utils'
-import { useFormItem, useFormDisabled, useFormItemInputId } from '../Form'
+import { ref, computed, onMounted, watch } from "vue";
+import type { SwitchEmits, SwitchProps, SwitchInstance } from "./types";
+import { debugWarn } from "@eric-ui/utils";
+import { useFormItem, useFormDisabled, useFormItemInputId } from "../Form";
 
-defineOptions({ name: 'ErSwitch', inheritAttrs: false })
+defineOptions({ name: "ErSwitch", inheritAttrs: false });
 const props = withDefaults(defineProps<SwitchProps>(), {
   activeValue: true,
-  inactiveValue: false
-})
-const emits = defineEmits<SwitchEmits>()
-const isDisabled = useFormDisabled()
-const { formItem } = useFormItem()
-const { inputId } = useFormItemInputId(props, formItem)
+  inactiveValue: false,
+});
+const emits = defineEmits<SwitchEmits>();
+const isDisabled = useFormDisabled();
+const { formItem } = useFormItem();
+const { inputId } = useFormItemInputId(props, formItem);
 
-const innerValue = ref(props.modelValue)
-const inputRef = ref<HTMLInputElement | null>(null)
-const checked = computed(() => innerValue.value === props.activeValue)
+const innerValue = ref(props.modelValue);
+const inputRef = ref<HTMLInputElement | null>(null);
+const checked = computed(() => innerValue.value === props.activeValue);
 
-const focus: SwitchInstance['focus'] = function () {
-  inputRef.value?.focus()
-}
+const focus: SwitchInstance["focus"] = function () {
+  inputRef.value?.focus();
+};
 
 function handleChange() {
-  if (isDisabled.value) return
+  if (isDisabled.value) return;
 
-  const newVal = checked.value ? props.inactiveValue : props.activeValue
+  const newVal = checked.value ? props.inactiveValue : props.activeValue;
 
-  innerValue.value = newVal
-  emits('update:modelValue', newVal)
-  emits('change', newVal)
+  innerValue.value = newVal;
+  emits("update:modelValue", newVal);
+  emits("change", newVal);
 }
 
 onMounted(() => {
-  inputRef.value!.checked = checked.value
-})
-watch(checked, val => {
-  inputRef.value!.checked = val
-  formItem?.validate('change').catch(err => debugWarn(err))
-})
+  inputRef.value!.checked = checked.value;
+});
+watch(checked, (val) => {
+  inputRef.value!.checked = val;
+  formItem?.validate("change").catch((err) => debugWarn(err));
+});
 watch(
   () => props.modelValue,
-  val => (innerValue.value = val)
-)
+  (val) => (innerValue.value = val)
+);
 
 defineExpose<SwitchInstance>({
   focus,
-  checked
-})
+  checked,
+});
 </script>
 
 <template>
@@ -56,7 +56,7 @@ defineExpose<SwitchInstance>({
     :class="{
       [`er-switch--${size}`]: size,
       'is-disabled': isDisabled,
-      'is-checked': checked
+      'is-checked': checked,
     }"
     @click="handleChange"
   >
@@ -70,7 +70,7 @@ defineExpose<SwitchInstance>({
       :disabled="isDisabled"
       :checked="checked"
       @keydown.enter="handleChange"
-      @blur="formItem?.validate('blur')"
+      @blur="formItem?.validate('blur').catch((err) => debugWarn(err))"
     />
     <div class="er-switch__core">
       <div class="er-switch__core-inner">
@@ -87,5 +87,5 @@ defineExpose<SwitchInstance>({
 </template>
 
 <style scoped>
-@import './style.css';
+@import "./style.css";
 </style>

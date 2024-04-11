@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import type { UploadListProps } from './types'
-import ErIcon from '../Icon/Icon.vue'
+import type { UploadListProps } from "./types";
+import ErIcon from "../Icon/Icon.vue";
 defineOptions({
-  name: 'ErUploadList'
-})
+  name: "ErUploadList",
+});
 
-defineProps<UploadListProps>()
+defineProps<UploadListProps>();
 
 const statusIconMap = new Map([
-  ['success', 'check-circle'],
-  ['error', 'times-circle'],
-  ['uploading', 'spinner']
-])
+  ["success", "check-circle"],
+  ["error", "times-circle"],
+  ["uploading", "spinner"],
+]);
 </script>
 
 <template>

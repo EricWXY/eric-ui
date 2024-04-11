@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { type DropdownItemProps } from './types'
-import { DROPDOWN_CTX_KEY } from './constants'
-import { useId } from '@eric-ui/hooks'
-import { inject } from 'vue'
+import { type DropdownItemProps } from "./types";
+import { DROPDOWN_CTX_KEY } from "./constants";
+import { useId } from "@eric-ui/hooks";
+import { inject } from "vue";
 
 defineOptions({
-  name: 'ErDropdownItem'
-})
-const props = defineProps<DropdownItemProps>()
+  name: "ErDropdownItem",
+});
+const props = defineProps<DropdownItemProps>();
 
-const ctx = inject(DROPDOWN_CTX_KEY)
+const ctx = inject(DROPDOWN_CTX_KEY);
 
 function handleClick() {
-  if (props.disabled) return
-  ctx?.handleItemClick(props)
+  if (props.disabled) return;
+  ctx?.handleItemClick(props);
 }
 </script>
 
@@ -24,7 +24,7 @@ function handleClick() {
     :class="{
       'er-dropdown__item': true,
       'is-disabled': disabled,
-      'is-divided': divided
+      'is-divided': divided,
     }"
     @click="handleClick"
   >
@@ -35,5 +35,5 @@ function handleClick() {
 </template>
 
 <style scoped>
-@import './style.css';
+@import "./style.css";
 </style>

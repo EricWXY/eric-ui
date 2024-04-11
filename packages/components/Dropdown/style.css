@@ -9,6 +9,10 @@
   .er-tooltip {
     --er-popover-padding: 5px 0;
   }
+  &.is-disabled>*{
+    color: var(--er-text-color-placeholder) !important;
+    cursor: not-allowed !important;
+  }
 }
 .er-dropdown__menu {
   list-style-type: none;

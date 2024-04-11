@@ -4,6 +4,7 @@ export interface TooltipProps {
   trigger?: "hover" | "click";
   placement?: Placement;
   manual?: boolean;
+  disabled?: boolean;
   popperOptions?: Partial<Options>;
   transition?: string;
   openDelay?: number;

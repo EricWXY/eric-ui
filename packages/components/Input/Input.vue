@@ -1,27 +1,27 @@
 <script setup lang="ts">
-import { computed, ref, watch, useAttrs, shallowRef, nextTick } from 'vue'
-import type { InputProps, InputEmits, InputInstance } from './types'
-import { useFormItem, useFormDisabled, useFormItemInputId } from '../Form'
-import { debugWarn } from '@eric-ui/utils'
-import { useFocusController } from '@eric-ui/hooks'
-import { each, noop } from 'lodash-es'
-import Icon from '../Icon/Icon.vue'
+import { computed, ref, watch, useAttrs, shallowRef, nextTick } from "vue";
+import type { InputProps, InputEmits, InputInstance } from "./types";
+import { useFormItem, useFormDisabled, useFormItemInputId } from "../Form";
+import { debugWarn } from "@eric-ui/utils";
+import { useFocusController } from "@eric-ui/hooks";
+import { each, noop } from "lodash-es";
+import Icon from "../Icon/Icon.vue";
 
 defineOptions({
-  name: 'ErInput',
-  inheritAttrs: false
-})
+  name: "ErInput",
+  inheritAttrs: false,
+});
 const props = withDefaults(defineProps<InputProps>(), {
-  type: 'text',
-  autocomplete: 'off'
-})
-const emits = defineEmits<InputEmits>()
+  type: "text",
+  autocomplete: "off",
+});
+const emits = defineEmits<InputEmits>();
 
-const innerValue = ref(props.modelValue)
-const passwordVisible = ref(false)
+const innerValue = ref(props.modelValue);
+const passwordVisible = ref(false);
 
-const inputRef = shallowRef<HTMLInputElement>()
-const textareaRef = shallowRef<HTMLTextAreaElement>()
+const inputRef = shallowRef<HTMLInputElement>();
+const textareaRef = shallowRef<HTMLTextAreaElement>();
 
 const showClear = computed(
   () =>
@@ -29,79 +29,79 @@ const showClear = computed(
     !!innerValue.value &&
     !isDisabled.value &&
     isFocused.value
-)
+);
 
 const showPasswordArea = computed(
   () =>
-    props.type === 'password' &&
+    props.type === "password" &&
     props.showPassword &&
     !isDisabled.value &&
     !!innerValue.value
-)
+);
 
-const _ref = computed(() => inputRef.value || textareaRef.value)
+const _ref = computed(() => inputRef.value || textareaRef.value);
 
-const attrs = useAttrs()
-const isDisabled = useFormDisabled()
-const { formItem } = useFormItem()
-const { inputId } = useFormItemInputId(props, formItem)
+const attrs = useAttrs();
+const isDisabled = useFormDisabled();
+const { formItem } = useFormItem();
+const { inputId } = useFormItemInputId(props, formItem);
 const { wrapperRef, isFocused, handleFocus, handleBlur } = useFocusController(
   _ref,
   {
     afterBlur() {
-      formItem?.validate('blur').catch(err => debugWarn(err))
-    }
+      formItem?.validate("blur").catch((err) => debugWarn(err));
+    },
   }
-)
+);
 
-const clear: InputInstance['clear'] = function () {
-  innerValue.value = ''
-  each(['update:modelValue', 'input', 'change'], e => emits(e as any, ''))
-  emits('clear')
-  formItem?.clearValidate()
-}
+const clear: InputInstance["clear"] = function () {
+  innerValue.value = "";
+  each(["update:modelValue", "input", "change"], (e) => emits(e as any, ""));
+  emits("clear");
+  formItem?.clearValidate();
+};
 
-const focus: InputInstance['focus'] = async function () {
-  await nextTick()
-  _ref.value?.focus()
-}
+const focus: InputInstance["focus"] = async function () {
+  await nextTick();
+  _ref.value?.focus();
+};
 
-const blur: InputInstance['blur'] = function () {
-  _ref.value?.blur()
-}
+const blur: InputInstance["blur"] = function () {
+  _ref.value?.blur();
+};
 
-const select: InputInstance['select'] = function () {
-  _ref.value?.select()
-}
+const select: InputInstance["select"] = function () {
+  _ref.value?.select();
+};
 
 function handleInput() {
-  emits('update:modelValue', innerValue.value)
-  emits('input', innerValue.value)
+  emits("update:modelValue", innerValue.value);
+  emits("input", innerValue.value);
 }
 
 function handleChange() {
-  emits('change', innerValue.value)
+  emits("change", innerValue.value);
 }
 
 function togglePasswordVisible() {
-  passwordVisible.value = !passwordVisible.value
+  passwordVisible.value = !passwordVisible.value;
 }
 
 watch(
   () => props.modelValue,
-  newValue => {
-    innerValue.value = newValue
-    formItem?.validate('change').catch(err => debugWarn(err))
+  (newValue) => {
+    innerValue.value = newValue;
+    formItem?.validate("change").catch((err) => debugWarn(err));
   }
-)
+);
 
 defineExpose<InputInstance>({
   ref: _ref,
   focus,
   blur,
   select,
-  clear
-})
+  clear,
+});
 </script>
 
 <template>
@@ -115,7 +115,7 @@ defineExpose<InputInstance>({
       'is-append': $slots.append,
       'is-prefix': $slots.prefix,
       'is-suffix': $slots.suffix,
-      'is-focus': isFocused
+      'is-focus': isFocused,
     }"
   >
     <!-- input -->
@@ -204,5 +204,5 @@ defineExpose<InputInstance>({
 </template>
 
 <style scoped>
-@import './style.css';
+@import "./style.css";
 </style>

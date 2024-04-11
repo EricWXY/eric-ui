@@ -89,3 +89,10 @@ demo-preview=../demo/alert/IconDesc.vue
 | ------- | ----------------------------------- |
 | default | 默认插槽，用于设置 Alert 的内容描述 |
 | title   | 标题的内容                          |
+
+### Expose
+
+| Name  | Description | Type         |
+| ----- | ----------- | ------------ |
+| open  | 打开 Alert  | `() => void` |
+| close | 关闭 Alert  | `() => void` |

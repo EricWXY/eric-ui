@@ -46,8 +46,65 @@ demo-preview=../demo/dropdown/Command.vue
 
 ## 下拉方法
 
-可以手动使用 `DropdownInstance.handleOpen` 或 `DropdownInstance.handleClose` 以打开或关闭下拉菜单
+可以手动使用 `DropdownInstance.open` 或 `DropdownInstance.close` 以打开或关闭下拉菜单
 
 ::: preview
 demo-preview=../demo/dropdown/InstanceMethod.vue
 :::
+
+## 禁用状态
+
+通过设置 `disabled` 属性来禁用下拉菜单。
+
+::: preview
+demo-preview=../demo/dropdown/Disabled.vue
+:::
+
+## Dropdown API
+
+### Props
+
+| Name        | Description                  | Type                                                                                    | Default  |
+| ----------- | ---------------------------- | --------------------------------------------------------------------------------------- | -------- |
+| disabled    | 是否禁用                     | `boolean`                                                                               | `false`  |
+| trigger     | 触发方式                     | `'hover' \| 'click'`                                                                    | `hover`  |
+| placement   | 弹出位置                     | `'top' \| 'top-start' \| 'top-end' \| 'bottom' \| 'bottom-start' \| 'bottom-end' \|...` | `bottom` |
+| hideOnClick | 点击菜单项时是否隐藏下拉菜单 | `boolean`                                                                               | `true`   |
+
+### Events
+
+| Name           | Description              | Type                                 |
+| -------------- | ------------------------ | ------------------------------------ |
+| visible-change | 下拉菜单显示或隐藏时触发 | `(visible: boolean) => void`         |
+| command        | 点击菜单项时触发         | `(command: string\| number) => void` |
+
+### Slots
+
+| Name     | Description | Sub Component |
+| -------- | ----------- | ------------- |
+| default  | 默认插槽    | -             |
+| dropdown | 下拉菜单    | DropdownItem  |
+
+### Expose
+
+| Name  | Description  | Type         |
+| ----- | ------------ | ------------ |
+| open  | 打开下拉菜单 | `() => void` |
+| close | 关闭下拉菜单 | `() => void` |
+
+## DropdownItem API
+
+### Props
+
+| Name     | Description | Type               | Default |
+| -------- | ----------- | ------------------ | ------- |
+| command  | 菜单项指令  | `string \| number` | -       |
+| label    | 菜单项文本  | `string`           | -       |
+| disabled | 禁用状态    | `boolean`          | `false` |
+| divider  | 添加分割线  | `boolean`          | `false` |
+
+### Slots
+
+| Name    | Description                        |
+| ------- | ---------------------------------- |
+| default | 默认插槽, 优先级高于 `props.label` |

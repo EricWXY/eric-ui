@@ -12,9 +12,9 @@ import {
   reactive,
   watchEffect,
   toRefs,
-  useSlots
-} from 'vue'
-import Schema, { type RuleItem } from 'async-validator'
+  useSlots,
+} from "vue";
+import Schema, { type RuleItem } from "async-validator";
 import type {
   FormItemContext,
   FormItemProps,
@@ -22,8 +22,8 @@ import type {
   FormValidateCallback,
   ValidateStatus,
   FormItemInstance,
-  FromItemRule
-} from './types'
+  FromItemRule,
+} from "./types";
 import {
   isNil,
   get,
@@ -37,195 +37,195 @@ import {
   includes,
   map,
   cloneDeep,
-  isArray
-} from 'lodash-es'
-import { useId } from '@eric-ui/hooks'
-import { FORM_CTX_KEY, FORM_ITEM_CTX_KEY } from './constants'
+  isArray,
+} from "lodash-es";
+import { useId } from "@eric-ui/hooks";
+import { FORM_CTX_KEY, FORM_ITEM_CTX_KEY } from "./constants";
 
-defineOptions({ name: 'ErFormItem' })
+defineOptions({ name: "ErFormItem" });
 const props = withDefaults(defineProps<FormItemProps>(), {
   showMessage: true,
-  required: void 0
-})
-const slots = useSlots()
-const ctx = inject(FORM_CTX_KEY)
+  required: void 0,
+});
+const slots = useSlots();
+const ctx = inject(FORM_CTX_KEY);
 
-const labelId = useId().value
+const labelId = useId().value;
 
-const validateStatus: Ref<ValidateStatus> = ref('init')
-const errMsg = ref('')
+const validateStatus: Ref<ValidateStatus> = ref("init");
+const errMsg = ref("");
 
-const inputIds = ref<string[]>([])
+const inputIds = ref<string[]>([]);
 
 const getValByProp = (target: Record<string, any> | void) => {
   if (target && props.prop && !isNil(get(target, props.prop))) {
-    return get(target, props.prop)
+    return get(target, props.prop);
   }
-  return null
-}
+  return null;
+};
 
-const hasLabel = computed(() => !!(props.label || slots.label))
+const hasLabel = computed(() => !!(props.label || slots.label));
 const labelFor = computed(
-  () => props.for || (inputIds.value.length ? inputIds.value[0] : '')
-)
+  () => props.for || (inputIds.value.length ? inputIds.value[0] : "")
+);
 
 const currentLabel = computed(
-  () => `${props.label ?? ''}${ctx?.labelSuffix ?? ''}`
-)
+  () => `${props.label ?? ""}${ctx?.labelSuffix ?? ""}`
+);
 
 const innerVal = computed(() => {
-  const model = ctx?.model
-  return getValByProp(model)
-})
+  const model = ctx?.model;
+  return getValByProp(model);
+});
 
 const itemRules = computed(() => {
-  const { required } = props
+  const { required } = props;
 
-  const rules: FromItemRule[] = []
+  const rules: FromItemRule[] = [];
   if (props.rules) {
-    rules.push(...props.rules)
+    rules.push(...props.rules);
   }
 
-  const formRules = ctx?.rules
+  const formRules = ctx?.rules;
   if (formRules && props.prop) {
-    const _rules = getValByProp(formRules)
+    const _rules = getValByProp(formRules);
     if (_rules) {
-      rules.push(..._rules)
+      rules.push(..._rules);
     }
   }
 
   if (!isNil(required)) {
     const requiredRules = filter(
       map(rules, (rule, i) => [rule, i]),
-      (item: [FromItemRule, number]) => includes(keys(item[0]), 'required')
-    )
+      (item: [FromItemRule, number]) => includes(keys(item[0]), "required")
+    );
 
     if (size(requiredRules)) {
       for (const item of requiredRules) {
-        const [rule, i] = item as [FromItemRule, number]
-        if (rule.required === required) continue
-        rules[i] = { ...rule, required }
+        const [rule, i] = item as [FromItemRule, number];
+        if (rule.required === required) continue;
+        rules[i] = { ...rule, required };
       }
     } else {
-      rules.push({ required })
+      rules.push({ required });
     }
   }
 
-  return rules
-})
+  return rules;
+});
 
-const validateEnabled = computed(() => size(itemRules.value) > 0)
+const validateEnabled = computed(() => size(itemRules.value) > 0);
 const isRequired = computed(
   () =>
     !ctx?.hideRequiredAsterisk &&
-    (some(itemRules.value, 'required') || props?.required)
-)
-const isDisabled = computed(() => ctx?.disabled || props?.disabled)
+    (some(itemRules.value, "required") || props?.required)
+);
+const isDisabled = computed(() => ctx?.disabled || props?.disabled);
 const propString = computed(() => {
-  if (!props.prop) return ''
-  return isString(props.prop) ? props.prop : props.prop.join('.')
-})
+  if (!props.prop) return "";
+  return isString(props.prop) ? props.prop : props.prop.join(".");
+});
 
 const normalizeLabelWidth = computed(() => {
   const _normalizeStyle = (val: number | string) => {
-    if (isNumber(val)) return `${val}px`
-    return endsWith(val, 'px') ? val : `${val}px`
-  }
+    if (isNumber(val)) return `${val}px`;
+    return endsWith(val, "px") ? val : `${val}px`;
+  };
 
-  if (props.labelWidth) return _normalizeStyle(props.labelWidth)
-  if (ctx?.labelWidth) return _normalizeStyle(ctx.labelWidth)
-  return '150px'
-})
+  if (props.labelWidth) return _normalizeStyle(props.labelWidth);
+  if (ctx?.labelWidth) return _normalizeStyle(ctx.labelWidth);
+  return "150px";
+});
 
-let initialVal: any = null
-let isResetting = false
+let initialVal: any = null;
+let isResetting = false;
 
 function getTriggeredRules(trigger?: string) {
-  const rules = itemRules.value
+  const rules = itemRules.value;
   if (rules) {
-    return filter(rules, r => {
-      if (!r.trigger || !trigger) return true
+    return filter(rules, (r) => {
+      if (!r.trigger || !trigger) return true;
       if (isArray(r.trigger)) {
-        return r.trigger.includes(trigger)
+        return r.trigger.includes(trigger);
       }
-      return r.trigger === trigger
-    }).map(({ trigger, ...rule }) => rule as RuleItem)
+      return r.trigger === trigger;
+    }).map(({ trigger, ...rule }) => rule as RuleItem);
   }
-  return []
+  return [];
 }
 
 async function doValidate(rules: any[]) {
-  const modelName = propString.value
-  const validator = new Schema({ [modelName]: rules })
+  const modelName = propString.value;
+  const validator = new Schema({ [modelName]: rules });
   return validator
     .validate({ [modelName]: innerVal.value }, { firstFields: true })
     .then(() => {
-      validateStatus.value = 'success'
-      ctx?.emits('validate', props, true, '')
-      return true
+      validateStatus.value = "success";
+      ctx?.emits("validate", props, true, "");
+      return true;
     })
     .catch((err: FormValidateFailuer) => {
-      const { errors } = err
-      validateStatus.value = 'error'
-      errMsg.value = errors && size(errors) > 0 ? errors[0].message ?? '' : ''
-      ctx?.emits('validate', props, false, errMsg.value)
-      return Promise.reject(err)
-    })
+      const { errors } = err;
+      validateStatus.value = "error";
+      errMsg.value = errors && size(errors) > 0 ? errors[0].message ?? "" : "";
+      ctx?.emits("validate", props, false, errMsg.value);
+      return Promise.reject(err);
+    });
 }
 
-const validate: FormItemInstance['validate'] = async function (
+const validate: FormItemInstance["validate"] = async function (
   trigger: string,
   callback?: FormValidateCallback
 ) {
-  if (isResetting || !props.prop || isDisabled.value) return false
+  if (isResetting || !props.prop || isDisabled.value) return false;
 
   if (!validateEnabled.value) {
-    callback?.(false)
-    return false
+    callback?.(false);
+    return false;
   }
 
-  const rules = getTriggeredRules(trigger)
+  const rules = getTriggeredRules(trigger);
   if (!size(rules)) {
-    callback?.(true)
-    return true
+    callback?.(true);
+    return true;
   }
 
-  validateStatus.value = 'validating'
+  validateStatus.value = "validating";
 
   return doValidate(rules)
     .then(() => {
-      callback?.(true)
-      return true
+      callback?.(true);
+      return true;
     })
     .catch((err: FormValidateFailuer) => {
-      const { fields } = err
-      callback?.(false, fields)
-      return Promise.reject(fields)
-    })
-}
-const resetField: FormItemInstance['resetField'] = function () {
-  const model = ctx?.model
+      const { fields } = err;
+      callback?.(false, fields);
+      return Promise.reject(fields);
+    });
+};
+const resetField: FormItemInstance["resetField"] = function () {
+  const model = ctx?.model;
   if (model && propString.value && !isNil(get(model, propString.value))) {
-    isResetting = true
-    model[propString.value] = cloneDeep(initialVal)
+    isResetting = true;
+    model[propString.value] = cloneDeep(initialVal);
   }
 
-  nextTick(() => clearValidate())
-}
+  nextTick(() => clearValidate());
+};
 
-const clearValidate: FormItemInstance['clearValidate'] = function () {
-  validateStatus.value = 'init'
-  errMsg.value = ''
-  isResetting = false
-}
+const clearValidate: FormItemInstance["clearValidate"] = function () {
+  validateStatus.value = "init";
+  errMsg.value = "";
+  isResetting = false;
+};
 
-const addInputId: FormItemContext['addInputId'] = function (id) {
-  if (!includes(inputIds.value, id)) inputIds.value.push(id)
-}
+const addInputId: FormItemContext["addInputId"] = function (id) {
+  if (!includes(inputIds.value, id)) inputIds.value.push(id);
+};
 
-const removeInputId: FormItemContext['removeInputId'] = function (id) {
-  inputIds.value = filter(inputIds.value, i => i != id)
-}
+const removeInputId: FormItemContext["removeInputId"] = function (id) {
+  inputIds.value = filter(inputIds.value, (i) => i != id);
+};
 
 const formItemCtx: FormItemContext = reactive({
   ...toRefs(props),
@@ -234,42 +234,42 @@ const formItemCtx: FormItemContext = reactive({
   resetField,
   clearValidate,
   addInputId,
-  removeInputId
-})
+  removeInputId,
+});
 
 onMounted(() => {
   if (props.prop) {
-    ctx?.addField(formItemCtx)
-    initialVal = innerVal.value
+    ctx?.addField(formItemCtx);
+    initialVal = innerVal.value;
   }
-})
+});
 
 onUnmounted(() => {
   if (props.prop) {
-    ctx?.removeField(formItemCtx)
+    ctx?.removeField(formItemCtx);
   }
-})
+});
 
-watchEffect(() => (formItemCtx.disabled = isDisabled.value))
+watchEffect(() => (formItemCtx.disabled = isDisabled.value));
 
 watch(
   () => props.error,
-  val => {
-    errMsg.value = val || ''
-    validateStatus.value = val ? 'error' : 'init'
+  (val) => {
+    errMsg.value = val || "";
+    validateStatus.value = val ? "error" : "init";
   },
   { immediate: true }
-)
+);
 
-provide<FormItemContext>(FORM_ITEM_CTX_KEY, formItemCtx)
+provide<FormItemContext>(FORM_ITEM_CTX_KEY, formItemCtx);
 
 defineExpose<FormItemInstance>({
   validateMessage: errMsg,
   validateStatus,
   validate,
   resetField,
-  clearValidate
-})
+  clearValidate,
+});
 </script>
 
 <template>
@@ -280,7 +280,7 @@ defineExpose<FormItemInstance>({
       'is-disabled': isDisabled,
       'is-required': isRequired,
       'asterisk-left': ctx?.requiredAsteriskPosition === 'left',
-      'asterisk-right': ctx?.requiredAsteriskPosition === 'right'
+      'asterisk-right': ctx?.requiredAsteriskPosition === 'right',
     }"
   >
     <component
@@ -307,7 +307,7 @@ defineExpose<FormItemInstance>({
 </template>
 
 <style scoped>
-@import './style.css';
+@import "./style.css";
 
 .er-form-item {
   --er-form-label-width: v-bind(normalizeLabelWidth) !important;

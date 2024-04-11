@@ -1,93 +1,93 @@
-import { describe, test, expect, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { describe, test, expect, vi } from "vitest";
+import { mount } from "@vue/test-utils";
 
-import Icon from '../Icon/Icon.vue'
-import Button from './Button.vue'
+import Icon from "../Icon/Icon.vue";
+import Button from "./Button.vue";
 
-describe('Button.vue', () => {
-  const onClick = vi.fn()
-  test('basic button', async () => {
+describe("Button.vue", () => {
+  const onClick = vi.fn();
+  test("basic button", async () => {
     const wrapper = mount(() => (
-      <Button type='primary' {...{ onClick }}>
+      <Button type="primary" {...{ onClick }}>
         button content
       </Button>
-    ))
+    ));
 
     // class
-    expect(wrapper.classes()).toContain('er-button--primary')
+    expect(wrapper.classes()).toContain("er-button--primary");
 
     // slot
-    expect(wrapper.get('button').text()).toBe('button content')
+    expect(wrapper.get("button").text()).toBe("button content");
 
     // events
-    await wrapper.get('button').trigger('click')
-    expect(onClick).toHaveBeenCalledOnce()
-  })
+    await wrapper.get("button").trigger("click");
+    expect(onClick).toHaveBeenCalledOnce();
+  });
 
-  test('disabled button', async () => {
+  test("disabled button", async () => {
     const wrapper = mount(() => (
       <Button disabled {...{ onClick }}>
         disabled button
       </Button>
-    ))
+    ));
 
     // class
-    expect(wrapper.classes()).toContain('is-disabled')
+    expect(wrapper.classes()).toContain("is-disabled");
 
     // attrs
-    expect(wrapper.attributes('disabled')).toBeDefined()
-    expect(wrapper.find('button').element.disabled).toBeTruthy()
+    expect(wrapper.attributes("disabled")).toBeDefined();
+    expect(wrapper.find("button").element.disabled).toBeTruthy();
 
     // events
-    await wrapper.get('button').trigger('click')
-    expect(onClick).toHaveBeenCalledOnce()
-  })
+    await wrapper.get("button").trigger("click");
+    expect(onClick).toHaveBeenCalledOnce();
+  });
 
-  test('loading button', () => {
+  test("loading button", () => {
     const wrapper = mount(Button, {
       props: {
-        loading: true
+        loading: true,
       },
       slots: {
-        default: 'loading button'
+        default: "loading button",
       },
       global: {
-        stubs: ['ErIcon']
-      }
-    })
+        stubs: ["ErIcon"],
+      },
+    });
 
     // class
-    expect(wrapper.classes()).toContain('is-loading')
+    expect(wrapper.classes()).toContain("is-loading");
 
     // attrs
-    expect(wrapper.attributes('disabled')).toBeDefined()
-    expect(wrapper.find('button').element.disabled).toBeTruthy()
+    expect(wrapper.attributes("disabled")).toBeDefined();
+    expect(wrapper.find("button").element.disabled).toBeTruthy();
 
     // events
-    wrapper.get('button').trigger('click')
-    expect(wrapper.emitted()).not.toHaveProperty('click')
+    wrapper.get("button").trigger("click");
+    expect(wrapper.emitted()).not.toHaveProperty("click");
 
     // icon
-    const iconElement = wrapper.findComponent(Icon)
-    expect(iconElement.exists()).toBeTruthy()
-    expect(iconElement.attributes('icon')).toBe('spinner')
-  })
+    const iconElement = wrapper.findComponent(Icon);
+    expect(iconElement.exists()).toBeTruthy();
+    expect(iconElement.attributes("icon")).toBe("spinner");
+  });
 
-  test('icon button', () => {
+  test("icon button", () => {
     const wrapper = mount(Button, {
       props: {
-        icon: 'arrow-up'
+        icon: "arrow-up",
       },
       slots: {
-        default: 'icon button'
+        default: "icon button",
       },
       global: {
-        stubs: ['ErIcon']
-      }
-    })
+        stubs: ["ErIcon"],
+      },
+    });
 
-    const iconElement = wrapper.findComponent(Icon)
-    expect(iconElement.exists()).toBeTruthy()
-    expect(iconElement.attributes('icon')).toBe('arrow-up')
-  })
-})
+    const iconElement = wrapper.findComponent(Icon);
+    expect(iconElement.exists()).toBeTruthy();
+    expect(iconElement.attributes("icon")).toBe("arrow-up");
+  });
+});

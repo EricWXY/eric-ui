@@ -1,147 +1,161 @@
 <script setup lang="ts">
-import type { TooltipProps, TooltipEmits, TooltipInstance } from './types'
-import { createPopper, type Instance } from '@popperjs/core'
-import { ref, reactive, watch, onUnmounted, computed } from 'vue'
-import { bind, debounce } from 'lodash-es'
-import { useClickOutside } from '@eric-ui/hooks'
+import type { TooltipProps, TooltipEmits, TooltipInstance } from "./types";
+import { createPopper, type Instance } from "@popperjs/core";
+import { ref, reactive, watch, onUnmounted, computed } from "vue";
+import { bind, debounce } from "lodash-es";
+import { useClickOutside } from "@eric-ui/hooks";
 
 defineOptions({
-  name: 'ErTooltip'
-})
+  name: "ErTooltip",
+});
 
 const props = withDefaults(defineProps<TooltipProps>(), {
-  placement: 'bottom',
-  trigger: 'hover',
-  transition: 'fade',
+  placement: "bottom",
+  trigger: "hover",
+  transition: "fade",
   openDelay: 0,
-  closeDelay: 0
-})
-const emits = defineEmits<TooltipEmits>()
-const isOpen = ref(false)
+  closeDelay: 0,
+});
+const emits = defineEmits<TooltipEmits>();
+const isOpen = ref(false);
 
-const containerNode = ref<HTMLElement>()
-const popperNode = ref<HTMLElement>()
-const triggerNode = ref<HTMLElement>()
+const containerNode = ref<HTMLElement>();
+const popperNode = ref<HTMLElement>();
+const triggerNode = ref<HTMLElement>();
 
-let popperInstance: null | Instance
-let events: Record<string, any> = reactive({})
-let outerEvents: Record<string, any> = reactive({})
-let dropdownEvents: Record<string, any> = reactive({})
+let popperInstance: null | Instance;
+let events: Record<string, any> = reactive({});
+let outerEvents: Record<string, any> = reactive({});
+let dropdownEvents: Record<string, any> = reactive({});
 
 const popperOptions = computed(() => ({
   placement: props.placement,
   modifiers: [
     {
-      name: 'offset',
+      name: "offset",
       options: {
-        offset: [0, 9]
-      }
-    }
+        offset: [0, 9],
+      },
+    },
   ],
-  ...props.popperOptions
-}))
+  ...props.popperOptions,
+}));
 
 const closeDelay = computed(() =>
-  props.trigger === 'hover' && props.closeDelay < 150 ? 150 : props.closeDelay
-)
+  props.trigger === "hover" && props.closeDelay < 150 ? 150 : props.closeDelay
+);
 
-const openDebounce = debounce(bind(setVisible, null, true), props.openDelay)
-const closeDebounce = debounce(bind(setVisible, null, false), closeDelay.value)
+const openDebounce = debounce(bind(setVisible, null, true), props.openDelay);
+const closeDebounce = debounce(bind(setVisible, null, false), closeDelay.value);
 
 function openFinal() {
-  closeDebounce.cancel()
-  openDebounce()
+  closeDebounce.cancel();
+  openDebounce();
 }
 
 function closeFinal() {
-  openDebounce.cancel()
-  closeDebounce()
+  openDebounce.cancel();
+  closeDebounce();
 }
 
 function togglePopper() {
-  isOpen.value ? closeFinal() : openFinal()
+  isOpen.value ? closeFinal() : openFinal();
 }
 
 function setVisible(val: boolean) {
-  isOpen.value = val
-  emits('visible-change', val)
+  isOpen.value = val;
+  emits("visible-change", val);
 }
 
 function attachEvents() {
-  if (props.trigger === 'hover') {
-    events['mouseenter'] = openFinal
-    outerEvents['mouseleave'] = closeFinal
-    dropdownEvents['mouseenter'] = openFinal
-    return
+  if (props.disabled) return;
+  if (props.trigger === "hover") {
+    events["mouseenter"] = openFinal;
+    outerEvents["mouseleave"] = closeFinal;
+    dropdownEvents["mouseenter"] = openFinal;
+    return;
   }
-  if (props.trigger === 'click') {
-    events['click'] = togglePopper
+  if (props.trigger === "click") {
+    events["click"] = togglePopper;
   }
 }
 
 function destroyPopperInstance() {
-  popperInstance?.destroy()
-  popperInstance = null
+  popperInstance?.destroy();
+  popperInstance = null;
+}
+
+function resetEvents() {
+  events = {};
+  outerEvents = {};
+  dropdownEvents = {};
+
+  attachEvents();
 }
 
 if (!props.manual) {
-  attachEvents()
+  attachEvents();
 }
 
 useClickOutside(containerNode, () => {
-  emits('click-outside')
-  if (props.trigger !== 'click' || props.manual) return
-  isOpen.value && closeFinal()
-})
+  emits("click-outside");
+  if (props.trigger !== "click" || props.manual) return;
+  isOpen.value && closeFinal();
+});
 
 watch(
   isOpen,
-  val => {
-    if (!val) return
+  (val) => {
+    if (!val) return;
 
     if (triggerNode.value && popperNode.value) {
       popperInstance = createPopper(
         triggerNode.value,
         popperNode.value,
         popperOptions.value
-      )
+      );
     }
   },
-  { flush: 'post' }
-)
+  { flush: "post" }
+);
 watch(
   () => props.manual,
-  isManual => {
+  (isManual) => {
     if (isManual) {
-      events = {}
-      outerEvents = {}
-      return
+      events = {};
+      outerEvents = {};
+      return;
     }
-    attachEvents()
+    attachEvents();
   }
-)
+);
 watch(
   () => props.trigger,
   (newTrigger, oldTrigger) => {
-    if (newTrigger === oldTrigger) return
-    // clear
-    events = {}
-    outerEvents = {}
-    attachEvents()
+    if (newTrigger === oldTrigger) return;
+    resetEvents();
   }
-)
+);
+
+watch(
+  () => props.disabled,
+  (val, oldVal) => {
+    if (val === oldVal) return;
+    resetEvents();
+  }
+);
 
 onUnmounted(() => {
-  popperInstance?.destroy()
-})
+  popperInstance?.destroy();
+});
 
 defineExpose<TooltipInstance>({
   show: openFinal,
   hide: () => {
-    openDebounce.cancel()
-    setVisible(false)
-  }
-})
+    openDebounce.cancel();
+    setVisible(false);
+  },
+});
 </script>
 
 <template>
@@ -166,5 +180,5 @@ defineExpose<TooltipInstance>({
 </template>
 
 <style scoped>
-@import './style.css';
+@import "./style.css";
 </style>

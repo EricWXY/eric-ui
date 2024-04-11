@@ -17,22 +17,16 @@ const items: DropdownItemProps[] = [
 <template>
   <div class="row">
     <div class="col">
-      <div class="desc">通过 slot 传入 item</div>
-      <er-dropdown>
+      <div class="desc">disabled</div>
+      <er-dropdown :items="items" disabled>
         <span class="dropdown-link">
           Dropdown List
           <er-icon icon="angle-down" />
         </span>
-        <template #dropdown>
-          <er-dropdown-item command="1">Action 1</er-dropdown-item>
-          <er-dropdown-item command="2" label="Action 2" />
-          <er-dropdown-item command="3" disabled>Action 3</er-dropdown-item>
-          <er-dropdown-item command="4" divided>Action 4</er-dropdown-item>
-        </template>
       </er-dropdown>
     </div>
     <div class="col">
-      <div class="desc">通过 props 传入 item</div>
+      <div class="desc">undisabled</div>
       <er-dropdown :items="items">
         <span class="dropdown-link">
           Dropdown List

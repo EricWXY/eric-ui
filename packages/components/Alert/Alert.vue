@@ -1,33 +1,38 @@
 <script setup lang="ts">
-import type { AlertProps, AlertEmits, AlertInstance } from './types'
-import { ref, useSlots, computed } from 'vue'
-import { typeIconMap } from '@eric-ui/utils'
-import ErIcon from '../Icon/Icon.vue'
+import type { AlertProps, AlertEmits, AlertInstance } from "./types";
+import { ref, useSlots, computed } from "vue";
+import { typeIconMap } from "@eric-ui/utils";
+import ErIcon from "../Icon/Icon.vue";
 
 defineOptions({
-  name: 'ErAlert'
-})
+  name: "ErAlert",
+});
 const props = withDefaults(defineProps<AlertProps>(), {
-  effect: 'light',
-  type: 'info',
-  closable: true
-})
-const emits = defineEmits<AlertEmits>()
-const slots = useSlots()
+  effect: "light",
+  type: "info",
+  closable: true,
+});
+const emits = defineEmits<AlertEmits>();
+const slots = useSlots();
 
-const visible = ref(true)
+const visible = ref(true);
 
-const iconName = computed(() => typeIconMap.get(props.type) ?? 'circle-info')
-const withDescription = computed(() => props.description || slots.default)
+const iconName = computed(() => typeIconMap.get(props.type) ?? "circle-info");
+const withDescription = computed(() => props.description || slots.default);
 
 function close() {
-  visible.value = false
-  emits('close')
+  visible.value = false;
+  emits("close");
+}
+
+function open() {
+  visible.value = true;
 }
 
 defineExpose<AlertInstance>({
-  close
-})
+  open,
+  close,
+});
 </script>
 
 <template>
@@ -39,7 +44,7 @@ defineExpose<AlertInstance>({
       :class="{
         [`er-alert__${type}`]: type,
         [`er-alert__${effect}`]: effect,
-        'text-center': center
+        'text-center': center,
       }"
     >
       <er-icon
@@ -64,5 +69,5 @@ defineExpose<AlertInstance>({
 </template>
 
 <style scoped>
-@import './style.css';
+@import "./style.css";
 </style>

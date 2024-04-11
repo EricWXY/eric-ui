@@ -19,8 +19,8 @@ export interface DropdownEmits {
 }
 
 export interface DropdownInstance {
-  handleOpen(): void;
-  handleClose(): void;
+  open(): void;
+  close(): void;
 }
 
 export interface DropdownContext {

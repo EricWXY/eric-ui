@@ -1,62 +1,62 @@
 <script setup lang="ts">
-import type { NotificationProps } from './types'
-import { ref, computed, onMounted } from 'vue'
-import { getLastBottomOffset } from './methods'
-import { delay, isString } from 'lodash-es'
-import { RenderVnode, typeIconMap } from '@eric-ui/utils'
+import type { NotificationProps } from "./types";
+import { ref, computed, onMounted } from "vue";
+import { getLastBottomOffset } from "./methods";
+import { delay, isString } from "lodash-es";
+import { RenderVnode, typeIconMap } from "@eric-ui/utils";
 
-import ErIcon from '../Icon/Icon.vue'
+import ErIcon from "../Icon/Icon.vue";
 
 const props = withDefaults(defineProps<NotificationProps>(), {
-  type: 'info',
+  type: "info",
   duration: 3000,
   offset: 20,
-  transitionName: 'fade',
-  showClose: true
-})
-const visible = ref(false)
-const notifyRef = ref<HTMLDivElement>()
+  transitionName: "fade",
+  showClose: true,
+});
+const visible = ref(false);
+const notifyRef = ref<HTMLDivElement>();
 
 const iconName = computed(() => {
-  if (isString(props.icon)) return props.icon
-  return typeIconMap.get(props.type)
-})
+  if (isString(props.icon)) return props.icon;
+  return typeIconMap.get(props.type);
+});
 
 // 这个 div 的高度
-const boxHeight = ref(0)
+const boxHeight = ref(0);
 // 上一个实例的最下面的坐标数字，第一个是 0
-const lastBottomOffset = computed(() => getLastBottomOffset(props.id))
+const lastBottomOffset = computed(() => getLastBottomOffset(props.id));
 // 这个元素应该使用的 top
-const topOffset = computed(() => props.offset + lastBottomOffset.value)
+const topOffset = computed(() => props.offset + lastBottomOffset.value);
 // 这个元素为下一个元素预留的 offset，也就是它最低端 bottom 的 值
-const bottomOffset = computed(() => boxHeight.value + topOffset.value)
+const bottomOffset = computed(() => boxHeight.value + topOffset.value);
 const cssStyle = computed(() => ({
-  top: topOffset.value + 'px',
-  zIndex: props.zIndex
-}))
+  top: topOffset.value + "px",
+  zIndex: props.zIndex,
+}));
 
-let timer: any
+let timer: any;
 
 function startTimer() {
-  if (props.duration === 0) return
-  timer = delay(close, props.duration)
+  if (props.duration === 0) return;
+  timer = delay(close, props.duration);
 }
 function clearTimer() {
-  clearTimeout(timer)
+  clearTimeout(timer);
 }
 
 function close() {
-  visible.value = false
+  visible.value = false;
 }
 
 onMounted(() => {
-  visible.value = true
-  startTimer()
-})
+  visible.value = true;
+  startTimer();
+});
 defineExpose({
   close,
-  bottomOffset
-})
+  bottomOffset,
+});
 </script>
 
 <template>
@@ -70,7 +70,7 @@ defineExpose({
       class="er-notification"
       :class="{
         [`er-notification--${type}`]: type,
-        'show-close': showClose
+        'show-close': showClose,
       }"
       :style="cssStyle"
       v-show="visible"
@@ -96,5 +96,5 @@ defineExpose({
 </template>
 
 <style scoped>
-@import './style.css';
+@import "./style.css";
 </style>

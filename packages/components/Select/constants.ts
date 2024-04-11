@@ -1,7 +1,7 @@
 import type { InjectionKey } from "vue";
-import type { SleectContext } from "./types";
+import type { SelectContext } from "./types";
 
-export const SELECT_CTX_KEY: InjectionKey<SleectContext> =
+export const SELECT_CTX_KEY: InjectionKey<SelectContext> =
   Symbol("selectContext");
 
 export const POPPER_OPTIONS: any = {

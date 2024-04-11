@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import type { LoadingOptions } from './types'
-import { computed } from 'vue'
-import { isString } from 'lodash-es'
-import ErIcon from '../Icon/Icon.vue'
+import type { LoadingOptions } from "./types";
+import { computed } from "vue";
+import { isString } from "lodash-es";
+import ErIcon from "../Icon/Icon.vue";
 
 defineOptions({
-  name: 'ErLoading',
-  inheritAttrs: false
-})
+  name: "ErLoading",
+  inheritAttrs: false,
+});
 const props = withDefaults(defineProps<LoadingOptions>(), {
   zIndex: 20000,
-  visible: false
-})
+  visible: false,
+});
 
 const iconName = computed(() => {
   if (isString(props.spinner)) {
-    return props.spinner
+    return props.spinner;
   }
-  return 'spinner' // 'circle-notch' 也很好看
-})
+  return "spinner"; // 'circle-notch' 也很好看
+});
 </script>
 
 <template>
@@ -37,7 +37,7 @@ const iconName = computed(() => {
 </template>
 
 <style>
-@import './style.css';
+@import "./style.css";
 .er-loading {
   --er-loading-bg-color: v-bind(background) !important;
   --er-loading-z-index: v-bind(zIndex) !important;
