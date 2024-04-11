@@ -26,7 +26,10 @@ const handleBtnClick = (e: MouseEvent) => {
 const handlBtneCLickThrottle = throttle(handleBtnClick, props.throttleDuration)
 
 defineExpose({
-  ref: _ref
+  ref: _ref,
+  size: computed(() => props.size ?? ''),
+  type: computed(() => props.type ?? ''),
+  disabled: computed(() => !!props.disabled)
 })
 </script>
 

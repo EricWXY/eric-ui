@@ -213,7 +213,7 @@ async function submit() {
       prop="confirmPwd"
       :rules="[
         {
-          validator: () => false,
+          required: true,
           trigger: 'test',
           message: '测试自定义触发'
         }

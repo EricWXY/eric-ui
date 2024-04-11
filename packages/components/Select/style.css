@@ -1,5 +1,5 @@
 .er-select {
- --er-select-item-hover-bg-color: var(--er-fill-color-light);
+  --er-select-item-hover-bg-color: var(--er-fill-color-light);
   --er-select-item-font-size: var(--er-font-size-base);
   --er-select-item-font-color: var(--er-text-color-regular);
   --er-select-item-selected-font-color: var(--er-color-primary);
