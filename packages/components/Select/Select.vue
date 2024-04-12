@@ -39,7 +39,7 @@ import type {
 import type { TooltipInstance } from "../Tooltip/types";
 import type { InputInstance } from "../Input/types";
 import { RenderVnode, debugWarn } from "@eric-ui/utils";
-import { useFocusController, useClickOutside, useId } from "@eric-ui/hooks";
+import { useFocusController, useClickOutside } from "@eric-ui/hooks";
 import { SELECT_CTX_KEY, POPPER_OPTIONS } from "./constants";
 import { useFormItem, useFormDisabled, useFormItemInputId } from "../Form";
 
@@ -426,8 +426,8 @@ defineExpose<SelectInstance>({
           </template>
           <template v-else>
             <template
-              v-for="[vNode, props] in filteredChilds"
-              :key="props.value ?? useId().value"
+              v-for="[vNode, _props] in filteredChilds"
+              :key="_props.value"
             >
               <render-vnode :vNode="vNode" />
             </template>

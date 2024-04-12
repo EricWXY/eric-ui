@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {
   ErDropdown,
-  ErDropdownItem,
   ErIcon,
   type DropdownItemProps
 } from 'eric-ui'

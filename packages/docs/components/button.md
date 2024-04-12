@@ -31,6 +31,14 @@ demo-preview=../demo/button/Disabled.vue
 demo-preview=../demo/button/Icon.vue
 :::
 
+## 按钮组
+
+使用 `<er-button-group>` 对多个按钮分组。
+
+::: preview
+demo-preview=../demo/button/Group.vue
+:::
+
 ## 加载状态
 
 使用 `loading`属性来定义按钮的加载状态。
@@ -111,3 +119,19 @@ demo-preview=../demo/button/Throttle.vue
 | size     | 按钮尺寸       | `ComputedRef<''\|'small' \|'large'>` |
 | type     | 按钮类型       | `ComputedRef<''\|'primary' \|...>`   |
 | disabled | 按钮禁用状态   | `ComputedRef<boolean>`               |
+
+## ButtonGroup API
+
+### Props
+
+| Name     | Description          | Type                                                             | Default |
+| -------- | -------------------- | ---------------------------------------------------------------- | ------- |
+| size     | 尺寸                 | `enum` - `'large'\| 'default'\| 'small'`                         | —       |
+| type     | 类型                 | `enum` - `'primary'\| 'success'\| 'warning'\| 'danger'\| 'info'` | info    |
+| disabled | 按钮组是否为禁用状态 | `boolean`                                                        | false   |
+
+### Slots
+
+| Name    | Description | Sub Component |
+| ------- | ----------- | ------------- |
+| default | 默认插槽    | Button        |

@@ -7,7 +7,11 @@ import { inject } from "vue";
 defineOptions({
   name: "ErDropdownItem",
 });
-const props = defineProps<DropdownItemProps>();
+const props = withDefaults(defineProps<DropdownItemProps>(), {
+  divided: false,
+  disabled: false,
+  command: useId().value,
+});
 
 const ctx = inject(DROPDOWN_CTX_KEY);
 

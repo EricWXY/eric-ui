@@ -17,10 +17,11 @@
     "@eric-ui/hooks": "workspace:*",
     "@eric-ui/theme": "workspace:*",
     "@eric-ui/utils": "workspace:*",
+    "eric-ui": "workspace:*",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/vue-fontawesome": "^3.0.6",
-    "eric-ui": "workspace:*",
+    "@popperjs/core": "^2.11.8",
     "lodash-es": "^4.17.21"
   },
   "devDependencies": {

@@ -1,104 +1,104 @@
 <script setup lang="ts">
-import { ref, h, reactive } from 'vue'
+import { ref, h, reactive } from "vue";
 import {
   ErMessage,
   ErNotification,
   // ErLoading,
-  type RenderLabelFunc
-} from 'eric-ui'
+  type RenderLabelFunc,
+} from "eric-ui";
 
-const openVal = ref(['a'])
-const loading = ref(false)
+const openVal = ref(["a"]);
+const loading = ref(false);
 const dropdownOptions = ref([
   {
-    label: 'Option A',
-    name: 'a'
+    label: "Option A",
+    // name: 'a'
   },
   {
-    label: 'Option B',
-    name: 'b'
+    label: "Option B",
+    // name: 'b'
   },
   {
-    label: 'Option C',
-    name: 'c',
-    divided: true
-  }
-])
-const switchValue = ref(true)
-const inputValue = ref('')
-const selectValue = ref('')
+    label: "Option C",
+    // name: 'c',
+    divided: true,
+  },
+]);
+const switchValue = ref(true);
+const inputValue = ref("");
+const selectValue = ref("");
 const selectOptions = ref([
   {
-    label: 'Option A',
-    value: 'a'
+    label: "Option A",
+    value: "a",
   },
   {
-    label: 'Option B',
-    value: 'b'
+    label: "Option B",
+    value: "b",
   },
   {
-    label: 'Option C',
-    value: 'c',
-    disabled: true
-  }
-])
-const customOptionRender: RenderLabelFunc = opt => {
-  return h('div', null, [
-    h('b', { style: { color: 'red' } }, opt.label),
-    h('span', null, `~${opt.value}`)
-  ])
-}
+    label: "Option C",
+    value: "c",
+    disabled: true,
+  },
+]);
+const customOptionRender: RenderLabelFunc = (opt) => {
+  return h("div", null, [
+    h("b", { style: { color: "red" } }, opt.label),
+    h("span", null, `~${opt.value}`),
+  ]);
+};
 
-const formRef = ref()
+const formRef = ref();
 const formData = reactive({
-  email: '123',
-  password: '',
-  confirmPwd: ''
-})
+  email: "123",
+  password: "",
+  confirmPwd: "",
+});
 const formRules: any = {
-  email: [{ type: 'email', required: true, trigger: 'blur' }],
+  email: [{ type: "email", required: true, trigger: "blur" }],
   password: [
-    { type: 'string', required: true, trigger: 'blur', min: 3, max: 5 }
+    { type: "string", required: true, trigger: "blur", min: 3, max: 5 },
   ],
   confirmPwd: [
-    { type: 'string', required: true, trigger: 'blur' },
+    { type: "string", required: true, trigger: "blur" },
     {
       validator: (_: typeof formRules, value: string) =>
         value === formData.password,
-      trigger: 'blur',
-      message: '两个密码必须相同'
-    }
-  ]
-}
+      trigger: "blur",
+      message: "两个密码必须相同",
+    },
+  ],
+};
 
 function handleBtnClick() {
-  ErMessage.info('Button Click')
+  ErMessage.info("Button Click");
 }
 
 function handleNotify() {
   ErNotification({
-    title: 'Title',
-    message: 'Message',
-    type: 'success'
-  })
+    title: "Title",
+    message: "Message",
+    type: "success",
+  });
 }
 
 setInterval(() => {
-  loading.value = !loading.value
+  loading.value = !loading.value;
   // let loadingHandle = ErLoading.service()
   // if (loading.value) {
   //   loadingHandle = ErLoading.service()
   // } else {
   //   loadingHandle?.close()
   // }
-}, 2000)
+}, 2000);
 
 async function submit() {
   try {
-    await formRef.value.validate()
-    console.log('passed!')
+    await formRef.value.validate();
+    console.log("passed!");
   } catch (e) {
-    console.log('the error', e)
+    console.log("the error", e);
   }
 }
 </script>
@@ -141,6 +141,16 @@ async function submit() {
       <er-button type="warning" icon="star" circle />
       <er-button type="danger" icon="trash" circle />
     </p>
+    <p>
+      <er-button-group size="small" type="primary">
+        <er-button round>Round</er-button>
+        <er-button type="primary" round>Primary</er-button>
+        <er-button type="success" round>Success</er-button>
+        <er-button type="info" round>Info</er-button>
+        <er-button type="warning" round loading>Warning</er-button>
+        <er-button type="danger" round>Danger</er-button>
+      </er-button-group>
+    </p>
     <er-collapse v-model="openVal" accordion>
       <er-collapse-item name="a" title="Title a">
         <h1>headline title</h1>
@@ -155,13 +165,16 @@ async function submit() {
     </er-collapse>
   </div>
 
-  <er-dropdown :menu-options="dropdownOptions">dropdown</er-dropdown>
+  <er-dropdown :items="dropdownOptions" trigger="click" split-button>dropdown</er-dropdown>
   <er-tooltip
     ref="tooltipRef"
     placement="right-end"
+    trigger="contextmenu"
     :popper-options="{ placement: 'right-end', strategy: 'fixed' }"
   >
-    <er-button icon="arrow-up">tooltip</er-button>
+    <template #trigger>
+      <er-button icon="arrow-up">tooltip</er-button>
+    </template>
     <template #content> 弹出部分 </template>
   </er-tooltip>
   <er-input v-model="inputValue" placeholder="请输入内容">
@@ -213,8 +226,8 @@ async function submit() {
         {
           required: true,
           trigger: 'test',
-          message: '测试自定义触发'
-        }
+          message: '测试自定义触发',
+        },
       ]"
     >
       <template #default="{ validate: _validate }">
@@ -240,22 +253,22 @@ async function submit() {
         size: 123,
         name: 'test.png',
         status: 'uploading',
-        percent: 20
+        percent: 20,
       },
       {
         uid: '124',
         size: 123,
         name: 'test1.png',
         status: 'success',
-        percent: 100
+        percent: 100,
       },
       {
         uid: '125',
         size: 123,
         name: 'test4.png',
         status: 'error',
-        percent: 34
-      }
+        percent: 34,
+      },
     ]"
   >
     <er-button type="success" round icon="upload"> 上传文件 </er-button>

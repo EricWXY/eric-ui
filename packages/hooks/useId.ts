@@ -16,3 +16,5 @@ export function useId(): Ref<string> {
 
   return idRef;
 }
+
+export default useId;

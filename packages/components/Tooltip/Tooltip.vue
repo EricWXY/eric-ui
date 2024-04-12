@@ -1,15 +1,31 @@
 <script setup lang="ts">
 import type { TooltipProps, TooltipEmits, TooltipInstance } from "./types";
 import { createPopper, type Instance } from "@popperjs/core";
-import { ref, reactive, watch, watchEffect, onUnmounted, computed } from "vue";
-import { bind, debounce } from "lodash-es";
+import {
+  ref,
+  reactive,
+  watch,
+  watchEffect,
+  onUnmounted,
+  computed,
+  onMounted,
+  // isVNode,
+  type WatchStopHandle,
+  // type VNode,
+} from "vue";
+import { bind, debounce, each, isElement, type DebouncedFunc } from "lodash-es";
 import { useClickOutside } from "@eric-ui/hooks";
 
 defineOptions({
   name: "ErTooltip",
 });
 
-const props = withDefaults(defineProps<TooltipProps>(), {
+interface _TooltipProps extends TooltipProps {
+  virtualRef?: any;
+  virtualTriggering?: boolean;
+}
+
+const props = withDefaults(defineProps<_TooltipProps>(), {
   placement: "bottom",
   trigger: "hover",
   transition: "fade",
@@ -49,8 +65,8 @@ const closeDelay = computed(() =>
   props.trigger === "hover" ? props.hideTimeout : 0
 );
 
-let openDebounce;
-let closeDebounce;
+let openDebounce: DebouncedFunc<() => void> | void;
+let closeDebounce: DebouncedFunc<() => void> | void;
 
 function openFinal() {
   closeDebounce?.cancel();
@@ -73,7 +89,7 @@ function setVisible(val: boolean) {
 }
 
 function attachEvents() {
-  if (props.disabled) return;
+  if (props.disabled || props.manual) return;
   if (props.trigger === "hover") {
     events["mouseenter"] = openFinal;
     outerEvents["mouseleave"] = closeFinal;
@@ -82,6 +98,12 @@ function attachEvents() {
   }
   if (props.trigger === "click") {
     events["click"] = togglePopper;
+  }
+  if (props.trigger === "contextmenu") {
+    events["contextmenu"] = (e: MouseEvent) => {
+      e.preventDefault();
+      openFinal();
+    };
   }
 }
 
@@ -102,9 +124,16 @@ if (!props.manual) {
   attachEvents();
 }
 
+const show: TooltipInstance["show"] = openFinal;
+
+const hide: TooltipInstance["hide"] = function () {
+  openDebounce?.cancel();
+  setVisible(false);
+};
+
 useClickOutside(containerNode, () => {
   emits("click-outside");
-  if (props.trigger !== "click" || props.manual) return;
+  if (props.trigger === "hover" || props.manual) return;
   isOpen.value && closeFinal();
 });
 
@@ -123,17 +152,20 @@ watch(
   },
   { flush: "post" }
 );
+
 watch(
   () => props.manual,
   (isManual) => {
     if (isManual) {
       events = {};
       outerEvents = {};
+      dropdownEvents = {};
       return;
     }
     attachEvents();
   }
 );
+
 watch(
   () => props.trigger,
   (newTrigger, oldTrigger) => {
@@ -146,6 +178,9 @@ watch(
   () => props.disabled,
   (val, oldVal) => {
     if (val === oldVal) return;
+    openDebounce?.cancel();
+    isOpen.value = false;
+    emits("visible-change", false);
     resetEvents();
   }
 );
@@ -155,24 +190,58 @@ watchEffect(() => {
   closeDebounce = debounce(bind(setVisible, null, false), closeDelay.value);
 });
 
+let watchVirtualRefStopHandle: WatchStopHandle | void;
+let watchEventsStopHandle: WatchStopHandle | void;
+
+onMounted(() => {
+  watchVirtualRefStopHandle = watch(
+    () => props.virtualRef,
+    (virtualRef) => {
+      if (virtualRef && props.virtualTriggering) {
+        triggerNode.value = virtualRef;
+      }
+    },
+    {
+      immediate: true,
+    }
+  );
+  watchEventsStopHandle = watch(triggerNode, (triggerRef) => {
+    const el = (triggerRef as any)?.$el;
+
+    if (!props.virtualTriggering) return;
+    console.log(popperOptions.value);
+    if (isElement(el)) {
+      each(events, (fn, event) => {
+        el?.addEventListener(event, fn);
+      });
+    }
+  });
+});
+
 onUnmounted(() => {
   popperInstance?.destroy();
+  watchEventsStopHandle?.();
+  watchVirtualRefStopHandle?.();
 });
 
 defineExpose<TooltipInstance>({
-  show: openFinal,
-  hide: () => {
-    openDebounce?.cancel();
-    setVisible(false);
-  },
+  show,
+  hide,
 });
 </script>
 
 <template>
   <div class="er-tooltip" ref="containerNode" v-on="outerEvents">
-    <div class="er-tooltip__trigger" ref="triggerNode" v-on="events">
+    <div
+      class="er-tooltip__trigger"
+      ref="triggerNode"
+      v-on="events"
+      v-if="!virtualTriggering"
+    >
       <slot></slot>
     </div>
+    <slot name="default" v-else></slot>
+
     <transition :name="transition" @after-leave="destroyPopperInstance">
       <div
         class="er-tooltip__popper"

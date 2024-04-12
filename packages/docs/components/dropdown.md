@@ -19,10 +19,6 @@ demo-preview=../demo/dropdown/Basic.vue
 
 通过设置 `trigger` 属性来改变触发方式。
 
-::: tip
-ps: 目前只实现了 click 和 hover 两种触发方式。
-:::
-
 ::: preview
 demo-preview=../demo/dropdown/Trigger.vue
 :::
@@ -67,7 +63,7 @@ demo-preview=../demo/dropdown/Disabled.vue
 | Name         | Description                                     | Type                                                                                    | Default  |
 | ------------ | ----------------------------------------------- | --------------------------------------------------------------------------------------- | -------- |
 | disabled     | 是否禁用                                        | `boolean`                                                                               | `false`  |
-| trigger      | 触发方式                                        | `'hover' \| 'click'`                                                                    | `hover`  |
+| trigger      | 触发方式                                        | `'hover' \| 'click'  \| 'contextmenu'`                                                  | `hover`  |
 | placement    | 弹出位置                                        | `'top' \| 'top-start' \| 'top-end' \| 'bottom' \| 'bottom-start' \| 'bottom-end' \|...` | `bottom` |
 | hideOnClick  | 点击菜单项时是否隐藏下拉菜单                    | `boolean`                                                                               | `true`   |
 | show-timeout | 展开下拉菜单的延时,仅在 trigger 为 hover 时有效 | `number`                                                                                | `150`    |
