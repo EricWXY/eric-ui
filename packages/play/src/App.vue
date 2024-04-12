@@ -165,16 +165,16 @@ async function submit() {
     </er-collapse>
   </div>
 
-  <er-dropdown :items="dropdownOptions" trigger="click" split-button>dropdown</er-dropdown>
+  <er-dropdown :items="dropdownOptions" trigger="click" split-button
+    >dropdown</er-dropdown
+  >
   <er-tooltip
     ref="tooltipRef"
     placement="right-end"
     trigger="contextmenu"
     :popper-options="{ placement: 'right-end', strategy: 'fixed' }"
   >
-    <template #trigger>
-      <er-button icon="arrow-up">tooltip</er-button>
-    </template>
+    <er-button icon="arrow-up">tooltip</er-button>
     <template #content> 弹出部分 </template>
   </er-tooltip>
   <er-input v-model="inputValue" placeholder="请输入内容">
