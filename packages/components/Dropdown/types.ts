@@ -1,5 +1,6 @@
 import type { VNode } from "vue";
 import type { TooltipProps } from "../Tooltip/types";
+import type { ButtonType, ButtonSize } from "../Button/types";
 
 export type DropdownCommand = string | number;
 
@@ -11,6 +12,8 @@ export interface DropdownItemProps {
 }
 
 export interface DropdownProps extends TooltipProps {
+  type?: ButtonType;
+  size?: ButtonSize;
   items?: DropdownItemProps[];
   hideOnClick?: boolean;
   splitButton?: boolean;

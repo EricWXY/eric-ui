@@ -18,7 +18,6 @@
   }
 
   .er-tooltip__popper {
-    position: absolute;
     background: var(--er-popover-bg-color);
     border-radius: var(--er-popover-border-radius);
     border: 1px solid var(--er-popover-border-color);

@@ -165,9 +165,7 @@ async function submit() {
     </er-collapse>
   </div>
 
-  <er-dropdown :items="dropdownOptions" trigger="click" split-button
-    >dropdown</er-dropdown
-  >
+  <er-dropdown :items="dropdownOptions" split-button>dropdown</er-dropdown>
   <er-tooltip
     ref="tooltipRef"
     placement="right-end"

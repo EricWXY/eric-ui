@@ -11,10 +11,8 @@ import type {
 import { useId, useDisabledStyle } from "@eric-ui/hooks";
 import { DROPDOWN_CTX_KEY } from "./constants";
 import type { TooltipInstance } from "../Tooltip/types";
-import type { ButtonInstance } from "../Button/types";
 
-import ErButton from "../Button/Button.vue";
-import ErButtonGroup from "../Button/ButtonGroup.vue";
+import { type ButtonInstance, ErButton, ErButtonGroup } from "../Button";
 import ErIcon from "../Icon/Icon.vue";
 import DropdownItem from "./DropdownItem.vue";
 import Tooltip from "../Tooltip/Tooltip.vue";
@@ -49,7 +47,6 @@ function handleItemClick(e: DropdownItemProps) {
 }
 
 useDisabledStyle(slots, props.disabled);
-
 defineExpose<DropdownInstance>({
   open: () => tooltipRef.value?.show(),
   close: () => tooltipRef.value?.hide(),
@@ -65,12 +62,17 @@ provide<DropdownContext>(DROPDOWN_CTX_KEY, {
     <tooltip
       ref="tooltipRef"
       v-bind="tooltipProps"
-      :virtual-ref="triggerRef"
       :virtual-triggering="splitButton"
+      :virtual-ref="triggerRef"
       @visible-change="$emit('visible-change', $event)"
     >
-      <er-button-group :disabled="disabled" v-if="splitButton">
-        <er-button>
+      <er-button-group
+        :type="type"
+        :size="size"
+        :disabled="disabled"
+        v-if="splitButton"
+      >
+        <er-button @click="$emit('click', $event)">
           <slot name="default"></slot>
         </er-button>
         <er-button ref="triggerRef">

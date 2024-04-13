@@ -1,7 +1,7 @@
 import { type Component } from "vue";
 export type ButtonType = "primary" | "success" | "warning" | "danger" | "info";
 export type NativeType = "button" | "submit" | "reset";
-export type ButtonSize = "large" | "small";
+export type ButtonSize = "default" | "large" | "small";
 
 export interface ButtonProps {
   tag?: string | Component;
@@ -23,7 +23,7 @@ export interface ButtonProps {
 export interface ButtonGroupProps {
   size?: ButtonSize;
   type?: ButtonType;
-  disabled?: boolean
+  disabled?: boolean;
 }
 
 export interface ButtonGroupContext {
