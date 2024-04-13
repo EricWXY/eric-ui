@@ -48,7 +48,7 @@ defineExpose({
     class="er-button"
     :class="{
       [`er-button--${type}`]: type,
-      [`er-button--${size}`]: size != null && size != 'default',
+      [`er-button--${size}`]: size,
       'is-plain': plain,
       'is-round': round,
       'is-circle': circle,

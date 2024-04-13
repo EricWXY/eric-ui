@@ -56,12 +56,31 @@ demo-preview=../demo/dropdown/InstanceMethod.vue
 demo-preview=../demo/dropdown/Disabled.vue
 :::
 
+## 触发对象
+
+设置 split-button 属性来让触发下拉元素呈现为按钮组，左边是功能按钮，右边是触发下拉菜单的按钮。
+
+::: preview
+demo-preview=../demo/dropdown/SplitButton.vue
+:::
+
+## 尺寸
+
+通过设置 `size` 属性来改变下拉菜单和按钮的尺寸。
+
+::: preview
+demo-preview=../demo/dropdown/Size.vue
+:::
+
 ## Dropdown API
 
 ### Props
 
 | Name         | Description                                     | Type                                                                                    | Default  |
 | ------------ | ----------------------------------------------- | --------------------------------------------------------------------------------------- | -------- |
+| type         | 菜单按钮类型                                    | 同 Button 组件 的 type                                                                  | --       |
+| size         | 菜单尺寸                                        | 同 Button 组件 的 size                                                                  | --       |
+| split-button | 下拉触发元素呈现为按钮                          | `boolean`                                                                               | `false`  |
 | disabled     | 是否禁用                                        | `boolean`                                                                               | `false`  |
 | trigger      | 触发方式                                        | `'hover' \| 'click'  \| 'contextmenu'`                                                  | `hover`  |
 | placement    | 弹出位置                                        | `'top' \| 'top-start' \| 'top-end' \| 'bottom' \| 'bottom-start' \| 'bottom-end' \|...` | `bottom` |
@@ -75,10 +94,11 @@ ps: 触发方式为 hover 时，如果出现弹出层不稳定的情况，可能
 
 ### Events
 
-| Name           | Description              | Type                                 |
-| -------------- | ------------------------ | ------------------------------------ |
-| visible-change | 下拉菜单显示或隐藏时触发 | `(visible: boolean) => void`         |
-| command        | 点击菜单项时触发         | `(command: string\| number) => void` |
+| Name           | Description                                 | Type                                 |
+| -------------- | ------------------------------------------- | ------------------------------------ |
+| click          | `split-buttton` 为 true 时,点击左侧按钮触发 | `(event: MouseEvent) => void`        |
+| visible-change | 下拉菜单显示或隐藏时触发                    | `(visible: boolean) => void`         |
+| command        | 点击菜单项时触发                            | `(command: string\| number) => void` |
 
 ### Slots
 

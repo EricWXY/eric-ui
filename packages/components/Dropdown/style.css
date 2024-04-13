@@ -40,6 +40,17 @@
       background-image: none;
     }
   }
+  
+  .er-dropdown__item--large {
+    padding: 7px 20px;
+    line-height: 22px;
+    font-size: 14px;
+  }
+  .er-dropdown__item--small {
+    padding: 2px 12px;
+    line-height: 20px;
+    font-size: 12px;
+  }
   .divided-placeholder {
     margin: 6px 0;
     border-top: 1px solid var(--er-dropdown-menuItem-divided-color);

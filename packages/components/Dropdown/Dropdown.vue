@@ -13,7 +13,6 @@ import { DROPDOWN_CTX_KEY } from "./constants";
 import type { TooltipInstance } from "../Tooltip/types";
 
 import { type ButtonInstance, ErButton, ErButtonGroup } from "../Button";
-import ErIcon from "../Icon/Icon.vue";
 import DropdownItem from "./DropdownItem.vue";
 import Tooltip from "../Tooltip/Tooltip.vue";
 
@@ -54,6 +53,7 @@ defineExpose<DropdownInstance>({
 
 provide<DropdownContext>(DROPDOWN_CTX_KEY, {
   handleItemClick,
+  size: computed(() => props.size),
 });
 </script>
 
@@ -75,9 +75,7 @@ provide<DropdownContext>(DROPDOWN_CTX_KEY, {
         <er-button @click="$emit('click', $event)">
           <slot name="default"></slot>
         </er-button>
-        <er-button ref="triggerRef">
-          <er-icon icon="arrow-down" />
-        </er-button>
+        <er-button ref="triggerRef" icon="angle-down" />
       </er-button-group>
       <slot v-else name="default"></slot>
 
@@ -96,4 +94,9 @@ provide<DropdownContext>(DROPDOWN_CTX_KEY, {
 
 <style scoped>
 @import "./style.css";
+:deep(.er-button-group) {
+  & > :last-child {
+    padding: 5px 7px;
+  }
+}
 </style>

@@ -1,4 +1,4 @@
-import type { VNode } from "vue";
+import type { VNode, ComputedRef } from "vue";
 import type { TooltipProps } from "../Tooltip/types";
 import type { ButtonType, ButtonSize } from "../Button/types";
 
@@ -32,4 +32,5 @@ export interface DropdownInstance {
 
 export interface DropdownContext {
   handleItemClick(item: DropdownItemProps): void;
+  size: ComputedRef<ButtonSize | void>;
 }
