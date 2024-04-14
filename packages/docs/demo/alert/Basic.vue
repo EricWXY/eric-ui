@@ -1,6 +1,3 @@
-<script setup>
-import { ErAlert } from 'eric-ui'
-</script>
 <template>
   <h2>通过 slot 传入内容</h2>
   <div style="max-width: 600px">

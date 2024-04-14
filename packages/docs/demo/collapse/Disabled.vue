@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ErCollapse, ErCollapseItem } from 'eric-ui'
 import { ref } from 'vue'
 
 const activeNames = ref(['1'])

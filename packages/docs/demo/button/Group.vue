@@ -1,7 +1,3 @@
-<script setup>
-import { ErButton, ErButtonGroup, ErIcon } from "eric-ui";
-</script>
-
 <template>
   <p>
     <er-button-group disabled>

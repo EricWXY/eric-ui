@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ErDropdown, type DropdownItemProps } from "eric-ui";
+import { type DropdownItemProps } from "eric-ui";
 
 const items: DropdownItemProps[] = [
   { command: "1", label: "Action 1" },

@@ -58,7 +58,7 @@ demo-preview=../demo/dropdown/Disabled.vue
 
 ## 触发对象
 
-设置 split-button 属性来让触发下拉元素呈现为按钮组，左边是功能按钮，右边是触发下拉菜单的按钮。
+设置 `split-button` 属性来让触发下拉元素呈现为按钮组，左边是功能按钮，右边是触发下拉菜单的按钮。
 
 ::: preview
 demo-preview=../demo/dropdown/SplitButton.vue
@@ -76,17 +76,17 @@ demo-preview=../demo/dropdown/Size.vue
 
 ### Props
 
-| Name         | Description                                     | Type                                                                                    | Default  |
-| ------------ | ----------------------------------------------- | --------------------------------------------------------------------------------------- | -------- |
-| type         | 菜单按钮类型                                    | 同 Button 组件 的 type                                                                  | --       |
-| size         | 菜单尺寸                                        | 同 Button 组件 的 size                                                                  | --       |
-| split-button | 下拉触发元素呈现为按钮                          | `boolean`                                                                               | `false`  |
-| disabled     | 是否禁用                                        | `boolean`                                                                               | `false`  |
-| trigger      | 触发方式                                        | `'hover' \| 'click'  \| 'contextmenu'`                                                  | `hover`  |
-| placement    | 弹出位置                                        | `'top' \| 'top-start' \| 'top-end' \| 'bottom' \| 'bottom-start' \| 'bottom-end' \|...` | `bottom` |
-| hideOnClick  | 点击菜单项时是否隐藏下拉菜单                    | `boolean`                                                                               | `true`   |
-| show-timeout | 展开下拉菜单的延时,仅在 trigger 为 hover 时有效 | `number`                                                                                | `150`    |
-| hide-timeout | 收起下拉菜单的延时,仅在 trigger 为 hover 时有效 | `number`                                                                                | `150`    |
+| Name         | Description                                     | Type                                                                                    | Default |
+| ------------ | ----------------------------------------------- | --------------------------------------------------------------------------------------- | ------- |
+| type         | 菜单按钮类型                                    | 同 Button 组件 的 type                                                                  | --      |
+| size         | 菜单尺寸                                        | 同 Button 组件 的 size                                                                  | --      |
+| split-button | 下拉触发元素呈现为按钮                          | `boolean`                                                                               | false   |
+| disabled     | 是否禁用                                        | `boolean`                                                                               | false   |
+| trigger      | 触发方式                                        | `'hover' \| 'click'  \| 'contextmenu'`                                                  | hover   |
+| placement    | 弹出位置                                        | `'top' \| 'top-start' \| 'top-end' \| 'bottom' \| 'bottom-start' \| 'bottom-end' \|...` | bottom  |
+| hideOnClick  | 点击菜单项时是否隐藏下拉菜单                    | `boolean`                                                                               | true    |
+| show-timeout | 展开下拉菜单的延时,仅在 trigger 为 hover 时有效 | `number`                                                                                | 150     |
+| hide-timeout | 收起下拉菜单的延时,仅在 trigger 为 hover 时有效 | `number`                                                                                | 150     |
 
 :::tip
 ps: 触发方式为 hover 时，如果出现弹出层不稳定的情况，可能是 hide-timeout 值过小，请增大该值。(默认值 150 经过验证较为稳定)
@@ -122,8 +122,8 @@ ps: 触发方式为 hover 时，如果出现弹出层不稳定的情况，可能
 | -------- | ----------- | ------------------ | ------- |
 | command  | 菜单项指令  | `string \| number` | -       |
 | label    | 菜单项文本  | `string`           | -       |
-| disabled | 禁用状态    | `boolean`          | `false` |
-| divider  | 添加分割线  | `boolean`          | `false` |
+| disabled | 禁用状态    | `boolean`          | false   |
+| divider  | 添加分割线  | `boolean`          | false   |
 
 ### Slots
 

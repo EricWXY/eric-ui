@@ -1,8 +1,7 @@
 <script setup>
-import { ErButton, ErMessage } from 'eric-ui'
-
-function handleBtnClick () {
-  ErMessage.info('btn click')
+import { ErMessage } from "eric-ui";
+function handleBtnClick() {
+  ErMessage.info("btn click");
 }
 </script>
 

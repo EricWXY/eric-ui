@@ -1,7 +1,3 @@
-<script setup>
-import { ErButton, ErIcon } from 'eric-ui'
-</script>
-
 <template>
   <div>
     <er-button type="primary" icon="edit" />

@@ -1,16 +1,12 @@
 <script setup lang="ts">
-import {
-  ErDropdown,
-  ErIcon,
-  type DropdownItemProps
-} from 'eric-ui'
+import { type DropdownItemProps } from "eric-ui";
 
 const items: DropdownItemProps[] = [
-  { command: '1', label: 'Action 1' },
-  { command: '2', label: 'Action 2' },
-  { command: '3', label: 'Action 3', disabled: true },
-  { command: '4', label: 'Action 4', divided: true }
-]
+  { command: "1", label: "Action 1" },
+  { command: "2", label: "Action 2" },
+  { command: "3", label: "Action 3", disabled: true },
+  { command: "4", label: "Action 4", divided: true },
+];
 </script>
 
 <template>

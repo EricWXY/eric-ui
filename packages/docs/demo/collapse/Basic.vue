@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ErCollapse, ErCollapseItem, type CollapseItemName } from 'eric-ui'
-import { ref } from 'vue'
+import { type CollapseItemName } from "eric-ui";
+import { ref } from "vue";
 
-const activeNames = ref(['1'])
+const activeNames = ref(["1"]);
 
 function handleChange(val: CollapseItemName[]) {
-  console.log(val)
+  console.log(val);
 }
 </script>
 

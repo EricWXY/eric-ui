@@ -9,7 +9,6 @@ defineOptions({
   inheritAttrs: false,
 });
 const props = withDefaults(defineProps<LoadingOptions>(), {
-  zIndex: 20000,
   visible: false,
 });
 

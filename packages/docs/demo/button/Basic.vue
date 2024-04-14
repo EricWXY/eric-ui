@@ -1,7 +1,3 @@
-<script setup>
-import { ErButton } from 'eric-ui'
-</script>
-
 <template>
   <p>
     <er-button>Default</er-button>

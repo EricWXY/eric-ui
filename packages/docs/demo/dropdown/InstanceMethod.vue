@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import {
-  ErDropdown,
-  ErIcon,
-  ErButton,
-  type DropdownItemProps,
-  type DropdownInstance,
-} from "eric-ui";
+import type { DropdownItemProps, DropdownInstance } from "eric-ui";
 import { ref } from "vue";
 
 const items: DropdownItemProps[] = [

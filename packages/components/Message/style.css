@@ -35,10 +35,13 @@
   }
   .er-message__content {
     color: var(--er-message-text-color);
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
   &.is-close .er-message__content {
-    padding-right: 30px;
+    padding-right: 10px;
+  }
+  &.text-center {
+    justify-content: center;
   }
   .er-message__close {
     display: flex;
@@ -57,6 +60,15 @@
     .er-message__close {
       --er-icon-color: var(--er-color-$(val));
     }
+  }
+}
+
+.er-message--error {
+  --er-message-bg-color: var(--er-color-danger-light-9);
+  --er-message-border-color: var(--er-color-danger-light-8);
+  --er-message-text-color: var(--er-color-danger);
+  .er-message__close {
+    --er-icon-color: var(--er-color-danger);
   }
 }
 

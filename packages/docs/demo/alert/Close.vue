@@ -1,8 +1,8 @@
 <script setup>
-import { ErAlert, ErMessage } from 'eric-ui'
+import { ErMessage } from "eric-ui";
 
-function handleClose () {
-  ErMessage.info('close callback')
+function handleClose() {
+  ErMessage.info("close callback");
 }
 </script>
 <template>

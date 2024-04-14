@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import {
-  ErDropdown,
-  ErIcon,
-  ErMessage,
   type DropdownItemProps,
   type DropdownCommand,
+  ErMessage,
 } from "eric-ui";
 
 const items: DropdownItemProps[] = [

@@ -25,12 +25,19 @@ export default defineConfig({
         items: [{ text: "开始使用", link: "/get-started" }],
       },
       {
-        text: "组件列表",
+        text: "基础组件",
         items: [
           { text: "Button", link: "components/button" },
-          { text: "Alert", link: "components/alert" },
           { text: "Collapse", link: "components/collapse" },
           { text: "Dropdown", link: "components/dropdown" },
+        ],
+      },
+      {
+        text: "反馈组件",
+        items: [
+          { text: "Alert", link: "components/alert" },
+          { text: "Loading", link: "components/loading" },
+          { text: "Message", link: "components/message" },
         ],
       },
     ],

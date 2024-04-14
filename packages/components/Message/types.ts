@@ -1,6 +1,12 @@
 import type { VNode, ComponentInternalInstance } from "vue";
 
-export const messageTypes = ["info", "success", "warning", "danger"] as const;
+export const messageTypes = [
+  "info",
+  "success",
+  "warning",
+  "danger",
+  "error",
+] as const;
 export type messageType = (typeof messageTypes)[number];
 
 export interface MessageHandler {
@@ -19,6 +25,7 @@ export interface Message extends MessageFn {
   warning: MessageTypeFn;
   info: MessageTypeFn;
   danger: MessageTypeFn;
+  error: MessageTypeFn;
 }
 
 export interface MessageProps {
@@ -26,7 +33,8 @@ export interface MessageProps {
   message?: string | VNode;
   duration?: number;
   showClose?: boolean;
-  type?: "success" | "info" | "warning" | "danger";
+  center?: boolean;
+  type?: "success" | "info" | "warning" | "danger" | "error";
   offset?: number;
   zIndex: number;
   transitionName?: string;

@@ -86,6 +86,7 @@ defineExpose({
       :class="{
         [`er-message--${type}`]: type,
         'is-close': showClose,
+        'text-center': center,
       }"
       :style="cssStyle"
       v-show="visible"
