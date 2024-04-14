@@ -21,8 +21,8 @@ export default defineConfig({
     },
     sidebar: [
       {
-        text: "快速上手",
-        items: [{ text: "开始使用", link: "/get-started" }],
+        text: "指南",
+        items: [{ text: "快速开始", link: "/get-started" }],
       },
       {
         text: "基础组件",

@@ -115,7 +115,9 @@ async function submit() {
       >
       <er-button type="info">Info</er-button>
       <er-button type="warning">Warning</er-button>
-      <er-button type="danger">Danger</er-button>
+      <er-popconfirm title="Are you sure to delete this?">
+        <er-button type="danger">Danger</er-button>
+      </er-popconfirm>
     </p>
     <p>
       <er-button plain>Plain</er-button>
@@ -165,7 +167,9 @@ async function submit() {
     </er-collapse>
   </div>
 
-  <er-dropdown :items="dropdownOptions" size="small" split-button>dropdown</er-dropdown>
+  <er-dropdown :items="dropdownOptions" size="small" split-button
+    >dropdown</er-dropdown
+  >
   <er-tooltip
     ref="tooltipRef"
     placement="right-end"

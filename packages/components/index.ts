@@ -12,3 +12,4 @@ export * from "./Alert";
 export * from "./Notification";
 export * from "./Loading";
 export * from "./Upload";
+export * from './Popconfirm'

@@ -1,0 +1,13 @@
+.er-popconfirm {
+  .er-popconfirm__main {
+    display: flex;
+    align-items: center;
+    i {
+      margin-right: 5px;
+    }
+  }
+  .er-popconfirm__action {
+    text-align: right;
+    margin-top: 8px;
+  }
+}
