@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { LoadingOptions } from "./types";
-import { computed } from "vue";
+import { computed, type Ref } from "vue";
 import { isString } from "lodash-es";
 import ErIcon from "../Icon/Icon.vue";
 
@@ -8,9 +8,7 @@ defineOptions({
   name: "ErLoading",
   inheritAttrs: false,
 });
-const props = withDefaults(defineProps<LoadingOptions>(), {
-  visible: false,
-});
+const props = defineProps<LoadingOptions>();
 
 const iconName = computed(() => {
   if (isString(props.spinner)) {
@@ -21,9 +19,9 @@ const iconName = computed(() => {
 </script>
 
 <template>
-  <transition name="er-loading-fade" @after-leave="onAfterLeave">
+  <transition name="fade-in-linear" @after-leave="onAfterLeave">
     <div
-      v-show="visible"
+      v-show="(props.visible as Ref).value"
       class="er-loading er-loading__mask"
       :class="{ 'is-fullscreen': fullscreen }"
     >

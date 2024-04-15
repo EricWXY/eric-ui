@@ -4,7 +4,9 @@ import {
   ErMessage,
   ErNotification,
   // ErLoading,
+  ErMessageBox,
   type RenderLabelFunc,
+  type MessageBoxAction,
 } from "eric-ui";
 
 const openVal = ref(["a"]);
@@ -85,11 +87,11 @@ function handleNotify() {
 
 setInterval(() => {
   loading.value = !loading.value;
-  // let loadingHandle = ErLoading.service()
+  // let loadingHandle = ErLoading.service();
   // if (loading.value) {
-  //   loadingHandle = ErLoading.service()
+  //   loadingHandle = ErLoading.service();
   // } else {
-  //   loadingHandle?.close()
+  //   loadingHandle?.close();
   // }
 }, 2000);
 
@@ -100,6 +102,30 @@ async function submit() {
   } catch (e) {
     console.log("the error", e);
   }
+}
+
+function callMessageBox() {
+  ErMessageBox.confirm("确认删除吗？", "确认消息", {
+    title: "标题",
+    type: "warning",
+    showClose: true,
+    confirmButtonText: "确认",
+    cancelButtonText: "取消",
+    callback: (action) => {
+      console.log(action);
+    },
+    beforeClose(action, instance, next) {
+      if (action === "confirm") {
+        instance.confirmButtonLoading = true;
+        instance.confirmButtonText = "删除中...";
+        setTimeout(() => {
+          next();
+        }, 2000);
+      } else {
+        next();
+      }
+    },
+  });
 }
 </script>
 
@@ -113,7 +139,7 @@ async function submit() {
       <er-button type="success" @click="console.log('click')"
         >Success</er-button
       >
-      <er-button type="info">Info</er-button>
+      <er-button type="info" @click="callMessageBox">Info</er-button>
       <er-button type="warning">Warning</er-button>
       <er-popconfirm title="Are you sure to delete this?">
         <er-button type="danger">Danger</er-button>

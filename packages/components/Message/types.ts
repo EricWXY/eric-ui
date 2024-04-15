@@ -34,7 +34,7 @@ export interface MessageProps {
   duration?: number;
   showClose?: boolean;
   center?: boolean;
-  type?: "success" | "info" | "warning" | "danger" | "error";
+  type?: messageType;
   offset?: number;
   zIndex: number;
   transitionName?: string;
