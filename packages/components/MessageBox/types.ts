@@ -39,21 +39,24 @@ export interface MessageBoxOptions {
   center?: boolean;
   lockScroll?: boolean;
   closeOnClickModal?: boolean;
-  closeOnPressEscape?: boolean;
 
   inputPlaceholder?: string;
   inputValue?: string;
   inputType?: "text" | "textarea" | "password" | "number";
 
   buttonSize?: "default" | "small" | "large";
-  beforeClose?: (action: MessageBoxAction, instance: MessageBoxOptions, done: () => void) => void;
+  beforeClose?: (
+    action: MessageBoxAction,
+    instance: MessageBoxOptions,
+    done: () => void
+  ) => void;
 }
 
 export interface MessageBoxProps extends MessageBoxOptions {
   visible?: Ref<boolean>;
   doClose(): void;
-  onAction(action: MessageBoxAction): void;
-  onDestroy(): void;
+  doAction(action: MessageBoxAction, inputVal?: string): void;
+  destroy(): void;
 }
 
 export type MessageBoxShortcutMethod = ((

@@ -3,6 +3,7 @@ import {
   isVNode,
   ref,
   render,
+  nextTick,
   type ComponentPublicInstance,
   type VNode,
   type VNodeProps,
@@ -19,7 +20,6 @@ import MessageBoxConstructor from "./MessageBox.vue";
 import {
   assign,
   each,
-  get,
   isFunction,
   isObject,
   isString,
@@ -70,13 +70,15 @@ function showMessage(options: MessageBoxOptions) {
     doClose: () => {
       vm.visible.value = false;
     },
-    onAction: (action: MessageBoxAction) => {
+    doAction: (action: MessageBoxAction, inputVal: string) => {
       const currentMsg = messageInstanceMap.get(vm);
       let resolve:
         | MessageBoxAction
         | { value: string; action: MessageBoxAction };
+
+      nextTick(() => vm.doClose());
       if (options.showInput) {
-        resolve = { value: vm.inputValue, action: action };
+        resolve = { value: inputVal, action: action };
       } else {
         resolve = action;
       }
@@ -90,7 +92,7 @@ function showMessage(options: MessageBoxOptions) {
       }
       currentMsg?.resolve(resolve);
     },
-    onDestroy: () => {
+    destroy: () => {
       render(null, container);
       messageInstanceMap.delete(vm);
     },
@@ -99,12 +101,6 @@ function showMessage(options: MessageBoxOptions) {
   const instance = initInstance(props as MessageBoxProps, container);
 
   const vm = instance?.proxy as ComponentPublicInstance<any>;
-
-  for (const prop in options) {
-    if (options.hasOwnProperty(prop) && !vm.$props.hasOwnProperty(prop)) {
-      vm[prop as keyof MessageBoxOptions] = get(options, prop);
-    }
-  }
 
   vm.visible.value = true;
   return vm;
@@ -124,21 +120,16 @@ function MessageBox(options: MessageBoxOptions | string | VNode): Promise<any> {
 
   return new Promise((resolve, reject) => {
     const vm = showMessage(options);
-
-    messageInstanceMap.set(vm, {
-      options,
-      callback,
-      resolve,
-      reject,
-    });
+    messageInstanceMap.set(vm, { options, callback, resolve, reject });
   });
 }
+
 const MESSAGE_BOX_VARIANTS = ["alert", "confirm", "prompt"] as const;
 const MESSAGE_BOX_DEFAULT_OPTS: Record<
   (typeof MESSAGE_BOX_VARIANTS)[number],
   Partial<MessageBoxOptions>
 > = {
-  alert: { closeOnPressEscape: false, closeOnClickModal: false },
+  alert: { closeOnClickModal: false },
   confirm: { showCancelButton: true },
   prompt: { showCancelButton: true, showInput: true },
 };

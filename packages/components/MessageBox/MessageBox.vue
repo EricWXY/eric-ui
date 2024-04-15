@@ -18,16 +18,16 @@ const props = withDefaults(defineProps<MessageBoxProps>(), {
   lockScroll: true,
   showClose: true,
   closeOnClickModal: true,
-  closeOnPressEscape: true,
   confirmButtonType: "primary",
   roundButton: false,
   boxType: "",
   inputValue: "",
+  inputPlaceholder:'Please input...',
   confirmButtonText: "Ok",
   cancelButtonText: "Cancel",
   showConfirmButton: true,
 });
-const { doClose, onAction } = props;
+const { doAction } = props;
 
 const headerRef = ref<HTMLElement>();
 const inputRef = ref<InputInstance>();
@@ -38,7 +38,6 @@ const { nextZIndex } = useZIndex();
 const state = reactive({
   ...props,
   zIndex: nextZIndex(),
-  action: "",
 });
 
 const hasMessage = computed(() => !!state.message);
@@ -49,16 +48,15 @@ const iconComponent = computed(
 watch(
   () => props.visible?.value,
   (val) => {
-    if (val) {
-      state.zIndex = nextZIndex();
-    }
+    if (val) state.zIndex = nextZIndex();
+
     if (props.boxType !== "prompt") return;
 
-    if (val) {
-      nextTick(() => {
-        inputRef.value && inputRef.value.focus();
-      });
-    }
+    if (!val) return;
+
+    nextTick(() => {
+      inputRef.value && inputRef.value.focus();
+    });
   }
 );
 
@@ -73,11 +71,9 @@ function handleInputEnter(e: KeyboardEvent) {
 }
 
 function handleAction(action: MessageBoxAction) {
-  state.action = action;
-  onAction(action);
   isFunction(props.beforeClose)
-    ? props.beforeClose(state.action as MessageBoxAction, state, doClose)
-    : doClose();
+    ? props.beforeClose(action, state, () => doAction(action, state.inputValue))
+    : doAction(action, state.inputValue);
 }
 
 function handleClose() {
@@ -86,7 +82,7 @@ function handleClose() {
 </script>
 
 <template>
-  <transition name="fade-in-linear" @after-leave="onDestroy">
+  <transition name="fade-in-linear" @after-leave="destroy">
     <er-overlay v-show="(visible as Ref).value" :z-index="state.zIndex" mask>
       <div
         role="dialog"

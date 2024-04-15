@@ -58,7 +58,7 @@
       gap: 6px;
     }
 
-    .er-message-box__footer {
+    .er-message-box__footer,.er-message-box__content {
       justify-content: center;
     }
 
@@ -122,6 +122,7 @@
     align-items: center;
     gap: 12px;
     font-size: var(--er-message-box-content-font-size);
+    color: var(--er-message-box-content-color);
     .er-message-box__message {
       margin: 0;
       & p {
