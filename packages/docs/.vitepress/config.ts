@@ -44,6 +44,10 @@ export default defineConfig({
           { text: "Tooltip 文字提示", link: "components/tooltip" },
         ],
       },
+      {
+        text: "表单组件",
+        items: [{ text: "Form 表单", link: "components/form" }],
+      },
     ],
 
     socialLinks: [

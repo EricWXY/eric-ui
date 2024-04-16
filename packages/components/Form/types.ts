@@ -5,10 +5,10 @@ import type {
 } from "async-validator";
 import type { Ref } from "vue";
 
-export interface FromItemRule extends RuleItem {
+export interface FormItemRule extends RuleItem {
   trigger?: string | string[];
 }
-export type FormRules = Record<string, FromItemRule[]>;
+export type FormRules = Record<string, FormItemRule[]>;
 
 export type FormValidateResult = Promise<boolean>;
 export type FormValidateCallback = (
@@ -53,7 +53,7 @@ export interface FormItemProps {
   required?: boolean;
   showMessage?: boolean;
   error?: string;
-  rules?: FromItemRule[];
+  rules?: FormItemRule[];
 }
 
 export interface FormInstance {

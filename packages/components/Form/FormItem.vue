@@ -22,7 +22,7 @@ import type {
   FormValidateCallback,
   ValidateStatus,
   FormItemInstance,
-  FromItemRule,
+  FormItemRule,
 } from "./types";
 import {
   isNil,
@@ -81,7 +81,7 @@ const innerVal = computed(() => {
 const itemRules = computed(() => {
   const { required } = props;
 
-  const rules: FromItemRule[] = [];
+  const rules: FormItemRule[] = [];
   if (props.rules) {
     rules.push(...props.rules);
   }
@@ -97,12 +97,12 @@ const itemRules = computed(() => {
   if (!isNil(required)) {
     const requiredRules = filter(
       map(rules, (rule, i) => [rule, i]),
-      (item: [FromItemRule, number]) => includes(keys(item[0]), "required")
+      (item: [FormItemRule, number]) => includes(keys(item[0]), "required")
     );
 
     if (size(requiredRules)) {
       for (const item of requiredRules) {
-        const [rule, i] = item as [FromItemRule, number];
+        const [rule, i] = item as [FormItemRule, number];
         if (rule.required === required) continue;
         rules[i] = { ...rule, required };
       }
