@@ -45,6 +45,7 @@ const onReset = () => {
     ref="formRef"
     :model="form"
     :rules="rules"
+    label-position="top"
     @submit.prevent="onSubmit(formRef)"
   >
     <er-form-item label="Activity name" prop="name">
