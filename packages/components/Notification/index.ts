@@ -3,7 +3,7 @@ import { withInstallFunction } from "@eric-ui/utils";
 
 export const ErNotification = withInstallFunction(
   Notification,
-  "$notification"
+  "$notify"
 );
 
 export * from "./types";

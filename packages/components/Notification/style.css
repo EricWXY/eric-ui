@@ -69,6 +69,10 @@
     color: var(--el-notification-icon-color);
   }
 }
+.er-notification--error {
+  --er-notification-icon-color: var(--er-color-danger);
+  color: var(--el-notification-icon-color);
+}
 
 .er-notification-fade-enter-from {
   right: 0;

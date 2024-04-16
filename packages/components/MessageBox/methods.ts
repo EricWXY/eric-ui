@@ -39,6 +39,9 @@ const messageInstanceMap = new Map<
 
 function initInstance(props: MessageBoxProps, container: HTMLElement) {
   const visible = ref(false);
+  const isVNodeMsg = isFunction(props?.message) || isVNode(props?.message);
+  const genDefaultSlot = (message: VNode | (() => VNode)) =>
+    isFunction(message) ? message : () => message;
 
   const vnode = createVNode(
     MessageBoxConstructor,
@@ -46,13 +49,7 @@ function initInstance(props: MessageBoxProps, container: HTMLElement) {
       ...props,
       visible,
     } as VNodeProps,
-    isFunction(props?.message) || isVNode(props?.message)
-      ? {
-          default: isFunction(props.message)
-            ? props.message
-            : () => props.message,
-        }
-      : void 0
+    isVNodeMsg ? { default: genDefaultSlot(props.message as VNode) } : void 0
   );
   render(vnode, container);
   document.body.appendChild(container.firstElementChild!);

@@ -6,7 +6,7 @@ function open1() {
   ErMessageBox({
     title: "Message",
     message: h("p", null, [
-      h("span", null, "Message can be"),
+      h("span", null, "Message can be "),
       h("i", { style: "color: teal" }, "VNode"),
     ]),
   });

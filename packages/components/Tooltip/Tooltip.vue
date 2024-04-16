@@ -22,8 +22,8 @@ const props = withDefaults(defineProps<_TooltipProps>(), {
   placement: "bottom",
   trigger: "hover",
   transition: "fade",
-  showTimeout: 150,
-  hideTimeout: 150,
+  showTimeout: 0,
+  hideTimeout: 200,
 });
 const emits = defineEmits<TooltipEmits>();
 const visible = ref(false);

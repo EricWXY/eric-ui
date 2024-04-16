@@ -12,13 +12,15 @@ export interface NotificationProps {
   title: string;
   id: string;
   zIndex: number;
-  type?: "success" | "info" | "warning" | "danger";
+  type?: "success" | "info" | "warning" | "danger" | "error";
   message?: string | VNode;
   duration?: number;
   showClose?: boolean;
   offset?: number;
   transitionName?: string;
   icon?: string;
+  onClick?(): void;
+  onClose?(): void;
   onDestory(): void;
 }
 export interface NotificationInstance {

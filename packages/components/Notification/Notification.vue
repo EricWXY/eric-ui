@@ -47,6 +47,7 @@ function clearTimer() {
 
 function close() {
   visible.value = false;
+  props?.onClose?.();
 }
 
 onMounted(() => {
@@ -75,6 +76,7 @@ defineExpose({
       :style="cssStyle"
       v-show="visible"
       role="alert"
+      @click="onClick"
       @mouseenter="clearTimer"
       @mouseleave="startTimer"
     >
