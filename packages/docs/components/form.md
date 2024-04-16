@@ -78,8 +78,8 @@ demo-preview=../demo/form/CustomValidate.vue
 | ------------- | -------------- | -------------------------------------------------------------------------------------------------------- |
 | validate      | 校验表单项     | `() => Promise<boolean>`                                                                                 |
 | validateField | 校验指定表单项 | `(props?: string[],callback?:(isValid:boolean,invalidFields?: ValidateFieldsError)) => Promise<boolean>` |
-| resetFields   | 重置表单项     | `() => void`                                                                                             |
-| clearValidate | 清除校验状态   | `() => void`                                                                                             |
+| resetFields   | 重置表单项     | `(props?: string[]) => void`                                                                             |
+| clearValidate | 清除校验状态   | `(props?: string[]) => void`                                                                             |
 
 ## FormItem API
 
