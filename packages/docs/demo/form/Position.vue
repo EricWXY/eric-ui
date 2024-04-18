@@ -8,6 +8,10 @@ const form = reactive({
   delivery: false,
   desc: "",
 });
+const options = ref([
+  { value: "beijing", label: "Zone One" },
+  { value: "shanghai", label: "Zone Two" },
+]);
 const labelPosition = ref<FormProps["labelPosition"]>("right");
 
 const onSubmit = () => {
@@ -39,10 +43,11 @@ const onSubmit = () => {
       <er-input v-model="form.name" />
     </er-form-item>
     <er-form-item label="Activity zone">
-      <er-select v-model="form.region" placeholder="please select your zone">
-        <er-option label="Zone one" value="shanghai" />
-        <er-option label="Zone two" value="beijing" />
-      </er-select>
+      <er-select
+        v-model="form.region"
+        placeholder="please select your zone"
+        :options="options"
+      />
     </er-form-item>
     <er-form-item label="Instant delivery">
       <er-switch v-model="form.delivery" />

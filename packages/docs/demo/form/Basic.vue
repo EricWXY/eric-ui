@@ -11,7 +11,7 @@ const form = reactive({
 
 const options = ref([
   { value: "beijing", label: "Zone One" },
-  { value: "shanghai", label: "Zone two" },
+  { value: "shanghai", label: "Zone Two" },
 ]);
 
 const onSubmit = () => {
