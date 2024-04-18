@@ -1,40 +1,40 @@
 <script setup lang="ts">
 import { h } from "vue";
 import { ErMessage, ErMessageBox } from "eric-ui";
+import { delay } from "lodash-es";
 
-function openMsgBox() {
-  ErMessageBox({
-    title: "Message",
-    message: h("p", null, [
-      h("span", null, "Message can be "),
-      h("i", { style: "color: teal" }, "VNode"),
-    ]),
-    showCancelButton: true,
-    confirmButtonText: "Yes",
-    cancelButtonText: "No",
-    type: "danger",
-    icon: "trash",
-    beforeClose(action, instance, done) {
-      if (action === "confirm") {
+async function openMsgBox() {
+  try {
+    const action = await ErMessageBox({
+      title: "Message",
+      message: h("p", null, [
+        h("span", null, "Message can be "),
+        h("i", { style: "color: teal" }, "VNode"),
+      ]),
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+      type: "danger",
+      icon: "trash",
+      beforeClose(action, instance, done) {
+        if (action !== "confirm") {
+          done();
+          return;
+        }
+
         instance.confirmButtonLoading = true;
         instance.confirmButtonText = "Loading...";
-        setTimeout(() => {
+        delay(() => {
           done();
-          setTimeout(() => {
-            instance.confirmButtonLoading = false;
-          }, 1000);
+          delay(() => (instance.confirmButtonLoading = false), 1000);
         }, 3000);
-      } else {
-        done();
-      }
-    },
-  })
-    .then((action) => {
-      ErMessage.info(`action : ${action}`);
-    })
-    .catch((action) => {
-      ErMessage.warning(`action : ${action}`);
+      },
     });
+
+    ErMessage.info(`action : ${action}`);
+  } catch (action) {
+    ErMessage.warning(`action : ${action}`);
+  }
 }
 </script>
 
