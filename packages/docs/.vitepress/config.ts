@@ -22,10 +22,12 @@ export default defineConfig({
     sidebar: [
       {
         text: "指南",
+        collapsed: false,
         items: [{ text: "快速开始", link: "/get-started" }],
       },
       {
         text: "基础组件",
+        collapsed: false,
         items: [
           { text: "Button 按钮", link: "components/button" },
           { text: "Collapse 折叠面板", link: "components/collapse" },
@@ -34,6 +36,7 @@ export default defineConfig({
       },
       {
         text: "反馈组件",
+        collapsed: false,
         items: [
           { text: "Alert 提示", link: "components/alert" },
           { text: "Loading 加载", link: "components/loading" },
@@ -46,6 +49,7 @@ export default defineConfig({
       },
       {
         text: "表单组件",
+        collapsed: false,
         items: [{ text: "Form 表单", link: "components/form" }],
       },
     ],
@@ -53,6 +57,7 @@ export default defineConfig({
     socialLinks: [
       { icon: "github", link: "https://github.com/EricWXY/eric-ui" },
     ],
+
   },
   markdown: {
     config(md) {

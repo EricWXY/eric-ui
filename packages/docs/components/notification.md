@@ -1,6 +1,14 @@
 ---
 title: Notification
 description: Notification 组件文档
+
+next: 
+  link: /components/popconfirm
+  text: PopConfirm 气泡确认框
+
+prev:
+  link: /components/messagebox
+  text: MessageBox 消息弹出框
 ---
 
 # Notification 通知

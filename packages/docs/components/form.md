@@ -1,6 +1,12 @@
 ---
 title: Form
 description: Form 组件文档
+
+prev:
+  link: components/tooltip
+  text: Tooltip 文字提示
+
+next: false
 ---
 
 # Form 表单

@@ -1,6 +1,14 @@
 ---
 title: MessageBox
 description: MessageBox 组件文档
+
+next: 
+  link: /components/notification
+  text: Notification 通知
+
+prev:
+  link: /components/message
+  text: Message 消息提示
 ---
 
 # MessageBox 消息弹框

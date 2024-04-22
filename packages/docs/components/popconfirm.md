@@ -1,6 +1,14 @@
 ---
 title: Popconfirm
 description: Popconfirm 组件文档
+
+prev: 
+  link: /components/notification
+  text: Notification 通知
+
+next:
+  link: /components/tooltip
+  text: Tooltip 文字提示
 ---
 
 # Popconfirm 气泡确认框

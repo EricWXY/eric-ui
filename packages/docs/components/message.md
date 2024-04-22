@@ -1,6 +1,14 @@
 ---
 title: Message
 description: Message 组件文档
+
+next: 
+  link: /components/messagebox
+  text: MessageBox 消息弹出框
+
+prev:
+  link: /components/loading
+  text: Loading 加载
 ---
 
 # Message 消息提示
