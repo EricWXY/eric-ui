@@ -2,9 +2,13 @@
   "name": "@eric-ui/components",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "test": "vitest --coverage"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "async-validator": "^4.2.5"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^1.4.0",
@@ -14,8 +18,5 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "async-validator": "^4.2.5"
-  }
+  "license": "ISC"
 }
