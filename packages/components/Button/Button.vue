@@ -28,7 +28,6 @@ const iconStyle = computed(() => ({
 }));
 
 const handleBtnClick = (e: MouseEvent) => {
-  if (disabled.value) return;
   emits("click", e);
 };
 const handlBtneCLickThrottle = throttle(handleBtnClick, props.throttleDuration);
@@ -63,6 +62,7 @@ defineExpose({
     <template v-if="loading">
       <slot name="loading">
         <er-icon
+          class="loading-icon"
           :icon="loadingIcon ?? 'spinner'"
           :style="iconStyle"
           size="1x"
