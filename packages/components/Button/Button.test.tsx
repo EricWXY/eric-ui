@@ -1,4 +1,5 @@
 import { describe, test, it, expect, vi } from "vitest";
+import {nextTick} from 'vue'
 import { mount } from "@vue/test-utils";
 
 import Icon from "../Icon/Icon.vue";
@@ -94,7 +95,7 @@ describe("Button.vue", () => {
   });
 
   // Props: type
-  it("has the correct type class when type prop is set", () => {
+  it("should has the correct type class when type prop is set", () => {
     const types = ["primary", "success", "warning", "danger", "info"];
     types.forEach((type) => {
       const wrapper = mount(Button, {
@@ -105,7 +106,7 @@ describe("Button.vue", () => {
   });
 
   // Props: size
-  it("has the correct size class when size prop is set", () => {
+  it("should has the correct size class when size prop is set", () => {
     const sizes = ["large", "default", "small"];
     sizes.forEach((size) => {
       const wrapper = mount(Button, {
@@ -122,24 +123,20 @@ describe("Button.vue", () => {
     ["circle", "is-circle"],
     ["disabled", "is-disabled"],
     ["loading", "is-loading"],
-  ])("has the correct class when prop %s is set to true", (prop, className) => {
-    const wrapper = mount(Button, {
-      props: { [prop]: true },
-
-      global: {
-        stubs: ["ErIcon"],
-      },
-    });
-    expect(wrapper.classes()).toContain(className);
-    if (prop == "loading") {
-      // icon
-      const iconElement = wrapper.findComponent(Icon);
-      expect(iconElement.exists()).toBeTruthy();
-      expect(iconElement.attributes("icon")).toBe("spinner");
+  ])(
+    "should has the correct class when prop %s is set to true",
+    (prop, className) => {
+      const wrapper = mount(Button, {
+        props: { [prop]: true },
+        global: {
+          stubs: ["ErIcon"],
+        },
+      });
+      expect(wrapper.classes()).toContain(className);
     }
-  });
+  );
 
-  it("has the correct native type attribute when native-type prop is set", () => {
+  it("should has the correct native type attribute when native-type prop is set", () => {
     const wrapper = mount(Button, {
       props: { nativeType: "submit" },
     });
@@ -190,8 +187,11 @@ describe("Button.vue", () => {
         stubs: ["ErIcon"],
       },
     });
+    const iconElement = wrapper.findComponent(Icon);
 
     expect(wrapper.find(".loading-icon").exists()).toBe(true);
+    expect(iconElement.exists()).toBeTruthy();
+    expect(iconElement.attributes("icon")).toBe("spinner");
     await wrapper.trigger("click");
     expect(wrapper.emitted("click")).toBeUndefined();
   });

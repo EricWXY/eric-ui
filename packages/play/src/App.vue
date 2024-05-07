@@ -3,10 +3,8 @@ import { ref, h, reactive } from "vue";
 import {
   ErMessage,
   ErNotification,
-  // ErLoading,
   ErMessageBox,
   type RenderLabelFunc,
-  type MessageBoxAction,
 } from "eric-ui";
 
 const openVal = ref(["a"]);

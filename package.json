@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm --filter @eric-ui/playground dev",
+    "story": "pnpm --filter @eric-ui/playground storybook",
     "docs:dev": "pnpm --filter @eric-ui/docs dev",
     "docs:build": "pnpm --filter @eric-ui/docs build",
     "test": "pnpm --filter @eric-ui/components test"
