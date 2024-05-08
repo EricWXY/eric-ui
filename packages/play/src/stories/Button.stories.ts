@@ -1,10 +1,10 @@
-import { fn } from "@storybook/test";
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryObj, ArgTypes } from "@storybook/vue3";
+import { fn, within, userEvent, expect } from "@storybook/test";
 import { ErButton, ErButtonGroup } from "eric-ui";
 
-type Story = StoryObj<typeof ErButton>;
+type Story = StoryObj<typeof ErButton> & { argTypes?: ArgTypes };
 
-export default {
+const meta: Meta<typeof ErButton> = {
   title: "Example/Button",
   component: ErButton,
   subcomponents: { ButtonGroup: ErButtonGroup },
@@ -49,28 +49,69 @@ export default {
     },
   },
   args: { onClick: fn() },
-} as Meta<typeof ErButton>;
+};
 
 const container = (val: string) => `
-<div style="margin:10px">
+<div style="margin:5px">
   ${val}
 </div>
 `;
 
-export const Default: Story = {
+export const Default: Story & { args: { content: string } } = {
+  argTypes: {
+    content: {
+      control: { type: "text" },
+    },
+  },
   args: {
     type: "primary",
+    content: "Button",
   },
   render: (args) => ({
     components: { ErButton },
     setup() {
       return { args };
     },
-    template: container(`<er-button v-bind="args">Button</er-button>`),
+    template: container(
+      `<er-button v-bind="args">{{args.content}}</er-button>`
+    ),
   }),
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    await step("click button", async () => {
+      await userEvent.tripleClick(canvas.getByRole("button"));
+    });
+
+    expect(args.onClick).toHaveBeenCalled();
+  },
 };
 
-export const Group: StoryObj<any> = {
+export const Circle: Story = {
+  args: {
+    icon: "search",
+  },
+  render: (args) => ({
+    components: { ErButton },
+    setup() {
+      return { args };
+    },
+    template: container(`
+      <er-button circle v-bind="args"/>
+    `),
+  }),
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    await step("click button", async () => {
+      await userEvent.click(canvas.getByRole("button"));
+    });
+
+    expect(args.onClick).toHaveBeenCalled();
+  },
+};
+
+Circle.parameters = {};
+
+export const Group: Story & { args: { content1: string; content2: string } } = {
   argTypes: {
     groupType: {
       control: { type: "select" },
@@ -83,20 +124,42 @@ export const Group: StoryObj<any> = {
     groupDisabled: {
       control: "boolean",
     },
+    content1: {
+      control: { type: "text" },
+      defaultValue: "Button1",
+    },
+    content2: {
+      control: { type: "text" },
+      defaultValue: "Button2",
+    },
   },
   args: {
     round: true,
+    content1: "Button1",
+    content2: "Button2",
   },
-  render: (args: any) => ({
+  render: (args) => ({
     components: { ErButton, ErButtonGroup },
     setup() {
       return { args };
     },
     template: container(`
        <er-button-group :type="args.groupType" :size="args.groupSize" :disabled="args.groupDisabled">
-         <er-button v-bind="args">Button1</er-button>
-         <er-button v-bind="args">Button2</er-button>
+         <er-button v-bind="args">{{args.content1}}</er-button>
+         <er-button v-bind="args">{{args.content2}}</er-button>
        </er-button-group>
     `),
   }),
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    await step("click btn1", async () => {
+      await userEvent.click(canvas.getByText("Button1"));
+    });
+    await step("click btn2", async () => {
+      await userEvent.click(canvas.getByText("Button2"));
+    });
+    expect(args.onClick).toHaveBeenCalled();
+  },
 };
+
+export default meta;
