@@ -8,7 +8,8 @@
     "story": "pnpm --filter @eric-ui/playground storybook",
     "docs:dev": "pnpm --filter @eric-ui/docs dev",
     "docs:build": "pnpm --filter @eric-ui/docs build",
-    "test": "pnpm --filter @eric-ui/components test"
+    "test": "pnpm --filter @eric-ui/components test",
+    "build": "pnpm --filter eric-ui build"
   },
   "keywords": [],
   "author": "",
@@ -18,10 +19,12 @@
     "@eric-ui/hooks": "workspace:*",
     "@eric-ui/theme": "workspace:*",
     "@eric-ui/utils": "workspace:*",
-    "eric-ui": "workspace:*",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/vue-fontawesome": "^3.0.6",
+    "@popperjs/core": "^2.11.8",
+    "async-validator": "^4.2.5",
+    "eric-ui": "workspace:*",
     "lodash-es": "^4.17.21",
     "vue": "^3.4.19"
   },
@@ -31,6 +34,8 @@
     "@vitejs/plugin-vue": "^5.0.4",
     "@vitejs/plugin-vue-jsx": "^3.1.0",
     "@vue/tsconfig": "^0.5.1",
+    "move-file-cli": "^3.0.0",
+    "npm-run-all": "^4.1.5",
     "postcss-color-mix": "^1.1.0",
     "postcss-each": "^1.1.0",
     "postcss-each-variables": "^0.3.0",

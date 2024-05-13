@@ -1,6 +1,6 @@
 import { describe, test, it, expect, vi } from "vitest";
-import {nextTick} from 'vue'
 import { mount } from "@vue/test-utils";
+import type { ButtonType, ButtonSize } from "./types";
 
 import Icon from "../Icon/Icon.vue";
 import Button from "./Button.vue";
@@ -99,7 +99,7 @@ describe("Button.vue", () => {
     const types = ["primary", "success", "warning", "danger", "info"];
     types.forEach((type) => {
       const wrapper = mount(Button, {
-        props: { type: type as any },
+        props: { type: type as ButtonType },
       });
       expect(wrapper.classes()).toContain(`er-button--${type}`);
     });
@@ -110,7 +110,7 @@ describe("Button.vue", () => {
     const sizes = ["large", "default", "small"];
     sizes.forEach((size) => {
       const wrapper = mount(Button, {
-        props: { size: size as any },
+        props: { size: size as ButtonSize },
       });
       expect(wrapper.classes()).toContain(`er-button--${size}`);
     });

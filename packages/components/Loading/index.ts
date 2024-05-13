@@ -13,6 +13,7 @@ export const ErLoading = {
 };
 
 export default ErLoading;
+
 export {
   vLoading,
   vLoading as ErLoadingDirective,

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, inject } from "vue";
-import type { ButtonProps, ButtonEmits } from "./types";
+import type { ButtonProps, ButtonEmits, ButtonInstance } from "./types";
 import { BUTTON_GROUP_CTX_KEY } from "./constants";
 import { throttle } from "lodash-es";
 import ErIcon from "../Icon/Icon.vue";
@@ -32,7 +32,7 @@ const handleBtnClick = (e: MouseEvent) => {
 };
 const handlBtneCLickThrottle = throttle(handleBtnClick, props.throttleDuration);
 
-defineExpose({
+defineExpose<ButtonInstance>({
   ref: _ref,
   disabled,
   size,
@@ -57,7 +57,10 @@ defineExpose({
     :disabled="disabled || loading ? true : void 0"
     :type="tag === 'button' ? nativeType : void 0"
     :autofocus="autofocus"
-    @click="(e:MouseEvent) => (useThrottle ? handlBtneCLickThrottle(e) : handleBtnClick(e))"
+    @click="
+      (e: MouseEvent) =>
+        useThrottle ? handlBtneCLickThrottle(e) : handleBtnClick(e)
+    "
   >
     <template v-if="loading">
       <slot name="loading">
@@ -70,7 +73,12 @@ defineExpose({
         />
       </slot>
     </template>
-    <er-icon :icon="icon" size="1x" :style="iconStyle" v-if="icon" />
+    <er-icon
+      :icon="icon"
+      size="1x"
+      :style="iconStyle"
+      v-if="icon && !loading"
+    />
     <slot></slot>
   </component>
 </template>

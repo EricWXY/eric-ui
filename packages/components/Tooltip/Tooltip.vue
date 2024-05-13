@@ -39,11 +39,11 @@ const _triggerNode = ref<HTMLElement>();
 const triggerNode = computed(() => {
   if (props.virtualTriggering)
     return (
-      (props.virtualRef as ButtonInstance)?.ref ??
+      (props.virtualRef as ButtonInstance)?.ref.value ??
       (props.virtualRef as HTMLElement) ??
       _triggerNode.value
     );
-  return _triggerNode.value;
+  return _triggerNode.value as HTMLElement;
 });
 
 const popperOptions = computed(() => ({
