@@ -31,7 +31,7 @@
     "move-style": "move-file dist/es/index.css dist/index.css"
   },
   "keywords": [],
-  "author": "",
+  "author": "EricWXY",
   "license": "ISC",
   "devDependencies": {
     "vite-plugin-dts": "^3.9.1"

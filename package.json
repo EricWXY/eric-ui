@@ -19,12 +19,12 @@
     "@eric-ui/hooks": "workspace:*",
     "@eric-ui/theme": "workspace:*",
     "@eric-ui/utils": "workspace:*",
+    "eric-ui": "workspace:*",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/vue-fontawesome": "^3.0.6",
     "@popperjs/core": "^2.11.8",
     "async-validator": "^4.2.5",
-    "eric-ui": "workspace:*",
     "lodash-es": "^4.17.21",
     "vue": "^3.4.19"
   },
