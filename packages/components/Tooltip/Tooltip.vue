@@ -39,7 +39,8 @@ const _triggerNode = ref<HTMLElement>();
 const triggerNode = computed(() => {
   if (props.virtualTriggering)
     return (
-      (props.virtualRef as ButtonInstance)?.ref.value ??
+      // @tips any 为了 fix 一个初始设计上的小失误 （后续重构 "虚拟目标节点" 时解决）
+      ((props.virtualRef as ButtonInstance)?.ref as any) ??
       (props.virtualRef as HTMLElement) ??
       _triggerNode.value
     );

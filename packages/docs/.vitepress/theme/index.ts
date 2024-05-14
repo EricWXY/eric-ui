@@ -1,6 +1,7 @@
 import DefaultTheme from "vitepress/theme";
 import { type App } from "vue";
 import EricUI from "eric-ui";
+import 'eric-ui/dist/index.css'
 import { ElementPlusContainer } from "@vitepress-demo-preview/component";
 
 import "@vitepress-demo-preview/component/dist/style.css";
