@@ -130,9 +130,6 @@ importers:
         specifier: ^3.4.19
         version: 3.4.20(typescript@5.4.2)
     devDependencies:
-      npm-run-all:
-        specifier: ^4.1.5
-        version: 4.1.5
       vite-plugin-dts:
         specifier: ^3.9.1
         version: 3.9.1(@types/node@20.11.20)(rollup@4.12.0)(typescript@5.4.2)(vite@5.1.4(@types/node@20.11.20))
