@@ -36,7 +36,7 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, "./index.ts"),
       name: "EricUI",
-      fileName: "eric-ui",
+      fileName: "index",
       formats: ["es"],
     },
     rollupOptions: {

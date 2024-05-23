@@ -8,5 +8,5 @@ library.add(fas);
 
 const installer = makeInstaller(componens);
 
-export * from "@eric-ui/components";
+export * from "../components";
 export default installer;
