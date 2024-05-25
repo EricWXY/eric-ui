@@ -5,7 +5,6 @@ import type {
   CollapseItemName,
   CollapseProps,
   CollapseEmits,
-  CollapseContext,
 } from "./types";
 import { debugWarn } from "@eric-ui/utils";
 import { COLLAPSE_CTX_KEY } from "./constants";
@@ -19,12 +18,6 @@ defineOptions({
 const props = defineProps<CollapseProps>();
 const emits = defineEmits<CollapseEmits>();
 const activeNames = ref<CollapseItemName[]>(props.modelValue);
-watch(
-  () => props.modelValue,
-  (val) => {
-    activeNames.value = val;
-  }
-);
 
 if (props.accordion && activeNames.value.length > 1) {
   debugWarn(COMPONENT_NAME, "accordion mode should only have one active item");
@@ -57,7 +50,12 @@ function updateActiveNames(val: CollapseItemName[]) {
   );
 }
 
-provide<CollapseContext>(COLLAPSE_CTX_KEY, {
+watch(
+  () => props.modelValue,
+  (val) => updateActiveNames(val)
+);
+
+provide(COLLAPSE_CTX_KEY, {
   activeNames,
   handleItemClick,
 });

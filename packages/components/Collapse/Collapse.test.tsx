@@ -96,5 +96,70 @@ describe("Collapse.vue", () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  test.todo("手风琴模式");
+  test("modelValue 变更", async () => {
+    wrapper.setValue(["b"], "modelValue");
+    await wrapper.vm.$nextTick();
+    expect(secondHeader.classes()).toContain("is-active");
+    expect(firstHeader.classes()).not.toContain("is-active");
+  });
+
+  test("手风琴模式", async () => {
+    wrapper = mount(
+      () => (
+        <Collapse accordion modelValue={["a"]} {...{ onChange }}>
+          <CollapseItem name="a" title="title a">
+            content a
+          </CollapseItem>
+          <CollapseItem name="b" title="title b">
+            content b
+          </CollapseItem>
+        </Collapse>
+      ),
+      {
+        global: {
+          stubs: ["ErIcon"],
+        },
+        attachTo: document.body,
+      }
+    );
+
+    headers = wrapper.findAll(".er-collapse-item__header");
+    contents = wrapper.findAll(".er-collapse-item__wapper");
+
+    firstHeader = headers[0];
+    secondHeader = headers[1];
+
+    firstContent = contents[0];
+    secondContent = contents[1];
+    await firstHeader.trigger("click");
+    await secondHeader.trigger("click");
+    expect(onChange).toHaveBeenCalledTimes(2);
+    expect(onChange).toHaveBeenCalledWith(["b"]);
+    expect(firstHeader.classes()).not.toContain("is-active");
+    expect(secondHeader.classes()).toContain("is-active");
+  });
+
+  test("手风琴模式 错误处理", () => {
+    wrapper = mount(
+      () => (
+        <Collapse accordion modelValue={["a", "b"]} {...{ onChange }}>
+          <CollapseItem name="a" title="title a">
+            content a
+          </CollapseItem>
+          <CollapseItem name="b" title="title b">
+            content b
+          </CollapseItem>
+          <CollapseItem name="c" title="title c" disabled>
+            content c
+          </CollapseItem>
+        </Collapse>
+      ),
+      {
+        global: {
+          stubs: ["ErIcon"],
+        }
+      }
+    );
+  });
+  expect(() => wrapper.vm.$nextTick()).toThrow();
 });
