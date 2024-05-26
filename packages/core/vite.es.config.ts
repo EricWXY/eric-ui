@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
 import dts from "vite-plugin-dts";
+import compression from "vite-plugin-compression";
 
 const COMP_NAMES = [
   "Alert",
@@ -30,9 +31,13 @@ export default defineConfig({
       tsconfigPath: "../../tsconfig.build.json",
       outDir: "dist/types",
     }),
+    compression({
+      threshold: 1024 * 50,
+    }),
   ],
   build: {
     outDir: "dist/es",
+    cssCodeSplit: true,
     lib: {
       entry: resolve(__dirname, "./index.ts"),
       name: "EricUI",
@@ -52,6 +57,12 @@ export default defineConfig({
         assetFileNames: (chunkInfo) => {
           if (chunkInfo.name === "style.css") {
             return "index.css";
+          }
+          if (
+            chunkInfo.type === "asset" &&
+            /\.(css)$/i.test(chunkInfo.name as string)
+          ) {
+            return "theme/[name].[ext]";
           }
           return chunkInfo.name as string;
         },
