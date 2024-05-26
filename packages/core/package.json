@@ -8,7 +8,7 @@
   ],
   "sideEffects": [
     "./dist/index.css",
-    "./dist/theme"
+    "./dist/theme/*.css"
   ],
   "main": "./dist/umd/index.umd.cjs",
   "module": "./dist/es/index.js",
@@ -25,16 +25,18 @@
     }
   },
   "scripts": {
-    "build": "run-s build-only move-themes",
+    "build": "run-s remove-dist build-only move-styles",
     "build-only": "run-p build-es build-umd",
     "build-es": "vite build --config vite.es.config.ts",
     "build-umd": "vite build --config vite.umd.config.ts",
-    "move-themes":"node ./scripts/moveThemes.js"
+    "remove-dist": "node ./scripts/remove-dist.js",
+    "move-styles": "node ./scripts/move-styles.js"
   },
   "keywords": [],
   "author": "EricWXY",
   "license": "ISC",
   "devDependencies": {
+    "terser": "^5.31.0",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-dts": "^3.9.1"
   },

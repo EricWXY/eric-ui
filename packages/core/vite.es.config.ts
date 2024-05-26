@@ -1,28 +1,21 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
+import { readdirSync } from "fs";
+import { filter, map } from "lodash-es";
 import dts from "vite-plugin-dts";
 import compression from "vite-plugin-compression";
 
-const COMP_NAMES = [
-  "Alert",
-  "Button",
-  "Collapse",
-  "Dropdown",
-  "Form",
-  "Icon",
-  "Input",
-  "Loading",
-  "Message",
-  "MessageBox",
-  "Notification",
-  "Overlay",
-  "Popconfirm",
-  "Select",
-  "Switch",
-  "Tooltip",
-  "Upload",
-] as const;
+const isProd = process.env.NODE_ENV === "production";
+
+function getDirectoriesSync(basePath: string) {
+  const entries = readdirSync(basePath, { withFileTypes: true });
+
+  return map(
+    filter(entries, (entry) => entry.isDirectory()),
+    (entry) => entry.name
+  );
+}
 
 export default defineConfig({
   plugins: [
@@ -38,6 +31,17 @@ export default defineConfig({
   build: {
     outDir: "dist/es",
     cssCodeSplit: true,
+    sourcemap: !isProd,
+    minify: "terser",
+    terserOptions: {
+      compress: {
+        drop_console: isProd,
+        drop_debugger: isProd,
+        keep_classnames: true,
+        keep_fnames: true,
+        evaluate: true,
+      },
+    },
     lib: {
       entry: resolve(__dirname, "./index.ts"),
       name: "EricUI",
@@ -53,6 +57,9 @@ export default defineConfig({
         "@popperjs/core",
         "async-validator",
       ],
+      input:{
+        '@eric-ui/components':'../components'
+      },
       output: {
         assetFileNames: (chunkInfo) => {
           if (chunkInfo.name === "style.css") {
@@ -76,7 +83,7 @@ export default defineConfig({
           if (id.includes("/packages/utils")) {
             return "utils";
           }
-          for (const item of COMP_NAMES) {
+          for (const item of getDirectoriesSync("../components")) {
             if (id.includes(`/packages/components/${item}`)) {
               return item;
             }
