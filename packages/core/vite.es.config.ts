@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
-import { resolve } from "path";
 import { readdirSync } from "fs";
+import { resolve } from "path";
 import { delay, filter, map } from "lodash-es";
 import shell from "shelljs";
 
@@ -8,12 +8,13 @@ import vue from "@vitejs/plugin-vue";
 import dts from "vite-plugin-dts";
 import compression from "vite-plugin-compression";
 import terser from "@rollup/plugin-terser";
+import hooks from "./hooksPlugin";
+
+const TRY_MOVE_STYLES_DELAY = 600 as const;
 
 const isProd = process.env.NODE_ENV === "production";
 const isDev = process.env.NODE_ENV === "development";
 const isTest = process.env.NODE_ENV === "test";
-
-const BUILD_END_DELAY = 2000 as const;
 
 function getDirectoriesSync(basePath: string) {
   const entries = readdirSync(basePath, { withFileTypes: true });
@@ -22,6 +23,15 @@ function getDirectoriesSync(basePath: string) {
     filter(entries, (entry) => entry.isDirectory()),
     (entry) => entry.name
   );
+}
+
+function moveStyles() {
+  try {
+    readdirSync("./dist/es/theme");
+    shell.mv("./dist/es/theme", "./dist");
+  } catch (_) {
+    delay(moveStyles, TRY_MOVE_STYLES_DELAY);
+  }
 }
 
 export default defineConfig({
@@ -39,7 +49,6 @@ export default defineConfig({
     outDir: "dist/es",
     cssCodeSplit: true,
     sourcemap: !isProd,
-
     lib: {
       entry: resolve(__dirname, "./index.ts"),
       name: "EricUI",
@@ -59,15 +68,10 @@ export default defineConfig({
             },
           },
         }),
-        {
-          name: "customPlugin",
-          buildEnd(__, err?: Error) {
-            if (err) return;
-            delay(() => {
-              shell.mv("./dist/es/theme", "./dist");
-            }, BUILD_END_DELAY);
-          },
-        },
+        hooks({
+          rmFiles: ["./dist/es", "./dist/theme", "./dist/types"],
+          afterBuild: moveStyles,
+        }),
       ],
       external: [
         "vue",
