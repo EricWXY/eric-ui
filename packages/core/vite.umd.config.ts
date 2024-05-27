@@ -9,7 +9,7 @@ import compression from "vite-plugin-compression";
 import terser from "@rollup/plugin-terser";
 import hooks from "./hooksPlugin";
 
-const TRY_MOVE_STYLES_DELAY = 600 as const;
+const TRY_MOVE_STYLES_DELAY = 800 as const;
 
 const isProd = process.env.NODE_ENV === "production";
 const isDev = process.env.NODE_ENV === "development";
@@ -32,6 +32,21 @@ export default defineConfig({
     compression({
       filter: /.(cjs|css)$/i,
     }),
+    terser({
+      compress: {
+        drop_console: isProd,
+        drop_debugger: isProd,
+        global_defs: {
+          "@DEV": JSON.stringify(isDev),
+          "@PROD": JSON.stringify(isProd),
+          "@TEST": JSON.stringify(isTest),
+        },
+      },
+    }),
+    hooks({
+      rmFiles: ["./dist/umd", "./dist/index.css", "./dist/index.css.gz"],
+      afterBuild: moveStyles,
+    }),
   ],
   build: {
     outDir: "dist/umd",
@@ -42,23 +57,6 @@ export default defineConfig({
       formats: ["umd"],
     },
     rollupOptions: {
-      plugins: [
-        terser({
-          compress: {
-            drop_console: isProd,
-            drop_debugger: isProd,
-            global_defs: {
-              "@DEV": JSON.stringify(isDev),
-              "@PROD": JSON.stringify(isProd),
-              "@TEST": JSON.stringify(isTest),
-            },
-          },
-        }),
-        hooks({
-          rmFiles: ["./dist/umd", "./dist/index.css", "./dist/index.css.gz"],
-          afterBuild: moveStyles,
-        }),
-      ],
       external: ["vue"],
       output: {
         exports: "named",

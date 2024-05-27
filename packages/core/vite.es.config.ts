@@ -10,7 +10,7 @@ import compression from "vite-plugin-compression";
 import terser from "@rollup/plugin-terser";
 import hooks from "./hooksPlugin";
 
-const TRY_MOVE_STYLES_DELAY = 600 as const;
+const TRY_MOVE_STYLES_DELAY = 800 as const;
 
 const isProd = process.env.NODE_ENV === "production";
 const isDev = process.env.NODE_ENV === "development";
@@ -44,9 +44,27 @@ export default defineConfig({
     compression({
       threshold: 1024 * 50,
     }),
+    terser({
+      keep_classnames: isDev,
+      keep_fnames: isDev,
+      compress: {
+        drop_console: isProd,
+        drop_debugger: isProd,
+        global_defs: {
+          "@DEV": JSON.stringify(isDev),
+          "@PROD": JSON.stringify(isProd),
+          "@TEST": JSON.stringify(isTest),
+        },
+      },
+    }),
+    hooks({
+      rmFiles: ["./dist/es", "./dist/theme", "./dist/types"],
+      afterBuild: moveStyles,
+    }),
   ],
   build: {
     outDir: "dist/es",
+    minify: false,
     cssCodeSplit: true,
     sourcemap: !isProd,
     lib: {
@@ -56,23 +74,6 @@ export default defineConfig({
       formats: ["es"],
     },
     rollupOptions: {
-      plugins: [
-        terser({
-          compress: {
-            drop_console: isProd,
-            drop_debugger: isProd,
-            global_defs: {
-              "@DEV": JSON.stringify(isDev),
-              "@PROD": JSON.stringify(isProd),
-              "@TEST": JSON.stringify(isTest),
-            },
-          },
-        }),
-        hooks({
-          rmFiles: ["./dist/es", "./dist/theme", "./dist/types"],
-          afterBuild: moveStyles,
-        }),
-      ],
       external: [
         "vue",
         "@fortawesome/fontawesome-svg-core",
