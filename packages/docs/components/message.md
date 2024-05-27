@@ -21,6 +21,10 @@ prev:
 demo-preview=../demo/message/Basic.vue
 :::
 
+::: preview
+demo-preview=../demo/message/Test.vue
+:::
+
 ## 不同类型
 
 用来显示「成功、警告、消息、错误」类的操作反馈。通过 `type` 属性来配置。

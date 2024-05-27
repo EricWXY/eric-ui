@@ -25,17 +25,18 @@
     }
   },
   "scripts": {
-    "build": "run-s remove-dist build-only move-styles",
-    "build-only": "run-p build-es build-umd",
+    "build": "run-p build-es build-umd",
+    "build:watch": "run-p build-es:watch build-umd:watch",
     "build-es": "vite build --config vite.es.config.ts",
     "build-umd": "vite build --config vite.umd.config.ts",
-    "remove-dist": "node ./scripts/remove-dist.js",
-    "move-styles": "node ./scripts/move-styles.js"
+    "build-es:watch":"vite build --watch --config vite.es.config.ts",
+    "build-umd:watch": "vite build --watch --config vite.umd.config.ts"
   },
   "keywords": [],
   "author": "EricWXY",
   "license": "ISC",
   "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
     "terser": "^5.31.0",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-dts": "^3.9.1"

@@ -22,5 +22,11 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["packages/**/*.ts", "packages/**/*.tsx", "packages/**/*.vue", "packages/play/src/stories/*.stories.ts", "packages/core/moveStyles.js"]
+  "include": [
+    "env.d.ts",
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "packages/**/*.vue",
+    "packages/play/src/stories/*.stories.ts",
+  ]
 }
