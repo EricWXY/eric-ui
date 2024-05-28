@@ -6,7 +6,6 @@ import shell from "shelljs";
 
 import vue from "@vitejs/plugin-vue";
 import dts from "vite-plugin-dts";
-import compression from "vite-plugin-compression";
 import terser from "@rollup/plugin-terser";
 import hooks from "./hooksPlugin";
 
@@ -41,14 +40,11 @@ export default defineConfig({
       tsconfigPath: "../../tsconfig.build.json",
       outDir: "dist/types",
     }),
-    compression({
-      threshold: 1024 * 50,
-    }),
     terser({
       keep_classnames: isDev,
       keep_fnames: isDev,
       compress: {
-        drop_console: isProd,
+        drop_console: isProd && ["log"],
         drop_debugger: isProd,
         global_defs: {
           "@DEV": JSON.stringify(isDev),
@@ -60,7 +56,7 @@ export default defineConfig({
     hooks({
       rmFiles: ["./dist/es", "./dist/theme", "./dist/types"],
       afterBuild: moveStyles,
-    }),
+    })
   ],
   build: {
     outDir: "dist/es",

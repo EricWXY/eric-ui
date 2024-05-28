@@ -34,7 +34,7 @@ export default defineConfig({
     }),
     terser({
       compress: {
-        drop_console: isProd,
+        drop_console: isProd && ["log"],
         drop_debugger: isProd,
         global_defs: {
           "@DEV": JSON.stringify(isDev),
