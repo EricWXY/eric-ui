@@ -1,0 +1,22 @@
+
+
+dist/es/Overlay-BNhciCGx.js         1.38 kB │ gzip:  0.60 kB
+dist/es/Icon-pR5MoKz-.js            1.85 kB │ gzip:  0.77 kB
+dist/es/utils-CZN9Qst9.js           2.13 kB │ gzip:  0.94 kB
+dist/es/index.js                    3.01 kB │ gzip:  0.99 kB
+dist/es/Alert-Cd6g0gjG.js           3.41 kB │ gzip:  1.16 kB
+dist/es/Popconfirm-r0eLwmx-.js      3.80 kB │ gzip:  1.20 kB
+dist/es/Switch-CMwLpm7R.js          3.99 kB │ gzip:  1.39 kB
+dist/es/hooks-BYhRssJG.js           4.13 kB │ gzip:  1.38 kB
+dist/es/Button-Chs0i4do.js          4.64 kB │ gzip:  1.49 kB
+dist/es/Collapse-C5k740og.js        5.35 kB │ gzip:  1.69 kB
+dist/es/Dropdown-COtomhcR.js        6.33 kB │ gzip:  1.95 kB
+dist/es/Upload-DHm-X7D6.js          6.63 kB │ gzip:  2.04 kB
+dist/es/Notification-CcLsVjGI.js    6.93 kB │ gzip:  2.28 kB
+dist/es/Loading-D7v__IeD.js         8.02 kB │ gzip:  2.43 kB
+dist/es/Tooltip-CMGwi6ba.js         8.70 kB │ gzip:  2.47 kB
+dist/es/Input-D5AGK-v4.js           8.80 kB │ gzip:  2.27 kB
+dist/es/Form-DIFZPHQG.js           13.79 kB │ gzip:  3.63 kB
+dist/es/Select-C0WLK273.js         17.68 kB │ gzip:  4.51 kB
+dist/es/Message-DPEhLMbA.js        19.25 kB │ gzip:  4.76 kB
+dist/es/vendor-Dz0wgO0a.js        155.92 kB │ gzip: 38.00 kB

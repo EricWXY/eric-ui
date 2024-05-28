@@ -18,9 +18,7 @@ const isTest = process.env.NODE_ENV === "test";
 function moveStyles() {
   try {
     readFileSync("./dist/umd/index.css.gz");
-
     shell.cp("./dist/umd/index.css", "./dist/index.css");
-    shell.cp("./dist/umd/index.css.gz", "./dist/index.css.gz");
   } catch (_) {
     delay(moveStyles, TRY_MOVE_STYLES_DELAY);
   }
@@ -34,8 +32,9 @@ export default defineConfig({
     }),
     terser({
       compress: {
-        drop_console: isProd && ["log"],
-        drop_debugger: isProd,
+        drop_console: ["log"],
+        drop_debugger: true,
+        passes: 3,
         global_defs: {
           "@DEV": JSON.stringify(isDev),
           "@PROD": JSON.stringify(isProd),

@@ -41,22 +41,36 @@ export default defineConfig({
       outDir: "dist/types",
     }),
     terser({
-      keep_classnames: isDev,
-      keep_fnames: isDev,
       compress: {
+        sequences: isProd,
+        arguments: isProd,
         drop_console: isProd && ["log"],
         drop_debugger: isProd,
+        passes: isProd ? 4 : 1,
         global_defs: {
           "@DEV": JSON.stringify(isDev),
           "@PROD": JSON.stringify(isProd),
           "@TEST": JSON.stringify(isTest),
         },
       },
+      format: {
+        semicolons: false,
+        shorthand: isProd,
+        braces: !isProd,
+        beautify: !isProd,
+        comments: !isProd,
+      },
+      mangle: {
+        toplevel: isProd,
+        eval: isProd,
+        keep_classnames: isDev,
+        keep_fnames: isDev,
+      },
     }),
     hooks({
       rmFiles: ["./dist/es", "./dist/theme", "./dist/types"],
       afterBuild: moveStyles,
-    })
+    }),
   ],
   build: {
     outDir: "dist/es",
@@ -98,7 +112,10 @@ export default defineConfig({
           if (id.includes("/packages/hooks")) {
             return "hooks";
           }
-          if (id.includes("/packages/utils")) {
+          if (
+            id.includes("/packages/utils") ||
+            id.includes("plugin-vue:export-helper")
+          ) {
             return "utils";
           }
           for (const item of getDirectoriesSync("../components")) {
