@@ -5,9 +5,9 @@ import Alert from "./Alert.vue";
 import Icon from "../Icon/Icon.vue";
 
 describe("ErAlert Component", () => {
+  const title = "Test Alert";
+  const desc = "This is a test description";
   it("should render the alert with default props", () => {
-    const title = "Test Alert";
-    const desc = "This is a test description";
     const wrapper = mount(Alert, {
       props: {
         title,
@@ -41,17 +41,17 @@ describe("ErAlert Component", () => {
     ["warning", "circle-exclamation"],
     ["danger", "circle-xmark"],
     ["error", "circle-xmark"],
-    ['non-compliance', "circle-info"],// 不符合 type 定义的
+    ["non-compliance", "circle-info"], // 不符合 type 定义的
   ])("should has the correct icon when props type is %s", (type, iconName) => {
     const wrapper = mount(Alert, {
       props: {
-        title: "test Title",
+        title,
         closable: false,
         showIcon: true,
         type: type as AlertType,
       },
       slots: {
-        default: "test desc",
+        default: desc,
       },
       global: {
         stubs: ["ErIcon"],
@@ -68,13 +68,13 @@ describe("ErAlert Component", () => {
 
     const wrapper = mount(Alert, {
       props: {
-        title: "test Title",
+        title,
         closable: true,
         showIcon: false,
         onClose,
       },
       slots: {
-        default: "test desc",
+        default: desc,
       },
       global: {
         stubs: ["ErIcon"],
@@ -85,8 +85,6 @@ describe("ErAlert Component", () => {
   });
 
   it("should allow custom content via slots", () => {
-    const title = "Test Alert";
-    const desc = "This is a test description";
     const wrapper = mount(Alert, {
       props: {
         title: "test title",
@@ -98,13 +96,14 @@ describe("ErAlert Component", () => {
     });
     expect(wrapper.text()).toContain(desc);
     expect(wrapper.text()).toContain(title);
+    expect(wrapper.text()).not.toContain("test title");
   });
 
   it("should support centering text", () => {
     const wrapper = mount(Alert, {
       props: {
-        title: "Test Alert",
-        description: "This is a test description",
+        title,
+        description: desc,
         center: true,
       },
     });
@@ -122,11 +121,11 @@ describe("ErAlert Component", () => {
 
   it("should toggle visibility when open and close methods are called", async () => {
     const wrapper = mount(Alert, {
-      props: { title: "test Alert", closable: false },
+      props: { title, closable: false },
     });
     await wrapper.vm.close();
-    expect(wrapper.find(".er-alert").attributes().style).toBe('display: none;');
+    expect(wrapper.find(".er-alert").attributes().style).toBe("display: none;");
     await wrapper.vm.open();
-    expect(wrapper.find(".er-alert").attributes().style).toBe('');
+    expect(wrapper.find(".er-alert").attributes().style).toBe("");
   });
 });
