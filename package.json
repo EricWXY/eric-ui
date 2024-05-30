@@ -44,6 +44,8 @@
     "postcss-each-variables": "^0.3.0",
     "postcss-for": "^2.1.1",
     "postcss-nested": "^6.0.1",
+    "prettier": "^3.2.5",
+    "rollup": "^4.18.0",
     "shelljs": "^0.8.5",
     "typescript": "^5.4.5",
     "vite": "^5.2.11",
