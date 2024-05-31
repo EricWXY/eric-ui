@@ -77,6 +77,9 @@
 
   &.text-center {
     justify-content: center;
+    span,p {
+      text-align: center;
+    }
   }
 }
 

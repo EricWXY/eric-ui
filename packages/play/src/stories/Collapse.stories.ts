@@ -5,7 +5,7 @@ import 'eric-ui/dist/theme/Collapse.css'
 type Story = StoryObj<typeof ErCollapse>;
 
 const meta: Meta<typeof ErCollapse> = {
-  title: "Components/Collapse",
+  title: "Example/Collapse",
   component: ErCollapse,
   subcomponents: { ErCollapseItem },
   tags: ["autodocs"],

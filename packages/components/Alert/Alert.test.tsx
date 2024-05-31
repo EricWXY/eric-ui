@@ -4,7 +4,7 @@ import { mount } from "@vue/test-utils";
 import Alert from "./Alert.vue";
 import Icon from "../Icon/Icon.vue";
 
-describe("ErAlert Component", () => {
+describe("Alert.vue", () => {
   const title = "Test Alert";
   const desc = "This is a test description";
   it("should render the alert with default props", () => {

@@ -54,7 +54,11 @@ defineExpose<AlertInstance>({
         :icon="iconName"
       />
       <div class="er-alert__content">
-        <span class="er-alert__title" :class="{ 'with-desc': withDescription }">
+        <span
+          class="er-alert__title"
+          :class="{ 'with-desc': withDescription }"
+          :style="{ display: center && !showIcon ? 'flow' : 'inline' }"
+        >
           <slot name="title">{{ title }}</slot>
         </span>
         <p class="er-alert__description">
