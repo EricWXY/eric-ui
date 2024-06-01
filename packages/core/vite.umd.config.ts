@@ -1,7 +1,8 @@
 import { defineConfig } from "vite";
-import { readFileSync } from "fs";
+import { readFile } from "fs";
 import { resolve } from "path";
-import { delay } from "lodash-es";
+import { defer, delay } from "lodash-es";
+import { visualizer } from "rollup-plugin-visualizer";
 import shell from "shelljs";
 
 import vue from "@vitejs/plugin-vue";
@@ -9,19 +10,17 @@ import compression from "vite-plugin-compression";
 import terser from "@rollup/plugin-terser";
 import hooks from "./hooksPlugin";
 
-const TRY_MOVE_STYLES_DELAY = 800 as const;
+const TRY_MOVE_STYLES_DELAY = 750 as const;
 
 const isProd = process.env.NODE_ENV === "production";
 const isDev = process.env.NODE_ENV === "development";
 const isTest = process.env.NODE_ENV === "test";
 
 function moveStyles() {
-  try {
-    readFileSync("./dist/umd/index.css.gz");
-    shell.cp("./dist/umd/index.css", "./dist/index.css");
-  } catch (_) {
-    delay(moveStyles, TRY_MOVE_STYLES_DELAY);
-  }
+  readFile("./dist/umd/index.css.gz", (err) => {
+    if (err) return delay(moveStyles, TRY_MOVE_STYLES_DELAY);
+    defer(() => shell.cp("./dist/umd/index.css", "./dist/index.css"));
+  });
 }
 
 export default defineConfig({
@@ -29,6 +28,9 @@ export default defineConfig({
     vue(),
     compression({
       filter: /.(cjs|css)$/i,
+    }),
+    visualizer({
+      filename: "stats.umd.html",
     }),
     terser({
       compress: {
@@ -43,7 +45,7 @@ export default defineConfig({
       },
     }),
     hooks({
-      rmFiles: ["./dist/umd", "./dist/index.css", "./dist/index.css.gz"],
+      rmFiles: ["./dist/umd", "./dist/index.css"],
       afterBuild: moveStyles,
     }),
   ],
