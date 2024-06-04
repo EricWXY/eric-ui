@@ -7,7 +7,7 @@
     "dev": "pnpm --filter @eric-ui/playground dev",
     "story": "pnpm --filter @eric-ui/playground storybook",
     "docs:dev": "pnpm --filter @eric-ui/docs dev",
-    "docs:build": "pnpm build && pnpm --filter @eric-ui/docs build",
+    "docs:build": "cross-env NODE_ENV=production pnpm build && pnpm --filter @eric-ui/docs build",
     "test": "cross-env NODE_ENV=test pnpm --filter @eric-ui/components test",
     "build": "cross-env NODE_ENV=production pnpm --filter eric-ui build",
     "build:dev": "cross-env NODE_ENV=development pnpm --filter eric-ui build:watch"

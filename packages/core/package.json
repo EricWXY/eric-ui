@@ -27,10 +27,10 @@
   "scripts": {
     "build": "run-p build-es build-umd",
     "build:watch": "run-p build-es:watch build-umd:watch",
-    "build-es": "vite build --config vite.es.config.ts",
-    "build-umd": "vite build --config vite.umd.config.ts",
-    "build-es:watch": "vite build --watch --config vite.es.config.ts",
-    "build-umd:watch": "vite build --watch --config vite.umd.config.ts"
+    "build-es": "vite build --config build/vite.es.config.ts",
+    "build-umd": "vite build --config build/vite.umd.config.ts",
+    "build-es:watch": "vite build --watch --config build/vite.es.config.ts",
+    "build-umd:watch": "vite build --watch --config build/vite.umd.config.ts"
   },
   "keywords": [],
   "author": "EricWXY",

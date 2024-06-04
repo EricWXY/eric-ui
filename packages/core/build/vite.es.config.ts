@@ -10,7 +10,7 @@ import dts from "vite-plugin-dts";
 import terser from "@rollup/plugin-terser";
 import hooks from "./hooksPlugin";
 
-const TRY_MOVE_STYLES_DELAY = 2500 as const;
+const TRY_MOVE_STYLES_DELAY = 750 as const;
 
 const isProd = process.env.NODE_ENV === "production";
 const isDev = process.env.NODE_ENV === "development";
@@ -35,7 +35,9 @@ function moveStyles() {
 export default defineConfig({
   plugins: [
     vue(),
-    visualizer(),
+    visualizer({
+      filename: "dist/stats.es.html",
+    }),
     dts({
       tsconfigPath: "../../tsconfig.build.json",
       outDir: "dist/types",
@@ -68,7 +70,12 @@ export default defineConfig({
       },
     }),
     hooks({
-      rmFiles: ["./dist/es", "./dist/theme", "./dist/types"],
+      rmFiles: [
+        "./dist/es",
+        "./dist/theme",
+        "./dist/types",
+        "./dist/stats.es.html",
+      ],
       afterBuild: moveStyles,
     }),
   ],
@@ -78,7 +85,7 @@ export default defineConfig({
     cssCodeSplit: true,
     sourcemap: !isProd,
     lib: {
-      entry: resolve(__dirname, "./index.ts"),
+      entry: resolve(__dirname, "../index.ts"),
       name: "EricUI",
       fileName: "index",
       formats: ["es"],

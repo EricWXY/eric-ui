@@ -30,7 +30,7 @@ export default defineConfig({
       filter: /.(cjs|css)$/i,
     }),
     visualizer({
-      filename: "stats.umd.html",
+      filename: "dist/stats.umd.html",
     }),
     terser({
       compress: {
@@ -45,14 +45,14 @@ export default defineConfig({
       },
     }),
     hooks({
-      rmFiles: ["./dist/umd", "./dist/index.css"],
+      rmFiles: ["./dist/umd", "./dist/index.css",'./dist/stats.umd.html'],
       afterBuild: moveStyles,
     }),
   ],
   build: {
     outDir: "dist/umd",
     lib: {
-      entry: resolve(__dirname, "./index.ts"),
+      entry: resolve(__dirname, "../index.ts"),
       name: "EricUI",
       fileName: "index",
       formats: ["umd"],

@@ -1,15 +1,5 @@
-import type { App, Plugin } from "vue";
 import { defineComponent } from "vue";
-import { each, isFunction } from "lodash-es";
-
-export function makeInstaller(components: Plugin[]) {
-  const install = (app: App) =>
-    each(components, (c) => {
-      app.use(c);
-    });
-
-  return install;
-}
+import { isFunction } from "lodash-es";
 
 export const RenderVnode = defineComponent({
   props: {
