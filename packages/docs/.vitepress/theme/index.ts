@@ -1,9 +1,9 @@
 import DefaultTheme from "vitepress/theme";
 import { type App } from "vue";
 import EricUI from "eric-ui";
-import { ElementPlusContainer } from "@vitepress-demo-preview/component";
+import { ElementPlusContainer } from "@vitepress-preview/component";
 
-import "@vitepress-demo-preview/component/dist/style.css";
+import "@vitepress-preview/component/style.css";
 import "eric-ui/dist/index.css";
 
 export default {
