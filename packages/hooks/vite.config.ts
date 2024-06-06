@@ -1,15 +1,15 @@
-import { defineConfig } from "vite";
 import { resolve } from "path";
-import dts from "vite-plugin-dts";
-import { last, split, first } from "lodash-es";
+import { defineConfig } from "vite";
+import { last, split, first, includes } from "lodash-es";
 import { hooksPlugin as hooks } from "@eric-ui/vite-plugins";
+
+import dts from "vite-plugin-dts";
 
 export default defineConfig({
   plugins: [
     dts({
       include: ["./**/*.ts"],
       exclude: ["./vite.config.ts"],
-      rollupTypes: true,
     }),
     hooks({
       rmFiles: ["./dist"],
@@ -27,9 +27,8 @@ export default defineConfig({
       external: ["vue", "lodash-es"],
       output: {
         manualChunks(id) {
-          if (id.includes("/packages/hooks/src")) {
+          if (includes(id, "/packages/hooks/use"))
             return first(split(last(split(id, "/")), "."));
-          }
         },
       },
     },

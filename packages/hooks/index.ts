@@ -1,10 +1,10 @@
-import useClickOutside from "./src/useClickOutside";
-import useEventListener from "./src/useEventListener";
-import useFocusController from "./src/useFocusController";
-import useZIndex from "./src/useZIndex";
-import useProp from "./src/useProp";
-import useDisabledStyle from "./src/useDisabledStyle";
-import useId from "./src/useId";
+import useClickOutside from "./useClickOutside";
+import useEventListener from "./useEventListener";
+import useFocusController from "./useFocusController";
+import useZIndex from "./useZIndex";
+import useProp from "./useProp";
+import useDisabledStyle from "./useDisabledStyle";
+import useId from "./useId";
 
 export {
   useClickOutside,

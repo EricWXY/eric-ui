@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import { readdirSync, readdir } from "fs";
 import { resolve } from "path";
-import { defer, delay, filter, map } from "lodash-es";
+import { defer, delay, filter, map, includes } from "lodash-es";
 import { visualizer } from "rollup-plugin-visualizer";
 import { hooksPlugin as hooks } from "@eric-ui/vite-plugins";
 import shell from "shelljs";
@@ -113,22 +113,18 @@ export default defineConfig({
           return chunkInfo.name as string;
         },
         manualChunks(id) {
-          if (id.includes("node_modules")) {
-            return "vendor";
-          }
-          if (id.includes("/packages/hooks")) {
-            return "hooks";
-          }
+          if (includes(id, "node_modules")) return "vendor";
+
+          if (includes(id, "/packages/hooks")) return "hooks";
+
           if (
-            id.includes("/packages/utils") ||
-            id.includes("plugin-vue:export-helper")
-          ) {
+            includes(id, "/packages/utils") ||
+            includes(id, "plugin-vue:export-helper")
+          )
             return "utils";
-          }
+
           for (const item of getDirectoriesSync("../components")) {
-            if (id.includes(`/packages/components/${item}`)) {
-              return item;
-            }
+            if (includes(id, `/packages/components/${item}`)) return item;
           }
         },
       },
