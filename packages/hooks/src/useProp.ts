@@ -1,5 +1,4 @@
-import { computed, getCurrentInstance } from "vue";
-import type { ComputedRef } from "vue";
+import { computed, getCurrentInstance, type ComputedRef } from "vue";
 
 export default function useProp<T>(propName: string): ComputedRef<T | void> {
   const instance = getCurrentInstance();

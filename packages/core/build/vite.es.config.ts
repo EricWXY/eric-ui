@@ -3,12 +3,12 @@ import { readdirSync, readdir } from "fs";
 import { resolve } from "path";
 import { defer, delay, filter, map } from "lodash-es";
 import { visualizer } from "rollup-plugin-visualizer";
+import { hooksPlugin as hooks } from "@eric-ui/vite-plugins";
 import shell from "shelljs";
 
 import vue from "@vitejs/plugin-vue";
 import dts from "vite-plugin-dts";
 import terser from "@rollup/plugin-terser";
-import hooks from "./hooksPlugin";
 
 const TRY_MOVE_STYLES_DELAY = 750 as const;
 

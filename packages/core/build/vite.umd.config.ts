@@ -3,12 +3,12 @@ import { readFile } from "fs";
 import { resolve } from "path";
 import { defer, delay } from "lodash-es";
 import { visualizer } from "rollup-plugin-visualizer";
+import { hooksPlugin as hooks } from "@eric-ui/vite-plugins";
 import shell from "shelljs";
 
 import vue from "@vitejs/plugin-vue";
 import compression from "vite-plugin-compression";
 import terser from "@rollup/plugin-terser";
-import hooks from "./hooksPlugin";
 
 const TRY_MOVE_STYLES_DELAY = 750 as const;
 
@@ -45,7 +45,7 @@ export default defineConfig({
       },
     }),
     hooks({
-      rmFiles: ["./dist/umd", "./dist/index.css",'./dist/stats.umd.html'],
+      rmFiles: ["./dist/umd", "./dist/index.css", "./dist/stats.umd.html"],
       afterBuild: moveStyles,
     }),
   ],

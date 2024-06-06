@@ -20,6 +20,9 @@ importers:
       '@eric-ui/utils':
         specifier: workspace:*
         version: link:packages/utils
+      '@eric-ui/vite-plugins':
+        specifier: workspace:*
+        version: link:_node_modules/vite-plugins
       '@fortawesome/fontawesome-svg-core':
         specifier: ^6.5.2
         version: 6.5.2
@@ -114,6 +117,8 @@ importers:
       vue-tsc:
         specifier: ^1.8.27
         version: 1.8.27(typescript@5.4.5)
+
+  _node_modules/vite-plugins: {}
 
   _node_modules/vitepress-view-component:
     dependencies:

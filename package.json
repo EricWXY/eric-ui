@@ -9,8 +9,12 @@
     "docs:dev": "pnpm --filter @eric-ui/docs dev",
     "docs:build": "cross-env NODE_ENV=production pnpm build && pnpm --filter @eric-ui/docs build",
     "test": "cross-env NODE_ENV=test pnpm --filter @eric-ui/components test",
-    "build": "cross-env NODE_ENV=production pnpm --filter eric-ui build",
-    "build:dev": "cross-env NODE_ENV=development pnpm --filter eric-ui build:watch"
+    "build": "run-s build-hooks build-components",
+    "build-components":"cross-env NODE_ENV=production pnpm --filter eric-ui build",
+    "build-hooks":"cross-env NODE_ENV=production pnpm --filter @eric-ui/hooks build",
+    "build:dev": "run-s build-hooks:dev build-components:dev",
+    "build-components:dev":"cross-env NODE_ENV=development pnpm --filter eric-ui build:watch",
+    "build-hooks:dev":"cross-env NODE_ENV=development pnpm --filter @eric-ui/hooks build"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +25,7 @@
     "@eric-ui/theme": "workspace:*",
     "@eric-ui/utils": "workspace:*",
     "@vitepress-preview/component": "workspace:*",
+    "@eric-ui/vite-plugins":"workspace:*",
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
