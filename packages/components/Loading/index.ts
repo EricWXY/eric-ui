@@ -4,6 +4,7 @@ import { Loading } from "./service";
 import type { App } from "vue";
 
 export const ErLoading = {
+  name:'ErLoading',
   install(app: App) {
     app.directive("loading", vLoading);
     app.config.globalProperties.$loading = Loading;

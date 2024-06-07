@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "test": "vitest --coverage"
+    "test": "cross-env NODE_ENV=test pnpm --filter @eric-ui/hooks build && vitest --coverage"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^1.4.0",
