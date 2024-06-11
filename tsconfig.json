@@ -27,6 +27,6 @@
     "packages/**/*.ts",
     "packages/**/*.tsx",
     "packages/**/*.vue",
-    "packages/play/src/stories/*.stories.ts",
+    "packages/play/src/stories/*.stories.ts", "vitest.config.ts",
   ]
 }

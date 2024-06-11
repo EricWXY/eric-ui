@@ -1,16 +1,13 @@
 {
   "name": "@eric-ui/components",
   "version": "1.0.0",
-  "description": "",
+  "private":true,
   "main": "index.ts",
   "scripts": {
     "test": "cross-env NODE_ENV=test pnpm --filter @eric-ui/hooks build && vitest --coverage"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "^1.4.0",
-    "@vue/test-utils": "^2.4.5",
-    "axios": "^1.6.8",
-    "jsdom": "^24.0.0"
+    "axios": "^1.6.8"
   },
   "keywords": [],
   "author": "",
