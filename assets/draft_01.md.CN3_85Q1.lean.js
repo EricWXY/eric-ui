@@ -1,1 +1,0 @@
-import{a1 as a,a as e,o as t,an as l}from"./chunks/framework.BKvEaGVe.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"draft/01.md","filePath":"draft/01.md"}'),i={name:"draft/01.md"},o=l("",17),r=[o];function n(c,s,u,p,h,d){return t(),e("div",null,r)}const q=a(i,[["render",n]]);export{m as __pageData,q as default};
