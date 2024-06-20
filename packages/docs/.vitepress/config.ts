@@ -57,7 +57,6 @@ export default defineConfig({
     socialLinks: [
       { icon: "github", link: "https://github.com/EricWXY/eric-ui" },
     ],
-
   },
   markdown: {
     config(md) {

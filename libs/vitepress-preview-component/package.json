@@ -1,20 +1,21 @@
 {
   "name": "@vitepress-preview/component",
   "version": "2.3.2",
+  "private": true,
   "description": "preview component of code and component in vitepress",
   "type": "module",
-  "main": "./_product/preview-component.umd.cjs",
-  "module": "./_product/preview-component.js",
-  "types": "./_product/index.d.ts",
+  "main": "./.dist/preview-component.umd.cjs",
+  "module": "./.dist/preview-component.js",
+  "types": "./.dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./_product/preview-component.js",
-      "require": "./_product/preview-component.umd.cjs"
+      "import": "./.dist/preview-component.js",
+      "require": "./.dist/preview-component.umd.cjs"
     },
-    "./style.css": "./_product/style.css"
+    "./style.css": "./.dist/style.css"
   },
   "files": [
-    "_product",
+    ".dist",
     "README.md",
     "package.json",
     "types.d.ts"

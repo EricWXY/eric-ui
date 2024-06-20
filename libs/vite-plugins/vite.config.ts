@@ -11,7 +11,7 @@ export default defineConfig({
   ],
   build: {
     minify: false,
-    outDir: "_product",
+    outDir: ".dist",
     lib: {
       entry: resolve(__dirname, "./index.ts"),
       name: "vitePlugins",

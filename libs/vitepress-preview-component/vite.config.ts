@@ -5,7 +5,7 @@ import dts from "vite-plugin-dts";
 
 export default defineConfig({
   build: {
-    outDir: "_product",
+    outDir: ".dist",
     lib: {
       entry: resolve(__dirname, "./index.ts"),
       name: "previewComponent",
