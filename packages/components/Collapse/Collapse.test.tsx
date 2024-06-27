@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, test, vi } from "vitest";
 import { DOMWrapper, mount, type VueWrapper } from "@vue/test-utils";
-import transitionEvents from './transitionEvents'
+import transitionEvents from "./transitionEvents";
 
 import Collapse from "./Collapse.vue";
 import CollapseItem from "./CollapseItem.vue";
@@ -141,7 +141,8 @@ describe("Collapse.vue", () => {
   });
 
   test("手风琴模式 错误处理", () => {
-    wrapper = mount(
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    mount(
       () => (
         <Collapse accordion modelValue={["a", "b"]} {...{ onChange }}>
           <CollapseItem name="a" title="title a">
@@ -158,11 +159,19 @@ describe("Collapse.vue", () => {
       {
         global: {
           stubs: ["ErIcon"],
-        }
+        },
       }
     );
+    expect(warn.mock.calls).toMatchInlineSnapshot(
+      `
+        [
+          [
+            [ErUIError: [ErCollapse] accordion mode should only have one active item],
+          ],
+        ]
+      `
+    );
   });
-  expect(() => wrapper.vm.$nextTick()).toThrow();
 });
 
 describe("Collapse/transitionEvents.ts", () => {

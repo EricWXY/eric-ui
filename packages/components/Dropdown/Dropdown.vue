@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, provide, useSlots } from "vue";
-import { omit, isNil, assign, map } from "lodash-es";
+import { ref, computed, provide } from "vue";
+import { omit, isNil } from "lodash-es";
 import type {
   DropdownProps,
   DropdownEmits,
@@ -25,22 +25,16 @@ const props = withDefaults(defineProps<DropdownProps>(), {
   items: () => [] as DropdownItemProps[],
 });
 const emits = defineEmits<DropdownEmits>();
-const slots = useSlots();
+const slots = defineSlots();
 
 const tooltipRef = ref<TooltipInstance>();
 const triggerRef = ref<ButtonInstance>();
 
 const tooltipProps = computed(() =>
-  omit(props, ["menuOptions", "hideAfterClick"])
-);
-const _items = computed(() =>
-  map(props.items, (item) =>
-    assign(item, { command: item.command ?? useId().value })
-  )
+  omit(props, ["items", "hideAfterClick", "size", "type", "splitButton"])
 );
 
 function handleItemClick(e: DropdownItemProps) {
-  if (e.disabled) return;
   props.hideOnClick && tooltipRef.value?.hide();
   !isNil(e.command) && emits("command", e.command);
 }
@@ -58,7 +52,11 @@ provide<DropdownContext>(DROPDOWN_CTX_KEY, {
 </script>
 
 <template>
-  <div class="er-dropdown" :class="{ 'is-disabled': props.disabled }">
+  <div
+    class="er-dropdown"
+    :id="`dropdown-${useId().value}`"
+    :class="{ 'is-disabled': props.disabled }"
+  >
     <tooltip
       ref="tooltipRef"
       v-bind="tooltipProps"
@@ -82,7 +80,10 @@ provide<DropdownContext>(DROPDOWN_CTX_KEY, {
       <template #content>
         <ul class="er-dropdown__menu">
           <slot name="dropdown">
-            <template v-for="item in _items" :key="item.command">
+            <template
+              v-for="item in items"
+              :key="item.command ?? useId().value"
+            >
               <dropdown-item v-bind="item" />
             </template>
           </slot>

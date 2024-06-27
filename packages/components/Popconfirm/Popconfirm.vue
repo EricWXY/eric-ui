@@ -53,6 +53,7 @@ function cancel(e: MouseEvent) {
         <div class="er-popconfirm__action">
           <er-button
             size="small"
+            class="er-popconfirm__cancel"
             :type="cancelButtonType"
             @click="cancel"
           >
