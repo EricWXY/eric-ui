@@ -1,6 +1,5 @@
 import { each, isFunction, cloneDeep, assign } from "lodash-es";
-import type { MaybeRef, VNode, Slots } from "vue";
-import { isRef, computed, watchEffect } from "vue";
+import { watchEffect, useSlots, getCurrentInstance, type VNode } from "vue";
 
 const _dfs = (nodes: VNode[], cb: (node: VNode) => void) =>
   each(nodes, (node) => {
@@ -8,30 +7,30 @@ const _dfs = (nodes: VNode[], cb: (node: VNode) => void) =>
     node.children && _dfs(node.children as VNode[], cb);
   });
 
-export function useDisabledStyle(slots: Slots, disabled: MaybeRef<boolean>) {
-  const _disabled = computed(() =>
-    isRef(disabled) ? disabled.value : disabled
-  );
+export function useDisabledStyle() {
   const nodePropsMap = new Map();
 
-  watchEffect(() => {
-    if (!!_disabled.value) {
-      _dfs(slots?.default?.() ?? [], (node) => {
-        if (!node?.props) return;
+  const instance = getCurrentInstance()!;
+  const children = useSlots()?.default?.();
 
-        nodePropsMap.set(node, cloneDeep(node.props));
-        node.props = assign(node?.props, {
-          style: {
-            cursor: "not-allowed",
-            color: "var(--er-text-color-placeholder)",
-          },
-        });
+  watchEffect(() => {
+    if (!instance.props?.disabled) {
+      _dfs(children ?? [], (node) => {
+        if (!nodePropsMap.has(node)) return;
+        node.props = nodePropsMap.get(node);
       });
       return;
     }
-    _dfs(slots?.default?.() ?? [], (node) => {
-      if (!nodePropsMap.has(node)) return;
-      node.props = nodePropsMap.get(node);
+    _dfs(children ?? [], (node) => {
+      if (!node?.props) return;
+
+      nodePropsMap.set(node, cloneDeep(node.props));
+      node.props = assign(node?.props, {
+        style: {
+          cursor: "not-allowed",
+          color: "var(--er-text-color-placeholder)",
+        },
+      });
     });
   });
 }

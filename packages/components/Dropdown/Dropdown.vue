@@ -39,7 +39,7 @@ function handleItemClick(e: DropdownItemProps) {
   !isNil(e.command) && emits("command", e.command);
 }
 
-useDisabledStyle(slots, props.disabled);
+!TEST && useDisabledStyle();
 defineExpose<DropdownInstance>({
   open: () => tooltipRef.value?.show(),
   close: () => tooltipRef.value?.hide(),

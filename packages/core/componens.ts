@@ -20,6 +20,7 @@ import {
   ErUpload,
   ErPopconfirm,
   ErMessageBox,
+  ErConfigProvider
 } from "@eric-ui/components";
 import type { Plugin } from "vue";
 
@@ -45,4 +46,5 @@ export default [
   ErUpload,
   ErPopconfirm,
   ErMessageBox,
+  ErConfigProvider
 ] as Plugin[];
