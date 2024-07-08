@@ -30,7 +30,7 @@ export interface Message extends MessageFn {
 
 export interface MessageProps {
   id: string;
-  message?: string | VNode;
+  message?: string | VNode | (() => VNode);
   duration?: number;
   showClose?: boolean;
   center?: boolean;

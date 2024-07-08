@@ -8,10 +8,19 @@ export const notificationTypes = [
 ] as const;
 export type notificationType = (typeof notificationTypes)[number];
 
+export const notificationPosition = [
+  "top-right",
+  "top-left",
+  "bottom-right",
+  "bottom-left",
+] as const;
+export type NotificationPosition = (typeof notificationPosition)[number];
+
 export interface NotificationProps {
   title: string;
   id: string;
   zIndex: number;
+  position: NotificationPosition;
   type?: "success" | "info" | "warning" | "danger" | "error";
   message?: string | VNode;
   duration?: number;

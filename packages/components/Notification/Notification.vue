@@ -2,8 +2,9 @@
 import type { NotificationProps } from "./types";
 import { ref, computed, onMounted } from "vue";
 import { getLastBottomOffset } from "./methods";
-import { delay, isString } from "lodash-es";
+import { bind, delay, isString } from "lodash-es";
 import { RenderVnode, typeIconMap } from "@eric-ui/utils";
+import { useOffset } from "@eric-ui/hooks";
 
 import ErIcon from "../Icon/Icon.vue";
 
@@ -17,30 +18,40 @@ const props = withDefaults(defineProps<NotificationProps>(), {
 const visible = ref(false);
 const notifyRef = ref<HTMLDivElement>();
 
+// 这个 div 的高度
+const boxHeight = ref(0);
+
+const { topOffset, bottomOffset } = useOffset({
+  getLastBottomOffset: bind(getLastBottomOffset, props),
+  offset: props.offset,
+  boxHeight,
+});
+
 const iconName = computed(() => {
   if (isString(props.icon)) return props.icon;
   return typeIconMap.get(props.type);
 });
 
-// 这个 div 的高度
-const boxHeight = ref(0);
-// 上一个实例的最下面的坐标数字，第一个是 0
-const lastBottomOffset = computed(() => getLastBottomOffset(props.id));
-// 这个元素应该使用的 top
-const topOffset = computed(() => props.offset + lastBottomOffset.value);
-// 这个元素为下一个元素预留的 offset，也就是它最低端 bottom 的 值
-const bottomOffset = computed(() => boxHeight.value + topOffset.value);
+const horizontalClass = computed(() =>
+  props.position.endsWith("right") ? "right" : "left"
+);
+
+const verticalProperty = computed(() =>
+  props.position.startsWith("top") ? "top" : "bottom"
+);
+
 const cssStyle = computed(() => ({
-  top: topOffset.value + "px",
+  [verticalProperty.value]: topOffset.value + "px",
   zIndex: props.zIndex,
 }));
 
-let timer: any;
+let timer: number;
 
 function startTimer() {
   if (props.duration === 0) return;
   timer = delay(close, props.duration);
 }
+
 function clearTimer() {
   clearTimeout(timer);
 }
@@ -54,6 +65,7 @@ onMounted(() => {
   visible.value = true;
   startTimer();
 });
+
 defineExpose({
   close,
   bottomOffset,
@@ -72,6 +84,7 @@ defineExpose({
       :class="{
         [`er-notification--${type}`]: type,
         'show-close': showClose,
+        [horizontalClass]: true,
       }"
       :style="cssStyle"
       v-show="visible"

@@ -2,8 +2,8 @@
 import type { MessageProps } from "./types";
 import { computed, onMounted, ref, watch } from "vue";
 import { getLastBottomOffset } from "./methods";
-import { delay } from "lodash-es";
-import { useEventListener } from "@eric-ui/hooks";
+import { delay, bind } from "lodash-es";
+import { useEventListener, useOffset } from "@eric-ui/hooks";
 import { RenderVnode, typeIconMap } from "@eric-ui/utils";
 import ErIcon from "../Icon/Icon.vue";
 
@@ -21,17 +21,16 @@ const props = withDefaults(defineProps<MessageProps>(), {
 const visible = ref(false);
 const messageRef = ref<HTMLDivElement>();
 
+const iconName = computed(() => typeIconMap.get(props.type) ?? "circle-info");
+
 // div 的高度
 const boxHeight = ref(0);
 
-const iconName = computed(() => typeIconMap.get(props.type) ?? "circle-info");
-
-// 上一个实例最下面的坐标，第一个是0
-const lastBottomOffset = computed(() => getLastBottomOffset(props.id));
-// 本元素应该的 top
-const topOffset = computed(() => props.offset + lastBottomOffset.value);
-// 为下一个实例预留的底部 offset
-const bottomOffset = computed(() => boxHeight.value + topOffset.value);
+const { topOffset, bottomOffset } = useOffset({
+  getLastBottomOffset: bind(getLastBottomOffset, props),
+  offset: props.offset,
+  boxHeight,
+});
 
 const cssStyle = computed(() => ({
   top: topOffset.value + "px",

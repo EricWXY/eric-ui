@@ -6,6 +6,7 @@ function openNotify1() {
   ErNotification({
     title: "Title",
     message: h("i", { style: "color:teal" }, "This is a remider"),
+    position:'bottom-right'
   });
 }
 
@@ -14,6 +15,7 @@ function openNotify2() {
     title: "Prompt",
     message: "This is a message that does not auto close",
     duration: 0,
+    position:'top-left'
   });
 }
 </script>
