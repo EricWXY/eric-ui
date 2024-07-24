@@ -154,7 +154,7 @@ function handleClose() {
           <div class="er-message-box__footer">
             <er-button
               v-if="state.showCancelButton"
-              class="er-message-box__footer-btn"
+              class="er-message-box__footer-btn er-message-box__cancel-btn"
               :type="state.cancelButtonType"
               :round="state.roundButton"
               :loading="state.cancelButtonLoading"
@@ -164,7 +164,7 @@ function handleClose() {
             >
             <er-button
               v-show="state.showConfirmButton"
-              class="er-message-box__footer-btn"
+              class="er-message-box__footer-btn er-message-box__confirm-btn"
               :type="state.confirmButtonType ?? 'primary'"
               :round="state.roundButton"
               :loading="state.confirmButtonLoading"

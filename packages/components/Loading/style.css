@@ -39,8 +39,8 @@
     }
   }
 }
-.er-loading-fade-enter-from,
-.er-loading-fade-leave-to {
+.fade-in-linear-enter-from,
+.fade-in-linear-leave-to {
     opacity: 0;
 }
 
