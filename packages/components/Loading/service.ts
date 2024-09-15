@@ -2,7 +2,7 @@ import type { LoadingOptions, LoadingOptionsResolved } from "./types";
 import { ref, createApp, reactive, nextTick } from "vue";
 import { useZIndex } from "@eric-ui/hooks";
 import LoadingComp from "./Loading.vue";
-import { defer, delay, isNil, isString } from "lodash-es";
+import { delay, isNil, isString } from "lodash-es";
 
 const RELATIVE_CLASS = "er-loading-parent--relative" as const;
 const HIDDEN_CLASS = "er-loading-parent--hiden" as const;
