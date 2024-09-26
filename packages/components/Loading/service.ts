@@ -2,7 +2,7 @@ import type { LoadingOptions, LoadingOptionsResolved } from "./types";
 import { ref, createApp, reactive, nextTick } from "vue";
 import { useZIndex } from "@eric-ui/hooks";
 import LoadingComp from "./Loading.vue";
-import { defer, delay, isNil, isString } from "lodash-es";
+import { delay, isNil, isString } from "lodash-es";
 
 const RELATIVE_CLASS = "er-loading-parent--relative" as const;
 const HIDDEN_CLASS = "er-loading-parent--hiden" as const;
@@ -12,11 +12,11 @@ const instanceMap: Map<HTMLElement, LoadingInstance> = new Map();
 const { nextZIndex } = useZIndex(30000);
 
 function createLoadingComponent(options: LoadingOptionsResolved) {
-  const visible = ref(options.visible);
+  const visible = ref(false);
   const afterLeaveFlag = ref(false);
   const handleAfterLeave = () => {
     if (!afterLeaveFlag.value) return;
-    destory();
+    destroy();
   };
 
   const data = reactive({
@@ -26,7 +26,7 @@ function createLoadingComponent(options: LoadingOptionsResolved) {
 
   const setText = (text: string) => (data.text = text);
 
-  const destory = () => {
+  const destroy = () => {
     const target = data.parent;
     subtLoadingNumb(target);
     if (getLoadingNumb(target)) return;
@@ -45,7 +45,7 @@ function createLoadingComponent(options: LoadingOptionsResolved) {
 
     afterLeaveFlag.value = true;
     clearTimeout(afterLeaveTimer);
-    afterLeaveTimer = defer(handleAfterLeave);
+    afterLeaveTimer = delay(handleAfterLeave, 500);
 
     visible.value = false;
     options.closed?.();
